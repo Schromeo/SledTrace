@@ -115,6 +115,36 @@ Open:
 http://localhost:5173
 ```
 
+### SDK packaging milestone (v0.5.0)
+
+This release completed the Python SDK packaging readiness work for local distribution without publishing to PyPI.
+
+```bash
+cd sdk/python
+pip install -e .
+
+python -m pip install --upgrade pip
+python -m pip install build
+python -m build
+pip install dist/*.whl
+```
+
+Current recommended local stack:
+
+```bash
+docker compose up --build
+```
+
+New code should use the SledTrace import path:
+
+```python
+from sledtrace import trace
+```
+
+Legacy `raglens` compatibility remains temporary for migration support, but the project is now SledTrace-first.
+
+PyPI publishing is not part of v0.5.0 unless a later release decides to publish manually.
+
 ### Path B: Repo-local startup helper (fallback)
 
 Use this path when you do not want Docker.

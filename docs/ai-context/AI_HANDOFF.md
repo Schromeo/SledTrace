@@ -8,7 +8,65 @@ SledTrace
 
 SledTrace is a local-first visual debugger for RAG pipelines.
 
+## Current Release Target
+
+v0.5.0 — Python SDK Distribution / Packaging Readiness
+
 ## Current Project Status
+
+### v0.5.0 Status
+
+**v0.5.0 packaging readiness is complete and validated.**
+
+Completed work includes:
+
+- building the Python SDK as a wheel/sdist via `python -m build`
+- verifying clean install from a built artifact in a fresh venv
+- keeping the preferred import path `sledtrace` stable
+- preserving temporary `raglens` compatibility during migration
+- verifying `SLEDTRACE_COLLECTOR_URL` precedence over `RAGLENS_COLLECTOR_URL`
+- keeping v0.5 limited to packaging and documentation, without touching the warning engine or collector contracts
+
+Validation commands that passed:
+
+```bash
+cd sdk/python
+python -m pip install --upgrade pip
+python -m pip install build
+python -m build
+
+python -m venv .venv-package-test
+source .venv-package-test/bin/activate
+pip install dist/*.whl
+python -c "import sledtrace; print(sledtrace.__version__)"
+python -c "from sledtrace import trace; print(trace)"
+python -c "import raglens; print('legacy raglens import ok')"
+deactivate
+
+pytest
+
+cd collector/go
+go test ./... -count=1
+
+cd dashboard/web
+npm run build
+```
+
+Observed results:
+
+- wheel + sdist produced successfully
+- wheel install succeeded in clean venv
+- `sledtrace.__version__` prints `0.5.0`
+- `from sledtrace import trace` works
+- legacy `raglens` compatibility import works
+- `pytest` passed with 11 tests
+- Go backend tests passed
+- dashboard build passed
+
+Next recommended milestone:
+
+- v0.6 Local CLI / `sledtrace serve` planning, or
+- v0.5.1 PyPI publishing follow-up if the team chooses to publish later
 
 ### v0.4.1 Status
 

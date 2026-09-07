@@ -224,7 +224,7 @@ class RAGLensTrace:
 
         trace_metadata = {
             "sdk_language": "python",
-            "sdk_version": "0.4.1",
+            "sdk_version": "0.5.0",
             **self.metadata,
         }
 
@@ -279,7 +279,7 @@ class RAGLensTrace:
             method="POST",
             headers={
                 "Content-Type": "application/json",
-                "User-Agent": "sledtrace-python-sdk/0.4.1",
+                "User-Agent": "sledtrace-python-sdk/0.5.0",
             },
         )
 

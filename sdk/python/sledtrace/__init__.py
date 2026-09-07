@@ -1,13 +1,20 @@
-from raglens import (
-    ChunkNormalizationError,
-    RAGLensTrace,
-    SledTraceTrace,
-    normalize_chunk,
-    normalize_chunks,
-    trace,
-)
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning, module=r"raglens.*")
+    from raglens import (
+        ChunkNormalizationError,
+        RAGLensTrace,
+        SledTraceTrace,
+        normalize_chunk,
+        normalize_chunks,
+        trace,
+    )
+
+__version__ = "0.5.0"
 
 __all__ = [
+    "__version__",
     "trace",
     "SledTraceTrace",
     "RAGLensTrace",

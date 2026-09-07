@@ -1,60 +1,65 @@
 # SledTrace Python SDK
 
-Python SDK for sending local RAG pipeline traces to SledTrace.
+SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-## Install (v0.4.1 local path)
+## Install from source for development
 
 ```bash
-pip install -e /path/to/sledtrace/sdk/python
+cd sdk/python
+pip install -e .
 ```
 
-## Basic Usage
+## Build a local wheel or sdist
+
+```bash
+cd sdk/python
+python -m pip install --upgrade pip
+python -m pip install build
+python -m build
+```
+
+This produces wheel and source-distribution artifacts in `dist/`.
+
+## Install the built wheel
+
+```bash
+pip install dist/*.whl
+```
+
+## Basic usage
 
 ```python
 from sledtrace import trace
 
-user_query = "What is the refund policy?"
-
-with trace(name="my-rag-request", query=user_query) as t:
-    # Run retriever
-    retrieved_chunks = [
-        {
-            "id": "refund_policy_1",
-            "text": "Refunds are accepted within 30 days with proof of purchase.",
-            "score": 0.92,
-            "source": "refund_policy.md",
-        }
-    ]
-
-    # Convert retriever-native results into SledTrace-style chunk dicts
+with trace("example") as t:
     t.retrieval(
-        query=user_query,
-        chunks=retrieved_chunks,
+        query="What is the refund policy?",
+        chunks=[
+            {
+                "id": "chunk-1",
+                "text": "Refunds are accepted within 30 days with proof of purchase.",
+                "score": 0.92,
+                "metadata": {"source": "refund_policy.md"},
+            }
+        ],
         top_k=1,
     )
 
-    # Build prompt
-    context = "\n\n".join(chunk["text"] for chunk in retrieved_chunks)
-    prompt = f"Question: {user_query}\n\nContext:\n{context}"
-
-    # Run answerer/LLM
-    answer = "You can request a refund within 30 days with proof of purchase."
     t.llm(
+        model="demo-model",
+        prompt="Question: What is the refund policy?",
+        response="Refunds are accepted within 30 days with proof of purchase.",
         provider="local-demo",
-        model="mock-answerer",
-        prompt=prompt,
-        output_text=answer,
     )
 
-# Flush after the with-block
-t.flush()
+    t.flush()
 ```
 
-## Collector URL
+## Collector URL configuration
 
-Default collector URL: [http://localhost:4319](http://localhost:4319)
+The default collector URL is `http://localhost:4319`.
 
-Bash:
+Use the SledTrace environment variable:
 
 ```bash
 export SLEDTRACE_COLLECTOR_URL=http://localhost:4319
@@ -66,13 +71,33 @@ PowerShell:
 $env:SLEDTRACE_COLLECTOR_URL="http://localhost:4319"
 ```
 
-## More Docs
+Legacy compatibility remains temporarily supported for migration:
 
-- ../../docs/product/USER_ONBOARDING.md
-- ../../docs/integrations/PYTHON_SDK_GUIDE.md
+```bash
+export RAGLENS_COLLECTOR_URL=http://localhost:4319
+```
 
-Repository examples such as examples.custom_pipeline_demo are local examples, not part of the public installed SDK API.
+The precedence is:
 
+1. `SLEDTRACE_COLLECTOR_URL`
+2. `RAGLENS_COLLECTOR_URL`
+3. `http://localhost:4319`
 
+## Legacy compatibility note
+
+Legacy `raglens` imports remain temporarily supported during migration, but new code should use the SledTrace package path:
+
+```python
+from sledtrace import trace
+```
+
+Do not rely on PyPI publishing for this release; this package is prepared for local distribution and installation from a built artifact.
+
+## More docs
+
+- `../../docs/product/USER_ONBOARDING.md`
+- `../../docs/integrations/PYTHON_SDK_GUIDE.md`
+
+Repository examples such as `examples.custom_pipeline_demo` are local developer examples and not a separate public SDK surface.
 
 

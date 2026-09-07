@@ -6,6 +6,50 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 ## Current Snapshot
 
+**Current version:** v0.5.0 - Python SDK Distribution / Packaging Readiness  
+**Status:** Completed and validated
+
+### v0.5.0 Goal
+
+Prepare the Python SDK for clean local distribution as an installable package:
+
+* package metadata aligned to SledTrace-first naming
+* wheel and sdist build validation from `sdk/python`
+* public import path `sledtrace` remains clean and importable
+* temporary legacy `raglens` compatibility preserved for migration
+* `SLEDTRACE_COLLECTOR_URL` precedence validated with legacy fallback
+* local wheel validation script and compatibility tests added
+
+### v0.5.0 Scope
+
+* [x] package metadata ready for wheel/sdist build
+* [x] `python -m build` succeeds from `sdk/python`
+* [x] local wheel install succeeds in clean venv
+* [x] `import sledtrace` works
+* [x] `from sledtrace import trace` works
+* [x] `import raglens` compatibility remains available during migration
+* [x] `SLEDTRACE_COLLECTOR_URL` precedence works
+* [x] README and release docs updated for packaging
+
+### v0.5.0 Status Notes
+
+This milestone is intentionally limited to packaging and compatibility readiness. It does not change the warning engine, collector API, storage schema, dashboard data contract, or span type set.
+
+Validated results:
+
+* `python -m build` succeeded and produced wheel + sdist artifacts
+* clean venv install from the built wheel succeeded
+* `sledtrace.__version__` is available
+* `from sledtrace import trace` works
+* legacy `raglens` import still works as a temporary compatibility shim
+* `pytest` passed in `sdk/python`
+* collector Go tests passed
+* dashboard build passed
+
+---
+
+### v0.4.1 status
+
 **Current version:** v0.4.1 - Rebrand  
 **Status:** Completed and smoke-tested
 

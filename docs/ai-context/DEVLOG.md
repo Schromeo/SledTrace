@@ -1,5 +1,41 @@
 # Devlog
 
+## 2026-09-07 (v0.5.0 Python SDK Distribution / Packaging Readiness)
+
+### Completed
+
+- Updated SDK package metadata to SledTrace-first naming and version `0.5.0`.
+- Added public `__version__` export at the `sledtrace` package root.
+- Preserved temporary `raglens` compatibility shim and deprecation warning for migration.
+- Added packaging/compatibility coverage under `sdk/python/tests/`.
+- Added local wheel validation script at `sdk/python/scripts/validate-wheel.py`.
+- Updated SDK and root README docs for local wheel installation and SledTrace-first usage.
+- Documented v0.5.0 milestone in the release notes at `docs/releases/V0_5_0.md`.
+
+### Validation Status
+
+Validated successfully with the required local package workflow:
+
+- `python -m build` succeeded
+- clean venv wheel install succeeded
+- `import sledtrace` succeeded
+- `from sledtrace import trace` succeeded
+- legacy `raglens` import succeeded
+- `pytest` passed in `sdk/python`
+- `go test ./... -count=1` passed in `collector/go`
+- `npm run build` passed in `dashboard/web`
+
+### Notes
+
+- No warning engine changes were made.
+- No collector API contract changes were made.
+- No storage schema changes were made.
+- No dashboard data contract changes were made.
+- No new span types were introduced.
+- No PyPI upload step is part of this release.
+
+---
+
 ## 2026-07-15 (v0.4.1 Rebrand)
 
 ### Completed

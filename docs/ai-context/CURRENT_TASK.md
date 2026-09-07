@@ -1,206 +1,99 @@
 # Current Task
 
+# Current Task
+
 ## Current Focus
 
-SledTrace v0.1 is complete and smoke-tested.
+SledTrace v0.5.0 is the current milestone: Python SDK Distribution / Packaging Readiness.
 
-SledTrace v0.2 Developer Integration / Local SDK Onboarding is complete, documented, and smoke-tested.
-
-SledTrace v0.3.5 Diagnostic Quality hardening is implemented and smoke-tested.
-
-SledTrace v0.4.1 Rebrand release is complete and smoke-tested.
-
-The project now has:
-
-* user onboarding documentation
-* a Python SDK integration guide
-* a custom pipeline integration example
-* a cross-platform repo-local startup helper
-* a README that explains both the built-in demo path and the real SDK integration path
-* SDK packaging hygiene for the local editable install path
-* a root README documentation map to separate user docs from maintainer docs
+This release makes the Python SDK buildable as a local wheel/sdist, installable in a clean virtual environment, and usable through the preferred `sledtrace` import path while keeping temporary `raglens` compatibility for migration.
 
 ## Current Goal
 
-Deliver and validate v0.4.1 Rebrand release.
+Deliver and validate SledTrace v0.5.0.
 
-Current focus:
+Completed focus areas:
 
-- Rename active project branding from RAGLens to SledTrace
-- Keep backward compatibility for legacy launcher and collector env var
-- Publish migration guidance and rebrand release notes
-- keep deterministic warning behavior and current contracts unchanged
+- package the SDK as a clean local installable artifact
+- keep package name, version, and README aligned to SledTrace
+- preserve temporary compatibility for legacy `raglens` imports and env vars
+- validate build/install/import behavior in a fresh venv
+- keep warning engine, collector API, storage schema, dashboard contract, and span types unchanged
 
 ## Current System Status
 
 Completed so far:
 
-- Product direction defined
-- Product spec created
-- Trace/span data model created
-- Python SDK created
-- `trace()` context manager implemented
-- Retrieval span logging implemented
-- LLM span logging implemented
-- SDK `flush()` implemented
-- Go collector created
-- SQLite persistence implemented
-- Collector trace ingestion implemented
-- Collector trace list/detail APIs implemented
-- React Dashboard MVP created
-- Trace list page implemented
-- Trace detail page implemented
-- Retrieved chunk viewer implemented
-- LLM prompt/response viewer implemented
-- Warning Engine implemented in collector
-- Warning rules implemented:
-  - `no_retrieved_chunks`
-  - `low_retrieval_score`
-  - `duplicate_chunks`
-  - `weak_query_chunk_overlap`
-  - `conflicting_chunks` with evidence-backed v2 details
-  - `answer_not_grounded` with evidence-backed v2 details
-  - `numeric_mismatch`
-- v0.3.5 warning-quality hardening implemented:
-  - numeric range extraction supports both hyphen and natural-language `to` ranges
-  - conflicting chunk selection is relevance-aware (query/answer overlap aware)
-  - conflicting chunk topic gating reduces cross-topic numeric noise
-  - deterministic classifier metadata added to conflicting chunk diagnostics (`left_topic`, `right_topic`)
-- Real Local RAG Demo completed and verified
-- Thin reference integration app completed and verified:
-  - `sdk/python/examples/reference_rag_app/run.py`
-  - mixed raw retrieval output normalization through `normalize_chunks()`
-  - deterministic + optional real LLM answer modes
-- `docs/product/USER_ONBOARDING.md` completed
-- `docs/integrations/PYTHON_SDK_GUIDE.md` completed
-- `sdk/python/examples/custom_pipeline_demo.py` added
-- `scripts/start-sledtrace.py` added and polished
-- `README.md` updated with two Quickstart paths
-- `sdk/python/examples/diagnostic_quality_demo.py` covers all current v0.3 core warning cases
-- dashboard warning detail cards show evidence previews, numeric value diffs, and recommended actions
-
-## Current Working Path
-
-```text
-Python SDK
-  ->
-t.flush()
-  ->
-POST /api/traces
-  ->
-Go Collector
-  ->
-SQLite
-  ->
-GET /api/traces
-  ->
-React Dashboard
-```
+- Product direction defined and active project name is SledTrace
+- Python SDK tracing foundation remains intact
+- Local collector + SQLite + dashboard lifecycle remains unchanged
+- Current trace API still uses `trace()`, `retrieval()`, `llm()`, and `flush()`
+- Legacy `raglens` compatibility remains temporarily supported
+- `SLEDTRACE_COLLECTOR_URL` precedence is implemented and validated
+- v0.5 packaging readiness is complete and validated from `sdk/python`
 
 ## Current Milestone
 
-v0.4.1 Rebrand.
+v0.5.0 Python SDK Distribution / Packaging Readiness.
 
-Status: implemented and smoke-tested.
+Status: completed and validated.
 
-## Smoke-Tested Validation
+## Acceptance Criteria
 
-The following commands passed:
+- [x] `python -m build` succeeds from `sdk/python`
+- [x] wheel install succeeds in a clean virtual environment
+- [x] `import sledtrace` works
+- [x] `from sledtrace import trace` works
+- [x] legacy `raglens` import works for compatibility during migration
+- [x] `SLEDTRACE_COLLECTOR_URL` precedence works
+- [x] tests pass
+
+## Guardrails
+
+- no warning engine changes
+- no new span types
+- no adapters
+- no PyPI upload
+- no collector API changes
+- no storage schema changes
+- no dashboard data contract changes
+- keep packaging boring and local-first
+
+## Current Validation Commands
 
 ```bash
+cd sdk/python
+python -m pip install --upgrade pip
+python -m pip install build
+python -m build
+
+python -m venv .venv-package-test
+source .venv-package-test/bin/activate
+pip install dist/*.whl
+python -c "import sledtrace; print(sledtrace.__version__)"
+python -c "from sledtrace import trace; print(trace)"
+python -c "import raglens; print('legacy raglens import ok')"
+deactivate
+
+pytest
+
 cd collector/go
-go test ./...
+go test ./... -count=1
 
 cd dashboard/web
 npm run build
-
-python scripts/start-sledtrace.py
-cd sdk/python
-python -m examples.custom_pipeline_demo
-python -m examples.local_rag_demo.run_demo trace-all
-python -m examples.diagnostic_quality_demo all
-python -m examples.real_llm_rag_demo all
-python -m examples.reference_rag_app.run all
-python -m examples.reference_rag_app.run processing-range
-python -m examples.reference_rag_app.run wrong-processing-range
 ```
 
-Additional backend test coverage added:
+## Observed Validation Results
 
-```bash
-cd collector/go
-go test ./... -count=1
-```
-
-Covered:
-
-- warning engine unit tests for v0.3 rules
-- SQLite Warning Schema v2 round-trip persistence
-- legacy warning table migration for v2 columns
-- API handler coverage for v0.3 warning generation and trace-detail response fields
-
-Verified in dashboard:
-
-- `custom-rag-pipeline`
-- built-in local RAG demo traces
-- warning-focused demo traces and warning cards
-- evidence-backed warning detail sections
-- numeric mismatch value-diff block
-- recommended action label in warning detail cards
-- reference app traces for realistic integration flow:
-  - `reference-rag-app-refund`
-  - `reference-rag-app-conflict`
-  - `reference-rag-app-wrong-window`
-  - `reference-rag-app-processing-range`
-  - `reference-rag-app-wrong-processing-range`
-  - `reference-rag-app-damaged`
-  - `reference-rag-app-digital`
-  - `reference-rag-app-subscription`
-  - `reference-rag-app-weak`
-
-Milestone status:
-
-- v0.1 completed and smoke-tested
-- v0.2 completed and smoke-tested
-- v0.3 diagnostic intelligence core completed and smoke-tested
-- v0.3.5 diagnostic quality hardening completed and smoke-tested
-
-## Files Recently Updated
-
-- `collector/go/internal/warnings/engine.go` - v0.3 evidence-backed diagnostics and rule logic
-- `collector/go/internal/warnings/engine.go` - v0.3.5 deterministic warning-quality hardening (range handling, relevance-aware conflict selection, topic gating)
-- `collector/go/internal/warnings/engine_test.go` - v0.3.5 warning-quality regression tests
-- `dashboard/web/src/pages/TraceDetailPage.tsx` - evidence-backed warning rendering and recommended action label
-- `dashboard/web/src/style.css` - warning detail and responsive layout polish
-- `sdk/python/examples/diagnostic_quality_demo.py` - deterministic v0.3 diagnostic demo cases
-- `sdk/python/examples/real_llm_rag_demo.py` - optional real LLM validation flow
-- `sdk/python/examples/reference_rag_app/run.py` - thin reference integration app with mixed retrieval output normalization
-- `sdk/python/examples/reference_rag_app/docs/` - local policy corpus for deterministic integration validation
-- `docs/product/V0_3_DIAGNOSTIC_INTELLIGENCE.md` - v0.3 scope and diagnostic intelligence design spec
-- `README.md` - two-path v0.2 quickstart for built-in demo and real SDK integration
-- `docs/product/USER_ONBOARDING.md` - developer onboarding flow for existing RAG apps
-- `docs/integrations/PYTHON_SDK_GUIDE.md` - current Python SDK API guide
-- `sdk/python/examples/custom_pipeline_demo.py` - minimal local integration example
-- `scripts/start-sledtrace.py` - cross-platform repo-local startup helper
-- `sdk/python/pyproject.toml` - SDK package version and README path aligned for v0.2
-- `sdk/python/README.md` - concise SDK package README for local install and API usage
-- `docs/ai-context/ROADMAP.md` - v0.2 status updated
-- `docs/ai-context/DEVLOG.md` - v0.2 completion notes
-- `docs/ai-context/AI_HANDOFF.md` - refreshed handoff and next milestone options
-
-## Current Guardrails
-
-- Do not start LangChain adapters.
-- Do not start LlamaIndex adapters.
-- Do not start PyPI work.
-- Do not add hosted/cloud/auth product features.
-- Do not add agent spans.
-- Do not add tool spans.
-- Do not add memory spans.
-- Do not make LLM-as-judge the default path.
-- Continue local-first.
-- Continue deterministic-first.
-- Keep SDK trace API, collector API contract, storage schema, and dashboard data contract stable.
+- `python -m build` succeeded and produced wheel + sdist
+- clean venv install from the built wheel succeeded
+- `import sledtrace` succeeded in a fresh environment
+- `from sledtrace import trace` succeeded
+- legacy `raglens` import succeeded
+- `pytest` passed: 11 tests
+- Go backend tests passed
+- dashboard build passed
 
 ## Current Implementation Limits
 
@@ -216,31 +109,29 @@ Current warning rules:
 - `duplicate_chunks`
 - `weak_query_chunk_overlap`
 - `numeric_mismatch`
-- `conflicting_chunks` with evidence-backed v2 details
-- `answer_not_grounded` with evidence-backed v2 details
+- `conflicting_chunks`
+- `answer_not_grounded`
 
-Still not implemented:
+## Files Recently Updated
 
-- tool spans
-- memory spans
-- verification spans
-- human feedback spans
-- agent tracing
-- running traces for multi-step agent harness executions
-- partial span ingestion
-- retry spans
-- diagnostics for agent loops, oscillation, retry storms, and no-progress execution
-- cloud sync
-- hosted collector
-- auth
-- full LLM-as-judge grounding evaluation
+- `sdk/python/pyproject.toml` - SledTrace v0.5.0 metadata and packaging config
+- `sdk/python/sledtrace/__init__.py` - version export and public import surface
+- `sdk/python/raglens/__init__.py` - temporary compatibility shim and deprecation warning
+- `sdk/python/tests/test_packaging_readiness.py` - v0.5 packaging/compatibility tests
+- `sdk/python/README.md` - distributed-package instructions and usage
+- `README.md` - v0.5 SDK packaging notes
+- `docs/ai-context/ROADMAP.md` - v0.5 milestone status
+- `docs/ai-context/DEVLOG.md` - v0.5 validation log
+- `docs/releases/V0_5_0.md` - release notes
+- `sdk/python/scripts/validate-wheel.py` - wheel validation script
 
-## Next Task
+## Current Status Summary
 
-Start v0.5 planning or run a narrow v0.4.1 polish slice if needed.
+The packaging work is scoped to the Python SDK and stays within the guardrails for this milestone. No warning engine, collector, storage, or dashboard contracts were changed.
 
-1. v0.5 default recommendation: Python SDK distribution and PyPI planning.
-2. v0.4.1 optional: release polish only if new issues are found during external onboarding.
+## Next Recommended Milestone
+
+v0.6 Local CLI / `sledtrace serve` planning is the most likely next milestone, unless the project explicitly decides to pursue a PyPI publishing follow-up.
 
 
 
