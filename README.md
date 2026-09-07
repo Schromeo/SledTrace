@@ -129,12 +129,6 @@ python -m build
 pip install dist/*.whl
 ```
 
-Current recommended local stack:
-
-```bash
-docker compose up --build
-```
-
 New code should use the SledTrace import path:
 
 ```python
@@ -144,6 +138,27 @@ from sledtrace import trace
 Legacy `raglens` compatibility remains temporary for migration support, but the project is now SledTrace-first.
 
 PyPI publishing is not part of v0.5.0 unless a later release decides to publish manually.
+
+### CLI milestone (v0.6.0)
+
+The local developer startup flow now has a small installable CLI entry point.
+
+```bash
+cd sdk/python
+pip install -e .
+
+sledtrace --help
+sledtrace version
+sledtrace serve
+```
+
+`serve` delegates to the existing repo-local startup script so the collector and dashboard launch in the same way as the current local workflow.
+
+Current recommended local stack:
+
+```bash
+docker compose up --build
+```
 
 ### Path B: Repo-local startup helper (fallback)
 

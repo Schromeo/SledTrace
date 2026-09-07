@@ -6,8 +6,42 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 ## Current Snapshot
 
-**Current version:** v0.5.0 - Python SDK Distribution / Packaging Readiness  
-**Status:** Completed and validated
+**Current version:** v0.6.0 - Local CLI / Startup UX  
+**Status:** Initial CLI implementation is complete and verified
+
+### v0.6.0 Goal
+
+Make local startup and validation easier for developers by exposing a real installable CLI entry point:
+
+* `sledtrace serve` starts the local collector and dashboard
+* `sledtrace version` prints the installed SDK version
+* repo-local startup flows remain compatible with existing scripts
+* local install and wheel validation remain green
+* packaging compatibility remains preserved
+
+### v0.6.0 Scope
+
+* [x] `sledtrace` console script is installed via the Python package
+* [x] `sledtrace --help` shows the CLI surface
+* [x] `sledtrace version` prints the installed package version
+* [x] `sledtrace serve` delegates to the existing repo-local startup script
+* [x] wheel build/install smoke checks remain passing
+* [ ] broader local startup UX polish and help text expansion
+
+### v0.6.0 Status Notes
+
+This milestone is intentionally small and scoped to developer ergonomics. It does not change the collector protocol, warning engine behavior, or span schema.
+
+Validated results:
+
+* `python -m pip install -e .` succeeded
+* `sledtrace --help` displayed the CLI usage
+* `sledtrace version` printed `0.5.0`
+* `pytest -q` passed in `sdk/python`
+* `python -m build` succeeded
+* `python scripts/validate-wheel.py` passed
+
+---
 
 ### v0.5.0 Goal
 
@@ -45,6 +79,8 @@ Validated results:
 * `pytest` passed in `sdk/python`
 * collector Go tests passed
 * dashboard build passed
+
+v0.5.0 is complete and remains the current packaging baseline.
 
 ---
 

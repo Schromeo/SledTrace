@@ -4,49 +4,50 @@
 
 ## Current Focus
 
-SledTrace v0.5.0 is the current milestone: Python SDK Distribution / Packaging Readiness.
+SledTrace v0.6.0 is the current milestone: Local CLI / Startup UX.
 
-This release makes the Python SDK buildable as a local wheel/sdist, installable in a clean virtual environment, and usable through the preferred `sledtrace` import path while keeping temporary `raglens` compatibility for migration.
+This release makes local developer startup easier by exposing a real package-installed CLI entry point, while keeping the existing collector/dashboard startup flow and compatibility guarantees intact.
 
 ## Current Goal
 
-Deliver and validate SledTrace v0.5.0.
+Deliver and validate the v0.6 local CLI path.
 
 Completed focus areas:
 
-- package the SDK as a clean local installable artifact
-- keep package name, version, and README aligned to SledTrace
-- preserve temporary compatibility for legacy `raglens` imports and env vars
-- validate build/install/import behavior in a fresh venv
-- keep warning engine, collector API, storage schema, dashboard contract, and span types unchanged
+- add an installable `sledtrace` console script
+- keep the current repo-local startup flow as the production backend for `serve`
+- keep the package install path and compatibility shim working
+- validate CLI help/version behavior and wheel install readiness
+- leave warning engine, collector protocol, storage schema, and trace contracts unchanged
 
 ## Current System Status
 
 Completed so far:
 
-- Product direction defined and active project name is SledTrace
+- Product direction remains SledTrace-first
+- v0.5 packaging readiness is complete and validated
 - Python SDK tracing foundation remains intact
 - Local collector + SQLite + dashboard lifecycle remains unchanged
 - Current trace API still uses `trace()`, `retrieval()`, `llm()`, and `flush()`
 - Legacy `raglens` compatibility remains temporarily supported
-- `SLEDTRACE_COLLECTOR_URL` precedence is implemented and validated
-- v0.5 packaging readiness is complete and validated from `sdk/python`
+- `SLEDTRACE_COLLECTOR_URL` precedence remains implemented and validated
+- `sledtrace` CLI entry point is installed and verified in editable mode
 
 ## Current Milestone
 
-v0.5.0 Python SDK Distribution / Packaging Readiness.
+v0.6.0 Local CLI / Startup UX.
 
-Status: completed and validated.
+Status: initial CLI implementation is complete and verified.
 
 ## Acceptance Criteria
 
-- [x] `python -m build` succeeds from `sdk/python`
-- [x] wheel install succeeds in a clean virtual environment
-- [x] `import sledtrace` works
-- [x] `from sledtrace import trace` works
-- [x] legacy `raglens` import works for compatibility during migration
-- [x] `SLEDTRACE_COLLECTOR_URL` precedence works
-- [x] tests pass
+- [x] `python -m pip install -e .` succeeds
+- [x] `sledtrace --help` shows the CLI surface
+- [x] `sledtrace version` prints the installed version
+- [x] `sledtrace serve` delegates to the repo-local startup script
+- [x] `pytest -q` passes in `sdk/python`
+- [x] `python -m build` succeeds
+- [x] `python scripts/validate-wheel.py` passes
 
 ## Guardrails
 

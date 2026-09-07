@@ -3,61 +3,176 @@
 
 ## Project
 
-SledTrace is a local-first visual debugger for RAG pipelines.
+SledTrace is an open-source, local-first observability and debugging tool for RAG pipelines.
 
-## Product Goal
+Former project name: RAGLens.
 
-Help developers inspect retrieved chunks, trace LLM calls, and understand why a RAG application answered incorrectly.
+Current stable project direction is SledTrace-first. Legacy RAGLens compatibility may remain temporarily where explicitly documented.
 
-## Current MVP
+## Before Doing Meaningful Work
+
+Always read these files first:
+
+1. `docs/ai-context/AI_HANDOFF.md`
+2. `docs/ai-context/CURRENT_TASK.md`
+3. `docs/ai-context/ROADMAP.md`
+
+Read `docs/ai-context/DECISIONS.md` before making architecture decisions.
+
+Use the repository and these documents as the source of truth.
+Do not assume old milestone information from this file overrides the current AI context documents.
+
+## Current Architecture
+
+```text
+Python SDK
+  -> trace()
+  -> retrieval + llm spans
+  -> flush()
+  -> Go collector
+  -> deterministic Warning Engine
+  -> SQLite
+  -> React/TypeScript dashboard
+```
+
+Current implemented span types:
+
+- retrieval
+- llm
+
+Current major components:
 
 - Python SDK
-- Local collector
-- Local trace storage
-- React dashboard
-- Retrieval chunk visualization
-- Basic RAG warning rules
-- Refund policy demo
-
-## Engineering Rules
-
-- Keep the MVP local-first and simple.
-- Prefer small, focused changes.
-- Do not add auth, billing, multi-tenancy, or cloud features in v0.1.
-- Do not introduce Kafka, Kubernetes, ClickHouse, or complex infrastructure in v0.1.
-- Do not log private chain-of-thought.
-- Do not store secrets in traces.
-- Public APIs must be easy to understand and documented.
-- Update docs/ai-context/DEVLOG.md after completing meaningful work.
-- Update docs/ai-context/DECISIONS.md when making architecture decisions.
-
-## Tech Stack
-
-Planned stack:
-
-- Python SDK for developer integration
-- Go collector for trace ingestion
-- SQLite for local-first storage in MVP
+- Go collector
+- SQLite local persistence
+- deterministic diagnostic engine
 - React + TypeScript dashboard
-- Docker Compose later for easy deployment
+- Docker Compose local stack
+- reference RAG application
+- buildable Python wheel/sdist
 
-## Design Philosophy
+## Engineering Philosophy
 
-SledTrace is not a full hosted LLMOps platform.
+SledTrace is local-first developer infrastructure.
 
-It should feel like a lightweight developer tool:
+Prefer:
 
-- Fast to install
-- Easy to run locally
-- Clear visual debugging
-- Useful without a cloud account
-- Compatible with existing RAG stacks
+- simple implementations
+- explicit behavior
+- deterministic diagnostics where practical
+- small focused changes
+- compatibility with existing RAG applications
+- reproducible tests
+- easy local installation
+- clear developer UX
 
-## Do Not
+Avoid speculative abstractions.
 
-- Do not build a generic chatbot.
-- Do not build a full Langfuse replacement.
-- Do not build a generic AI gateway in v0.1.
-- Do not over-engineer the MVP.
+Do not turn SledTrace into a generic chatbot.
+
+Do not turn SledTrace into a large hosted LLMOps platform unless the roadmap explicitly changes.
+
+## Scope Guardrails
+
+Do not add any of the following unless the current milestone explicitly requires it:
+
+- hosted cloud infrastructure
+- authentication or billing
+- multi-tenancy
+- Kafka
+- Kubernetes
+- ClickHouse
+- new span types
+- LangChain/LlamaIndex adapters
+- LLM-as-judge
+- unrelated warning rules
+- breaking SDK/API/schema changes
+
+Do not log or attempt to collect private chain-of-thought.
+
+Do not store secrets in traces.
+
+## Compatibility
+
+Preferred public project/package naming:
+
+- SledTrace
+- `sledtrace`
+- `SLEDTRACE_COLLECTOR_URL`
+
+Legacy RAGLens compatibility may exist temporarily:
+
+- `raglens`
+- `RAGLENS_COLLECTOR_URL`
+
+Do not remove legacy compatibility without checking the current milestone and compatibility tests.
+
+## Validation
+
+For Python SDK changes:
+
+```
+cd sdk/python
+pytest -q
+python -m build
+python scripts/validate-wheel.py
+```
+
+For collector changes:
+
+```
+cd collector/go
+go test ./... -count=1
+```
+
+For dashboard changes:
+
+```
+cd dashboard/web
+npm run build
+```
+
+For full local smoke validation when relevant:
+
+```
+docker compose up --build
+curl http://localhost:4319/health
+
+cd sdk/python
+python -m examples.reference_rag_app.run all
+```
+
+Do not claim a milestone is complete unless its required validation has actually passed.
+
+## Documentation Discipline
+
+After meaningful completed work:
+
+- update `docs/ai-context/DEVLOG.md`
+- update `docs/ai-context/AI_HANDOFF.md`
+- update `docs/ai-context/CURRENT_TASK.md` when milestone state changes
+- update `docs/ai-context/ROADMAP.md` when roadmap state changes
+- update `docs/ai-context/DECISIONS.md` when making a meaningful architecture decision
+
+Keep documentation aligned with actual tested repository behavior.
+
+## Working Style
+
+Before coding:
+
+1. inspect the relevant implementation
+2. understand the current contract
+3. identify the smallest safe change
+4. state important assumptions
+
+After coding:
+
+1. run relevant tests
+2. inspect failures rather than bypassing them
+3. summarize files changed
+4. report exact validation results
+5. call out remaining limitations honestly
+
+Do not mark work complete merely because code was written.
 
 

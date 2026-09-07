@@ -1,5 +1,33 @@
 # Devlog
 
+## 2026-09-07 (v0.6.0 Local CLI / Startup UX)
+
+### Completed
+
+- Added a package-installed `sledtrace` CLI entry point via `project.scripts` in the Python package.
+- Added the first CLI module at `sdk/python/sledtrace/cli.py` with `serve` and `version` subcommands.
+- Kept `sledtrace serve` minimal and compatibility-safe by delegating to the existing repo-local startup script.
+- Added a regression test covering `sledtrace.cli` import and CLI presence.
+- Verified `sledtrace --help`, `sledtrace version`, `pytest -q`, `python -m build`, and wheel validation locally.
+
+### Validation Status
+
+Validated successfully:
+
+- `python -m pip install -e .` succeeded
+- `sledtrace --help` displayed the CLI commands
+- `sledtrace version` printed `0.5.0`
+- `pytest -q` passed in `sdk/python`
+- `python -m build` succeeded
+- `python scripts/validate-wheel.py` passed
+
+### Notes
+
+- The CLI milestone is intentionally small and does not alter collector protocol, warning logic, or trace schema.
+- The package-level compatibility and SledTrace-first import path remain in place.
+
+---
+
 ## 2026-09-07 (v0.5.0 Python SDK Distribution / Packaging Readiness)
 
 ### Completed

@@ -58,3 +58,9 @@ def test_trace_object_can_be_created_without_collector() -> None:
     tr = new_trace("demo")
     assert tr.name == "demo"
     assert tr.collector_url == "http://localhost:4319"
+
+
+def test_cli_module_and_entry_point_exist() -> None:
+    import sledtrace.cli
+
+    assert callable(sledtrace.cli.main)

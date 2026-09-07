@@ -10,9 +10,42 @@ SledTrace is a local-first visual debugger for RAG pipelines.
 
 ## Current Release Target
 
-v0.5.0 — Python SDK Distribution / Packaging Readiness
+v0.6.0 — Local CLI / Startup UX
 
 ## Current Project Status
+
+### v0.6.0 Status
+
+**Initial CLI implementation is complete and verified.**
+
+Completed work includes:
+
+- installable `sledtrace` console script via package metadata
+- `sledtrace --help` and `sledtrace version` working in editable install mode
+- `sledtrace serve` delegating to the repo-local startup script
+- continued compatibility with the existing local collector + dashboard startup flow
+- no contract changes to trace payloads, warnings, storage schema, or dashboard API
+
+Validation commands that passed:
+
+```bash
+cd sdk/python
+python -m pip install -e .
+sledtrace --help
+sledtrace version
+pytest -q
+python -m build
+python scripts/validate-wheel.py
+```
+
+Observed results:
+
+- editable install succeeded
+- `sledtrace --help` displayed the CLI usage
+- `sledtrace version` printed `0.5.0`
+- Python tests passed: 12 tests
+- wheel build succeeded
+- wheel install validation succeeded
 
 ### v0.5.0 Status
 
