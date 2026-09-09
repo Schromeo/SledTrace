@@ -26,6 +26,20 @@ This produces wheel and source-distribution artifacts in `dist/`.
 pip install dist/*.whl
 ```
 
+## CLI
+
+Editable and wheel installations provide:
+
+```bash
+sledtrace --help
+sledtrace serve --help
+sledtrace version
+```
+
+`sledtrace version` reports `0.6.0`.
+
+In v0.6.0, `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
+
 ## Basic usage
 
 ```python
@@ -52,7 +66,7 @@ with trace("example") as t:
         provider="local-demo",
     )
 
-    t.flush()
+t.flush()
 ```
 
 ## Collector URL configuration

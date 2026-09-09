@@ -16,13 +16,17 @@ v0.6.0 — Local CLI / Startup UX
 
 ### v0.6.0 Status
 
-**Initial CLI implementation is complete and verified.**
+**v0.6.0 implementation and required local validation are complete. Tag and release publication remain pending user approval.**
 
 Completed work includes:
 
 - installable `sledtrace` console script via package metadata
-- `sledtrace --help` and `sledtrace version` working in editable install mode
-- `sledtrace serve` delegating to the repo-local startup script
+- `sledtrace --help`, `sledtrace serve --help`, and `sledtrace version` working in editable and clean wheel installs
+- package and Dashboard versions aligned to `0.6.0`
+- source-checkout detection by walking upward from the current working directory
+- `sledtrace serve` delegating to the repo-local startup script inside a valid checkout
+- clear non-zero failure and actionable guidance when `serve` runs outside a checkout
+- explicit v0.6 boundary: no standalone serving runtime is bundled in the wheel
 - continued compatibility with the existing local collector + dashboard startup flow
 - no contract changes to trace payloads, warnings, storage schema, or dashboard API
 
@@ -32,20 +36,31 @@ Validation commands that passed:
 cd sdk/python
 python -m pip install -e .
 sledtrace --help
+sledtrace serve --help
 sledtrace version
 pytest -q
 python -m build
 python scripts/validate-wheel.py
+
+cd ../../collector/go
+go test ./... -count=1
+
+cd ../../dashboard/web
+npm.cmd run build
 ```
 
 Observed results:
 
 - editable install succeeded
-- `sledtrace --help` displayed the CLI usage
-- `sledtrace version` printed `0.5.0`
-- Python tests passed: 12 tests
-- wheel build succeeded
-- wheel install validation succeeded
+- `sledtrace --help` and `sledtrace serve --help` displayed the documented CLI surface and source-checkout limitation
+- `sledtrace version` printed `0.6.0`
+- Python tests passed: 17 tests; warnings were the expected legacy-import deprecation warning and an environment-specific `.pytest_cache` permission warning
+- `sledtrace-0.6.0` wheel and sdist builds succeeded
+- clean wheel import and installed CLI validation succeeded
+- wheel-installed `serve` outside a checkout returned the expected guidance and a non-zero exit
+- repo-local detection and delegation tests passed without leaving child processes
+- Go Collector tests passed
+- Dashboard production build passed
 
 ### v0.5.0 Status
 
@@ -96,10 +111,10 @@ Observed results:
 - Go backend tests passed
 - dashboard build passed
 
-Next recommended milestone:
+Historical next-step outcome:
 
-- v0.6 Local CLI / `sledtrace serve` planning, or
-- v0.5.1 PyPI publishing follow-up if the team chooses to publish later
+- v0.6 Local CLI / `sledtrace serve` was selected and is now complete
+- PyPI publishing was not selected and remains out of scope
 
 ### v0.4.1 Status
 
@@ -432,9 +447,8 @@ Current scope limits:
 
 - only retrieval and llm spans are implemented
 - onboarding path is local-first and repo-based
-- editable install from local checkout is the supported SDK path today
-- no packaged CLI yet
-- no PyPI publishing yet
+- source and local wheel installation are supported; PyPI publication is not
+- the packaged CLI provides help and version behavior, while `serve` requires a source checkout
 - no LangChain adapter yet
 - no LlamaIndex adapter yet
 - no cloud sync, auth, hosted collector, or hosted features
@@ -464,79 +478,29 @@ SledTrace is not:
 - a LangChain/LlamaIndex integration layer yet
 - an AgentOps platform yet
 
-## Recommended Next Milestone
+## Release State and Next Step
 
-Recommended next step: v0.4 -Packaging and External Developer Experience
+v0.6.0 is ready to be marked complete in the repository. The Python package, installed CLI behavior, source-checkout delegation, Collector tests, Dashboard build, and documentation have been validated.
 
-The v0.3.5 hardening scope is complete.
+Release publication is intentionally not performed by this milestone-completion work:
 
-Recommended version naming:
+- do not create or push Git tags without user approval
+- do not create GitHub releases without user approval
+- do not publish to PyPI
 
-- v0.3: Diagnostic Intelligence core
-- v0.3.5: deterministic warning-quality hardening + reference integration validation
-- v0.4: packaging / distribution / external developer experience
+Historical release finding:
 
-Recommended v0.4 goal:
-
-Make local-first SledTrace easier to adopt outside this repository while preserving deterministic diagnostics and current trace contracts.
-
-Real LLM demo status:
-
-- `sdk/python/examples/real_llm_rag_demo.py` already exists and has been smoke-tested.
-- It should remain a validation asset, not a next-milestone deliverable.
-
-Why this is next:
-
-- v0.3.5 delivered deterministic warning-quality hardening and realistic integration validation.
-- the next priority is reducing first-run friction for external developers.
-- packaging and startup ergonomics now provide higher leverage than adding another demo.
-
-## Suggested v0.4 Scope
-
-In scope:
-
-- Docker Compose local stack for collector + dashboard
-- `.env.example` for local configuration defaults
-- startup health checks and clearer startup failure guidance
-- clean local database reset/sample-data guidance
-- README quickstart consolidation and first-run clarity
-- release-clean docs pass for external developer onboarding
-- optional local CLI wrapper investigation (without forcing packaging decisions)
-
-Existing validation assets:
-
-- `sdk/python/examples/real_llm_rag_demo.py`
-- `sdk/python/examples/reference_rag_app/run.py`
-- `sdk/python/examples/diagnostic_quality_demo.py`
-
-Out of scope for v0.4:
-
-- LangChain adapter
-- LlamaIndex adapter
-- PyPI
-- hosted collector
-- auth
-- cloud sync
-- paid SaaS features
-- agent spans
-- tool spans
-- memory spans
-- LLM-as-judge default evaluator
-
-Unless explicitly selected:
-
-- framework adapters (LangChain/LlamaIndex)
-- PyPI publishing
+- `b3cad60a10636dbf7a5d371f51bac0c04a4af936` is the clean v0.5.0 completion commit
+- it is the recommended target for a future annotated `v0.5.0` tag
+- the completed v0.6.0 release commit should be tagged separately only after review and approval
 
 ## Important Guardrails
 
-- Continue local-first.
-- Continue deterministic-first for rule logic.
-- Do not add framework adapters yet.
-- Do not start Docker, CLI, or PyPI until a later packaging milestone.
-- Do not add agent/tool/memory spans in the current milestone.
-- Do not make LLM-as-judge the default diagnostic path.
-- The real LLM demo should test SledTrace as an observer of a realistic RAG flow, not turn SledTrace into a RAG framework.
+- Continue local-first and deterministic-first behavior.
+- Preserve the current collector API, SQLite schema, dashboard data contract, and `retrieval`/`llm` span scope.
+- Preserve temporary RAGLens compatibility.
+- Do not add framework adapters, cloud/auth/hosted work, new warning rules, new span types, or LLM-as-judge as part of v0.6.0.
+- Do not bundle the Collector, Dashboard, Docker images, or platform-specific runtime assets into the Python wheel.
 
 ## Future Agent Harness Observability Direction
 

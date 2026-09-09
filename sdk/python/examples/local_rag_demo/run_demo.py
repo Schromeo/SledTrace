@@ -2,7 +2,7 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from sledtrace import trace
 
@@ -27,7 +27,7 @@ class DemoCase:
     min_score: float = 0.0
     hallucinate: bool = False
     purpose: str = ""
-    expected_warning: str | None = None
+    expected_warning: Optional[str] = None
 
 
 CASES: dict[str, DemoCase] = {
@@ -313,7 +313,7 @@ def run_traced_case(case: DemoCase, verbose: bool = True) -> Any:
         query=case.query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.4.1",
+            "sdk_version": "0.6.0",
             "app": "real-local-rag-demo",
             "case": case.name,
             "environment": "local",

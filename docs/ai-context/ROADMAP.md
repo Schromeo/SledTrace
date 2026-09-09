@@ -7,14 +7,16 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 ## Current Snapshot
 
 **Current version:** v0.6.0 - Local CLI / Startup UX  
-**Status:** Initial CLI implementation is complete and verified
+**Status:** Complete and validated locally; tag/release publication pending user approval
 
 ### v0.6.0 Goal
 
 Make local startup and validation easier for developers by exposing a real installable CLI entry point:
 
-* `sledtrace serve` starts the local collector and dashboard
+* `sledtrace serve` starts the local collector and dashboard from inside a source checkout
 * `sledtrace version` prints the installed SDK version
+* wheel-installed CLI help and version behavior work without bundling runtime assets
+* wheel-installed `serve` outside a checkout fails with actionable guidance
 * repo-local startup flows remain compatible with existing scripts
 * local install and wheel validation remain green
 * packaging compatibility remains preserved
@@ -24,9 +26,10 @@ Make local startup and validation easier for developers by exposing a real insta
 * [x] `sledtrace` console script is installed via the Python package
 * [x] `sledtrace --help` shows the CLI surface
 * [x] `sledtrace version` prints the installed package version
-* [x] `sledtrace serve` delegates to the existing repo-local startup script
+* [x] `sledtrace serve` detects a source checkout and delegates to the existing repo-local startup script
 * [x] wheel build/install smoke checks remain passing
-* [ ] broader local startup UX polish and help text expansion
+* [x] wheel-installed `serve` fails gracefully outside a checkout
+* [x] local startup UX and help text explain the v0.6 source-checkout boundary
 
 ### v0.6.0 Status Notes
 
@@ -36,10 +39,14 @@ Validated results:
 
 * `python -m pip install -e .` succeeded
 * `sledtrace --help` displayed the CLI usage
-* `sledtrace version` printed `0.5.0`
-* `pytest -q` passed in `sdk/python`
+* `sledtrace version` printed `0.6.0`
+* `pytest -q` passed with 17 tests in `sdk/python`; output included the expected legacy-import deprecation warning and an environment-specific `.pytest_cache` permission warning
 * `python -m build` succeeded
-* `python scripts/validate-wheel.py` passed
+* `python scripts/validate-wheel.py` passed all import and installed-CLI checks
+* `go test ./... -count=1` passed in `collector/go`
+* `npm.cmd run build` passed in `dashboard/web`
+
+The Python wheel intentionally does not bundle the Go collector, dashboard, Docker images, or platform-specific runtime assets. Standalone wheel-installed serving is outside v0.6.0 scope.
 
 ---
 
@@ -86,7 +93,7 @@ v0.5.0 is complete and remains the current packaging baseline.
 
 ### v0.4.1 status
 
-**Current version:** v0.4.1 - Rebrand  
+**Historical release:** v0.4.1 - Rebrand
 **Status:** Completed and smoke-tested
 
 SledTrace has completed the local inspection loop for both the built-in demo and user-owned Python RAG pipelines, and is now upgrading the warning layer into evidence-backed diagnostics:
@@ -480,7 +487,7 @@ Potential future direction after current milestones:
 Important scope note:
 
 * none of the above is implemented in current SledTrace
-* this direction is not part of current v0.4 scope
+* this direction is not part of v0.6.0 or any completed milestone
 
 
 

@@ -1,5 +1,34 @@
 # Architecture Decisions
 
+## 2026-09-07 — v0.6 CLI remains source-checkout based for serving
+
+### Decision
+
+Ship the `sledtrace` console entry point in the Python package, while keeping `sledtrace serve` explicitly tied to a SledTrace source checkout for v0.6.0.
+
+The CLI locates a checkout by walking upward from the current working directory and requiring these markers:
+
+- `AGENTS.md`
+- `docker-compose.yml`
+- `scripts/start-sledtrace.py`
+
+Inside a checkout, `serve` delegates to the existing startup script. Outside a checkout, it exits non-zero with actionable guidance.
+
+### Reason
+
+- The existing startup script already owns the local Collector and Dashboard lifecycle.
+- Bundling Go, Node, Docker, or platform-specific runtime assets into the Python wheel would materially expand packaging complexity.
+- Wheel users still benefit from a valid CLI entry point, help, version reporting, and an explicit support boundary.
+
+### Outcome
+
+- Python package and CLI version are `0.6.0`.
+- `sledtrace --help`, `sledtrace serve --help`, and `sledtrace version` work after wheel installation.
+- Standalone wheel-installed serving is not supported in v0.6.0.
+- No collector protocol, storage schema, dashboard data contract, warning rule, or span-type changes were introduced.
+
+---
+
 ## 2026-07-06 - v0.3 diagnostic intelligence remains local-first and deterministic-first
 
 ### Decision
@@ -92,6 +121,8 @@ RAGLens v0.1 will use SQLite for local-first storage.
 This keeps setup simple and avoids requiring developers to run external infrastructure.
 
 ### v0.1 span types
+
+> Superseded historical proposal: although the initial design listed `prompt` and `custom`, the implemented and currently supported span types were narrowed to `retrieval` and `llm`. See the 2026-07-06 decision above and current repository contracts.
 
 The initial supported span types are:
 

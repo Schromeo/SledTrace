@@ -1,6 +1,7 @@
 import importlib
 import os
 import unittest
+from typing import Optional
 
 from raglens import trace as legacy_trace
 from raglens.trace import resolve_collector_url
@@ -18,7 +19,7 @@ class RebrandCompatibilityTests(unittest.TestCase):
         self._restore("SLEDTRACE_COLLECTOR_URL", self.previous_new)
         self._restore("RAGLENS_COLLECTOR_URL", self.previous_legacy)
 
-    def _restore(self, key: str, value: str | None) -> None:
+    def _restore(self, key: str, value: Optional[str]) -> None:
         if value is None:
             os.environ.pop(key, None)
             return

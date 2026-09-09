@@ -1,8 +1,6 @@
 # SledTrace
 
-SledTrace is an open-source, local-first platform for tracing, evaluating, and debugging RAG and AI workflows.
-
-Local-first observability and debugging for RAG pipelines.
+SledTrace is an open-source, local-first observability and debugging tool for RAG pipelines.
 
 It helps developers inspect why a RAG application produced a bad answer by showing the full pipeline: retrieved chunks, retrieval scores, prompts, responses, and diagnostic warnings.
 
@@ -153,6 +151,8 @@ sledtrace serve
 ```
 
 `serve` delegates to the existing repo-local startup script so the collector and dashboard launch in the same way as the current local workflow.
+
+`sledtrace serve` is a source-checkout command in v0.6.0. Run it from the repository root or any directory inside the checkout. A normal wheel installation still supports `sledtrace --help` and `sledtrace version`, but it does not bundle the collector, dashboard, Docker assets, or a standalone serving runtime. Outside a checkout, `serve` exits with guidance instead of guessing a repository path.
 
 Current recommended local stack:
 
@@ -389,6 +389,8 @@ bash ./scripts/mac/smoke.sh
 * `docs/demo/WARNING_RULES.md` - Current warning rules and limitations.
 * `docs/releases/V0_4_0.md` - v0.4.0 release notes (originally released under the RAGLens name).
 * `docs/releases/V0_4_1.md` - SledTrace v0.4.1 rebrand release notes.
+* `docs/releases/V0_5_0.md` - Python SDK distribution and packaging-readiness release notes.
+* `docs/releases/V0_6_0.md` - Local CLI and startup UX release notes.
 * `docs/REBRANDING.md` - migration notes for the RAGLens to SledTrace rename.
 
 ### For contributors / maintainers
@@ -408,12 +410,15 @@ Milestone snapshot:
 * v0.2 developer integration / local SDK onboarding: complete
 * v0.3 diagnostic intelligence core: complete
 * v0.3.5 deterministic diagnostic-quality hardening: complete
+* v0.4.0 Docker/local first-run release: complete
 * v0.4.1 rebrand release: complete
+* v0.5.0 Python SDK distribution / packaging readiness: complete
+* v0.6.0 local CLI / startup UX: complete
 
 Current version:
 
 ```text
-v0.4.1 - Rebrand
+v0.6.0 - Local CLI / Startup UX
 ```
 
 Completed:
@@ -445,6 +450,9 @@ Completed:
 * Docker Compose local stack for collector + dashboard
 * root `.env.example` and Docker reset guidance
 * v0.4 release notes and first-run docs cleanup
+* locally buildable Python wheel and sdist
+* installable `sledtrace` console script with help and version commands
+* source-checkout-aware `sledtrace serve` delegation
 
 The default demo requires no external LLM API and no API key.
 
@@ -454,9 +462,8 @@ Current scope limits:
 
 * only `retrieval` and `llm` spans are implemented
 * onboarding path is local-first and repo-based
-* editable install from local checkout is the supported SDK path today
-* no packaged CLI yet
-* no PyPI publishing yet
+* the SDK is distributed from source or local wheel artifacts; it is not published to PyPI
+* `sledtrace serve` requires a SledTrace source checkout and is not a standalone wheel-installed runtime
 * no LangChain adapter yet
 * no LlamaIndex adapter yet
 * no cloud sync, auth, hosted collector, or hosted features

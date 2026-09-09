@@ -1,6 +1,6 @@
 # Devlog
 
-## 2026-09-07 (v0.6.0 Local CLI / Startup UX)
+## 2026-09-07 (v0.6.0 Local CLI / Startup UX Completed)
 
 ### Completed
 
@@ -8,7 +8,15 @@
 - Added the first CLI module at `sdk/python/sledtrace/cli.py` with `serve` and `version` subcommands.
 - Kept `sledtrace serve` minimal and compatibility-safe by delegating to the existing repo-local startup script.
 - Added a regression test covering `sledtrace.cli` import and CLI presence.
-- Verified `sledtrace --help`, `sledtrace version`, `pytest -q`, `python -m build`, and wheel validation locally.
+- Replaced module-location-based repository inference with explicit upward discovery from the current working directory.
+- Required `AGENTS.md`, `docker-compose.yml`, and `scripts/start-sledtrace.py` as checkout markers.
+- Added clear non-zero guidance for `sledtrace serve` outside a source checkout.
+- Expanded CLI help to document the source-checkout limitation.
+- Aligned Python package, public CLI, SDK trace metadata, demo metadata, and Dashboard package versions to `0.6.0`.
+- Expanded clean-wheel validation to execute installed CLI help, version, and expected `serve` failure behavior.
+- Added unit coverage for repository discovery, outside-checkout guidance, and repo-local startup delegation without launching child services.
+- Corrected the SDK README example so `flush()` runs after the trace context exits.
+- Added `docs/releases/V0_6_0.md` and reconciled current-status documentation.
 
 ### Validation Status
 
@@ -16,15 +24,22 @@ Validated successfully:
 
 - `python -m pip install -e .` succeeded
 - `sledtrace --help` displayed the CLI commands
-- `sledtrace version` printed `0.5.0`
-- `pytest -q` passed in `sdk/python`
-- `python -m build` succeeded
-- `python scripts/validate-wheel.py` passed
+- `sledtrace serve --help` documented the source-checkout boundary
+- `sledtrace version` printed `0.6.0`
+- `pytest -q` passed with 17 tests; output included the expected legacy-import deprecation warning and an environment-specific `.pytest_cache` permission warning
+- `python -m build` produced the `sledtrace-0.6.0` wheel and sdist
+- `python scripts/validate-wheel.py` passed preferred/legacy imports and all installed CLI checks
+- wheel-installed `sledtrace serve` outside a checkout returned the documented guidance and a non-zero exit
+- `go test ./... -count=1` passed in `collector/go`
+- `npm.cmd run build` passed in `dashboard/web`
+- repo-local detection and delegation validation passed without leaving long-running processes
 
 ### Notes
 
 - The CLI milestone is intentionally small and does not alter collector protocol, warning logic, or trace schema.
 - The package-level compatibility and SledTrace-first import path remain in place.
+- The wheel intentionally does not bundle Collector, Dashboard, Docker, or platform-specific runtime assets.
+- No Git tag, GitHub release, or PyPI publication was created.
 
 ---
 
