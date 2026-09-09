@@ -2,94 +2,99 @@
 
 ## Current Focus
 
-SledTrace v0.6.0 — Local CLI / Startup UX Completion and Release Alignment.
+SledTrace v0.7.0 — External Developer Readiness.
 
-Status: implementation and required local validation are complete. No tag or GitHub release has been created.
+Status: v0.6.0 is complete, validated, tagged, pushed, published, and closed in current documentation. No v0.7 implementation has started yet.
 
-## Goal
+## Completed Release Baseline
 
-Finish the package-installed CLI without turning the Python wheel into a standalone SledTrace runtime.
+v0.6.0 — Local CLI / Startup UX was released on 2026-09-08.
 
-The supported v0.6 behavior is:
+- release commit: `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
+- annotated tag: `v0.6.0`
+- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
+- Python, Go, Dashboard, packaging, clean-wheel CLI, and repository-hygiene validation passed
+- the release did not publish to PyPI
 
-- `sledtrace --help` works after editable or wheel installation
-- `sledtrace serve --help` explains the source-checkout requirement
-- `sledtrace version` reports `0.6.0`
-- `sledtrace serve` walks upward from the current working directory to find a SledTrace checkout
-- repo-local `serve` delegates to `scripts/start-sledtrace.py`
-- outside a checkout, `serve` exits non-zero with actionable guidance
+The historical v0.5.0 packaging milestone was also tagged and published:
 
-The wheel does not bundle the Go collector, dashboard build, Docker images, or other platform-specific runtime assets.
+- release commit: `b3cad60a10636dbf7a5d371f51bac0c04a4af936`
+- annotated tag: `v0.5.0`
+- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
 
-## Acceptance Criteria
+## v0.7 Goal
 
-- [x] package version and public CLI version are `0.6.0`
-- [x] Dashboard package version is aligned to `0.6.0`
-- [x] `sledtrace --help` works in editable and wheel installs
-- [x] `sledtrace serve --help` documents the source-checkout limitation
-- [x] `sledtrace version` prints `0.6.0`
-- [x] repo detection walks upward using `AGENTS.md`, `docker-compose.yml`, and `scripts/start-sledtrace.py`
-- [x] repo-local `serve` delegates to the existing startup script
-- [x] wheel-installed `serve` outside a checkout fails gracefully
-- [x] legacy `raglens` import compatibility remains available
-- [x] required Python, Collector, and Dashboard validation passes
-- [x] release and AI-context documentation is reconciled
+Make SledTrace ready for an external developer to understand, run, validate, and contribute to without author-only knowledge.
 
-## Validation Results
+The milestone is named **External Developer Readiness**, not adoption, because repository work can create a trustworthy adoption path but cannot claim real adoption without external evidence.
 
-Validated on 2026-09-07:
+## Selected Priorities
 
-```bash
-cd sdk/python
-pytest -q
-python -m build
-python scripts/validate-wheel.py
+### P0 — Trustworthy repository
 
-cd collector/go
-go test ./... -count=1
+- add GitHub Actions CI for the Python SDK, Go Collector, and Dashboard
+- include package/wheel validation where practical
+- keep current trace, API, storage, warning, and compatibility contracts protected
+- keep release and AI-context documents aligned with actual published state
 
-cd dashboard/web
-npm.cmd run build
-```
+### P1 — Verifiable external first run
 
-Observed results:
+- define and validate a clean-clone first-run path
+- generate deterministic reference traces
+- state what success looks like in the Dashboard
+- record actionable troubleshooting guidance
+- collect evidence from at least two people who did not build the feature
 
-- Python SDK tests: 17 passed; warnings were the expected legacy-import deprecation warning and an environment-specific `.pytest_cache` permission warning
-- wheel and sdist build: passed; produced `sledtrace-0.6.0`
-- clean wheel environment: preferred and legacy imports passed
-- clean wheel CLI: root help, `serve --help`, and version checks passed
-- wheel-installed `serve` outside a checkout: expected non-zero exit with the documented guidance
-- Collector packages and tests: passed
-- Dashboard TypeScript/Vite production build: passed
-- editable install: passed
-- repo detection from a nested checkout directory: passed
-- repo-local delegation test: passed without starting long-running child processes
+### P2 — Contributor entry points
 
-## Current Implementation Limits
+- add a focused `CONTRIBUTING.md`
+- add bug/feature issue templates and a pull-request template
+- create only a small, real, near-term issue backlog
+- add a repeatable release checklist
 
-- supported span types remain `retrieval` and `llm`
-- warning behavior remains deterministic and unchanged in v0.6.0
-- no PyPI publication
-- no standalone wheel-installed serving
-- no framework adapters, cloud hosting, authentication, or hosted features
-- no agent, tool, memory, verification, human-feedback, or retry spans
-- no running-trace lifecycle or partial span ingestion
+### P3 — User-visible evidence
 
-## Compatibility Guardrails
+- provide a live Dashboard/browser view for dashboard-facing validation
+- capture deterministic before/after screenshots for visible changes
+- update README screenshots only when the visible product or onboarding flow materially changes
+- refresh release-quality screenshots before releases that change the Dashboard
 
-- prefer `sledtrace` and `SLEDTRACE_COLLECTOR_URL`
+## PyPI Decision Gate
+
+`pip install sledtrace` is a high-priority product and distribution goal, but it is not available today.
+
+v0.7 must make an explicit decision about:
+
+- package-name and publisher ownership readiness
+- TestPyPI versus direct PyPI sequencing
+- repeatable and secure publication workflow
+- package metadata and long-description rendering
+- the supported relationship between the installable SDK/CLI and the source-checkout runtime
+- the compatibility timeline for the legacy `raglens` import
+
+Do not document PyPI installation as supported until publication and clean-install verification have actually succeeded.
+
+## v0.7 Acceptance Direction
+
+- [ ] required CI checks run on pull requests and pushes
+- [ ] Python SDK, packaging, Collector, and Dashboard checks are visible and green
+- [ ] a fresh checkout can follow the documented first-run path without undocumented steps
+- [ ] deterministic reference traces and expected warnings are visible in the Dashboard
+- [ ] at least two external first-run attempts are recorded and their blockers are converted into actionable work
+- [ ] contributor entry points are clear
+- [ ] README and AI-context documents contain no known stale milestone claims
+- [ ] PyPI publication has a documented go/no-go decision and validation plan
+
+## Current Guardrails
+
+- implemented span types remain `retrieval` and `llm`
+- warning behavior remains local-first, deterministic, and evidence-backed
+- preserve `sledtrace` and `SLEDTRACE_COLLECTOR_URL` as preferred names
 - preserve temporary `raglens` and `RAGLENS_COLLECTOR_URL` compatibility
-- preserve collector API, SQLite schema, dashboard data contract, and current span contracts
-- do not remove legacy database/startup compatibility without a separate migration decision
+- preserve collector API, SQLite schema, Dashboard data contract, and current span contracts
+- do not add framework adapters, cloud hosting, authentication, new span types, or LLM-as-judge as incidental v0.7 work
+- do not claim external adoption from repository cosmetics alone
 
-## Release State and Next Step
+## Immediate Next Step
 
-v0.6.0 meets its implementation and validation criteria and is ready to be marked complete in the repository.
-
-Release publication remains a separate user-approved action:
-
-- do not create or push `v0.5.0` or `v0.6.0` tags yet
-- do not create GitHub releases yet
-- do not publish to PyPI
-
-Historical tag recommendation: `b3cad60a10636dbf7a5d371f51bac0c04a4af936` cleanly represents completed v0.5.0 packaging readiness and is the recommended target for a future annotated `v0.5.0` tag.
+Design the smallest v0.7 CI and clean-clone validation slice. Do not pre-commit v0.8 functionality until v0.7 external-use evidence identifies the highest-value next direction.

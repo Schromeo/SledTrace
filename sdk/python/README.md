@@ -2,6 +2,16 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
+Current release: **0.6.0 — Local CLI / Startup UX**
+
+Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
+
+## Distribution status
+
+The SDK is ready for installation from source or a locally built wheel. It is not published to PyPI yet, so `pip install sledtrace` is not currently a supported command.
+
+PyPI publication is a high-priority decision for the next external-developer-readiness milestone. Until that decision is completed, use one of the installation paths below.
+
 ## Install from source for development
 
 ```bash
@@ -109,8 +119,10 @@ Do not rely on PyPI publishing for this release; this package is prepared for lo
 
 ## More docs
 
-- `../../docs/product/USER_ONBOARDING.md`
-- `../../docs/integrations/PYTHON_SDK_GUIDE.md`
+- [Full project README and screenshots](https://github.com/Schromeo/SledTrace#readme)
+- [User onboarding guide](https://github.com/Schromeo/SledTrace/blob/main/docs/product/USER_ONBOARDING.md)
+- [Python SDK integration guide](https://github.com/Schromeo/SledTrace/blob/main/docs/integrations/PYTHON_SDK_GUIDE.md)
+- [v0.6.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
 
 Repository examples such as `examples.custom_pipeline_demo` are local developer examples and not a separate public SDK surface.
 

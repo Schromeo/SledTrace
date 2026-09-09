@@ -6,6 +6,10 @@ It helps developers inspect why a RAG application produced a bad answer by showi
 
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
+Latest release: [SledTrace v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
+
+Distribution status: the Python SDK can be installed from source or a locally built wheel. SledTrace is not published to PyPI yet, so `pip install sledtrace` is not currently a supported installation path.
+
 #### Why "SledTrace"?
 
 Named after my husky. Running a RAG pipeline is like pulling a sled: many components - retrievers, rerankers, LLMs - pulling together like a dog team, and when the sled goes off course, you need to read the tracks in the snow to figure out which dog stumbled. SledTrace shows you the tracks.
@@ -139,7 +143,7 @@ PyPI publishing is not part of v0.5.0 unless a later release decides to publish 
 
 ### CLI milestone (v0.6.0)
 
-The local developer startup flow now has a small installable CLI entry point.
+The released v0.6.0 local developer startup flow has a small installable CLI entry point.
 
 ```bash
 cd sdk/python
@@ -153,6 +157,8 @@ sledtrace serve
 `serve` delegates to the existing repo-local startup script so the collector and dashboard launch in the same way as the current local workflow.
 
 `sledtrace serve` is a source-checkout command in v0.6.0. Run it from the repository root or any directory inside the checkout. A normal wheel installation still supports `sledtrace --help` and `sledtrace version`, but it does not bundle the collector, dashboard, Docker assets, or a standalone serving runtime. Outside a checkout, `serve` exits with guidance instead of guessing a repository path.
+
+See the [v0.6.0 GitHub Release](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0) for the completed release scope and validation record.
 
 Current recommended local stack:
 
@@ -415,6 +421,11 @@ Milestone snapshot:
 * v0.5.0 Python SDK distribution / packaging readiness: complete
 * v0.6.0 local CLI / startup UX: complete
 
+Published releases:
+
+* [v0.5.0 — Python SDK Packaging Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0)
+* [v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
+
 Current version:
 
 ```text
@@ -487,11 +498,14 @@ Future agent harness observability may also include running traces across multi-
 
 Near-term focus:
 
-* keep first-run friction low for external developers
-* preserve deterministic-first warning generation
-* keep trace contracts stable while improving installability
+* v0.7.0 External Developer Readiness
+* automated CI for the Python SDK, Go Collector, and Dashboard
+* clean-clone first-run validation with user-visible evidence
+* contributor entry points and a small evidence-backed public issue backlog
+* an explicit PyPI publication decision and repeatable publishing plan
+* preserve deterministic-first warning generation and stable trace contracts
 
-Future integrations such as LangChain, LlamaIndex, PyPI publishing, and hosted/cloud features can be added later, but they are not part of the current implemented scope.
+PyPI publishing is a high-priority v0.7 decision gate, not a shipped capability. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope.
 
 ## Design principles
 

@@ -9,6 +9,12 @@ Former project name: RAGLens.
 
 Current stable project direction is SledTrace-first. Legacy RAGLens compatibility may remain temporarily where explicitly documented.
 
+Current released version: **v0.6.0 — Local CLI / Startup UX**.
+
+Current planned milestone: **v0.7.0 — External Developer Readiness**.
+
+The Python package is buildable as a wheel/sdist but is not published to PyPI yet. Do not document `pip install sledtrace` as an available installation path until publication has actually been completed and verified.
+
 ## Before Doing Meaningful Work
 
 Always read these files first:
@@ -50,6 +56,7 @@ Current major components:
 - Docker Compose local stack
 - reference RAG application
 - buildable Python wheel/sdist
+- package-installed `sledtrace` CLI with source-checkout-based `serve`
 
 ## Engineering Philosophy
 
@@ -132,6 +139,21 @@ cd dashboard/web
 npm run build
 ```
 
+For dashboard-visible changes, a successful build is necessary but not sufficient. When practical:
+
+1. start the real local Collector and Dashboard
+2. generate deterministic reference traces
+3. open the Dashboard and inspect the affected flows
+4. provide user-visible screenshots or an interactive browser view
+5. distinguish automated-test evidence from visual acceptance evidence
+
+Screenshot policy:
+
+- provide conversation screenshots for dashboard-facing validation checkpoints
+- update README screenshots only when the visible product or onboarding flow materially changes
+- refresh release-quality screenshots before a release that changes the Dashboard
+- keep screenshots deterministic and free of secrets, private paths, or personal data
+
 For full local smoke validation when relevant:
 
 ```
@@ -153,6 +175,7 @@ After meaningful completed work:
 - update `docs/ai-context/CURRENT_TASK.md` when milestone state changes
 - update `docs/ai-context/ROADMAP.md` when roadmap state changes
 - update `docs/ai-context/DECISIONS.md` when making a meaningful architecture decision
+- update release notes, root README status, and package README status when publication state changes
 
 Keep documentation aligned with actual tested repository behavior.
 

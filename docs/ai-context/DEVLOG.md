@@ -1,5 +1,38 @@
 # Devlog
 
+## 2026-09-08 (v0.6.0 Release Closure and v0.7 Direction Selected)
+
+### Completed
+
+- Created release commit `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e` with message `feat(cli): complete SledTrace v0.6.0 startup UX`.
+- Included repository hygiene in the v0.6 commit by removing tracked Python bytecode/cache artifacts and expanding `.gitignore` coverage for package-test virtual environments.
+- Created and pushed annotated tag `v0.5.0` at `b3cad60a10636dbf7a5d371f51bac0c04a4af936`.
+- Created and pushed annotated tag `v0.6.0` at `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`.
+- Published the v0.5.0 GitHub Release:
+  - https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
+- Published the v0.6.0 GitHub Release:
+  - https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
+- Confirmed both releases are non-draft, non-prerelease releases.
+- Selected **v0.7.0 — External Developer Readiness** as the next planned milestone.
+- Established CI, clean-clone first-run evidence, contributor readiness, and user-visible Dashboard validation as the v0.7 priority order.
+- Elevated PyPI publication to a v0.7 decision gate without claiming it is currently available.
+- Established screenshot policy: conversation evidence for UI checkpoints, README updates only for material visible changes, and release-quality refreshes for releases that change the Dashboard.
+- Reconciled root README, SDK package README, release notes, and AI-context documents with the actual published state.
+
+### Validation Status
+
+- v0.6 release validation remains the accepted 2026-09-07 validation record below.
+- This post-release closure is documentation-only and does not change runtime behavior.
+- No Dashboard screenshots were refreshed because v0.6 did not change Dashboard UI behavior.
+- PyPI publication was not performed.
+
+### Notes
+
+- These post-release documentation updates occur after the immutable v0.6.0 tag and do not rewrite the released tag.
+- GitHub Release bodies should remain synchronized with the corrected release-note files after this documentation update is reviewed and published.
+
+---
+
 ## 2026-09-07 (v0.6.0 Local CLI / Startup UX Completed)
 
 ### Completed
@@ -39,7 +72,7 @@ Validated successfully:
 - The CLI milestone is intentionally small and does not alter collector protocol, warning logic, or trace schema.
 - The package-level compatibility and SledTrace-first import path remain in place.
 - The wheel intentionally does not bundle Collector, Dashboard, Docker, or platform-specific runtime assets.
-- No Git tag, GitHub release, or PyPI publication was created.
+- At milestone-completion time, no Git tag, GitHub release, or PyPI publication had been created. The tag and GitHub Release were subsequently published on 2026-09-08; PyPI publication remains incomplete.
 
 ---
 

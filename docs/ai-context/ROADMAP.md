@@ -6,8 +6,76 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 ## Current Snapshot
 
-**Current version:** v0.6.0 - Local CLI / Startup UX  
-**Status:** Complete and validated locally; tag/release publication pending user approval
+**Current released version:** v0.6.0 - Local CLI / Startup UX
+
+**Release status:** Complete, validated, tagged, pushed, and published on 2026-09-08
+
+**Next planned milestone:** v0.7.0 - External Developer Readiness
+
+Release references:
+
+* v0.5.0 tag targets `b3cad60a10636dbf7a5d371f51bac0c04a4af936`
+* v0.5.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
+* v0.6.0 tag targets `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
+* v0.6.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
+* PyPI publication has not occurred
+
+## v0.7.0 - External Developer Readiness
+
+**Status:** Planned; implementation not started
+
+### Goal
+
+Make SledTrace trustworthy and understandable for an external developer who did not participate in its development.
+
+This milestone creates the conditions for adoption. It does not claim adoption merely because community files or screenshots exist.
+
+### Priority Scope
+
+#### P0 - Continuous validation
+
+* [ ] GitHub Actions for Python SDK tests
+* [ ] wheel/package validation in CI where practical
+* [ ] Go Collector tests
+* [ ] Dashboard production build
+* [ ] visible required checks on pull requests and pushes
+
+#### P1 - External first-run evidence
+
+* [ ] clean-clone first-run path with no undocumented steps
+* [ ] deterministic reference trace generation
+* [ ] explicit Dashboard success criteria
+* [ ] actionable troubleshooting guidance
+* [ ] at least two external first-run attempts recorded
+
+#### P2 - Contributor readiness
+
+* [ ] focused `CONTRIBUTING.md`
+* [ ] bug report and feature request templates
+* [ ] pull-request template
+* [ ] small, real, near-term public issue backlog
+* [ ] repeatable release checklist
+
+#### P3 - Visible validation and project presentation
+
+* [ ] live browser/Dashboard evidence for dashboard-facing changes
+* [ ] deterministic screenshots for visible changes
+* [ ] README screenshots refreshed only when product presentation materially changes
+* [ ] release-quality visual pass before any release that changes the Dashboard
+
+### PyPI Decision Gate
+
+`pip install sledtrace` is a high-priority distribution goal, but it is not implemented today.
+
+v0.7 must produce an explicit, evidence-backed go/no-go decision covering package ownership, secure publication, TestPyPI/PyPI sequencing, long-description rendering, clean-install validation, and the relationship between the installable SDK/CLI and the source-checkout runtime.
+
+Do not claim PyPI availability until publication and validation have succeeded.
+
+### Scope Boundary
+
+Do not add LangChain/LlamaIndex adapters, cloud/auth/hosted functionality, new span types, LLM-as-judge, or unrelated warning features as incidental v0.7 work. Select later product work from external-use evidence rather than pre-committing v0.8 scope.
+
+---
 
 ### v0.6.0 Goal
 
@@ -47,6 +115,14 @@ Validated results:
 * `npm.cmd run build` passed in `dashboard/web`
 
 The Python wheel intentionally does not bundle the Go collector, dashboard, Docker images, or platform-specific runtime assets. Standalone wheel-installed serving is outside v0.6.0 scope.
+
+Release outcome:
+
+* release commit `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
+* annotated tag `v0.6.0`
+* GitHub Release published on 2026-09-08
+* release hygiene removed tracked Python bytecode/cache artifacts
+* no PyPI publication
 
 ---
 

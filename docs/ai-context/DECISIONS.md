@@ -1,5 +1,35 @@
 # Architecture Decisions
 
+## 2026-09-08 — Select v0.7 External Developer Readiness after releasing v0.6
+
+### Decision
+
+Treat v0.6.0 as fully released and make **v0.7.0 — External Developer Readiness** the next planned milestone.
+
+Define v0.7 around trustworthy repository automation, verifiable clean-clone first run, contributor entry points, and user-visible validation evidence. Do not treat repository cosmetics or a large synthetic issue backlog as proof of adoption.
+
+Make PyPI publication an explicit high-priority decision gate for v0.7 without claiming that `pip install sledtrace` works before publication and clean-install validation succeed.
+
+For dashboard-facing work, automated tests and production builds remain required, but completion also requires practical visual evidence when the environment supports it. Conversation screenshots should be produced at UI checkpoints; README screenshots should change only when the visible product or onboarding flow materially changes.
+
+### Reason
+
+- v0.6 completed the local CLI and startup UX boundary and was published successfully.
+- SledTrace has a coherent local RAG debugging loop, but external developers still lack CI signals and a proven author-independent first-run path.
+- Adoption is an observed outcome, while readiness can be implemented and measured.
+- PyPI distribution may remove more onboarding friction than premature framework adapters, but publication requires an explicit security, ownership, and support decision.
+- Dashboard build success does not prove that the real product state is readable or usable.
+
+### Outcome
+
+- v0.6.0 remains the current released version.
+- v0.7 begins with CI and clean-clone validation rather than new product surface.
+- external first-run evidence will inform later framework, distribution, diagnostic, or eval work.
+- LangChain/LlamaIndex adapters, new spans, cloud/auth, and LLM-as-judge remain unselected future work.
+- the root README remains the visual showcase; the SDK README is kept package-metadata friendly without duplicating Dashboard screenshot assets.
+
+---
+
 ## 2026-09-07 — v0.6 CLI remains source-checkout based for serving
 
 ### Decision

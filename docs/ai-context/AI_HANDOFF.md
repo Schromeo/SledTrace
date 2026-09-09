@@ -8,15 +8,27 @@ SledTrace
 
 SledTrace is a local-first visual debugger for RAG pipelines.
 
-## Current Release Target
+## Current Released Version
 
 v0.6.0 — Local CLI / Startup UX
+
+Released on 2026-09-08:
+
+- release commit: `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
+- annotated tag: `v0.6.0`
+- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
+
+## Current Planned Milestone
+
+v0.7.0 — External Developer Readiness
+
+Status: direction selected; implementation has not started.
 
 ## Current Project Status
 
 ### v0.6.0 Status
 
-**v0.6.0 implementation and required local validation are complete. Tag and release publication remain pending user approval.**
+**v0.6.0 implementation, validation, repository hygiene, tag publication, push, and GitHub Release are complete.**
 
 Completed work includes:
 
@@ -29,6 +41,9 @@ Completed work includes:
 - explicit v0.6 boundary: no standalone serving runtime is bundled in the wheel
 - continued compatibility with the existing local collector + dashboard startup flow
 - no contract changes to trace payloads, warnings, storage schema, or dashboard API
+- release commit `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
+- annotated `v0.6.0` tag and published GitHub Release
+- tracked Python bytecode/cache artifacts removed from version control
 
 Validation commands that passed:
 
@@ -62,9 +77,36 @@ Observed results:
 - Go Collector tests passed
 - Dashboard production build passed
 
+Release outcome:
+
+- `main` and `v0.6.0` were pushed to `origin`
+- GitHub Release published: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
+- PyPI publication was not performed
+
+### v0.7.0 Planned Direction
+
+**v0.7.0 is External Developer Readiness, not a claim of external adoption.**
+
+Selected priorities:
+
+- GitHub Actions CI for Python, package validation, Go, and Dashboard
+- clean-clone first-run validation without author-only knowledge
+- deterministic reference traces and explicit Dashboard success criteria
+- user-visible browser/screenshots for dashboard-facing validation
+- focused contributor entry points and a small real issue backlog
+- at least two recorded external first-run attempts
+- an explicit PyPI go/no-go and publication-workflow decision
+
+Important sequencing:
+
+- do not pre-commit LangChain/LlamaIndex or eval work before external-use evidence
+- do not claim `pip install sledtrace` until PyPI publication and clean-install validation succeed
+- keep the root README as the visual showcase
+- keep `sdk/python/README.md` suitable for package metadata without duplicating Dashboard screenshot assets
+
 ### v0.5.0 Status
 
-**v0.5.0 packaging readiness is complete and validated.**
+**v0.5.0 packaging readiness is complete, validated, tagged, and published.**
 
 Completed work includes:
 
@@ -74,6 +116,8 @@ Completed work includes:
 - preserving temporary `raglens` compatibility during migration
 - verifying `SLEDTRACE_COLLECTOR_URL` precedence over `RAGLENS_COLLECTOR_URL`
 - keeping v0.5 limited to packaging and documentation, without touching the warning engine or collector contracts
+- annotated tag `v0.5.0` targets `b3cad60a10636dbf7a5d371f51bac0c04a4af936`
+- GitHub Release published: https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
 
 Validation commands that passed:
 
@@ -480,19 +524,27 @@ SledTrace is not:
 
 ## Release State and Next Step
 
-v0.6.0 is ready to be marked complete in the repository. The Python package, installed CLI behavior, source-checkout delegation, Collector tests, Dashboard build, and documentation have been validated.
+v0.6.0 is the current completed and published release. The Python package, installed CLI behavior, source-checkout delegation, Collector tests, Dashboard build, repository hygiene, tags, push, and GitHub Release have been validated or verified.
 
-Release publication is intentionally not performed by this milestone-completion work:
+Published release history:
 
-- do not create or push Git tags without user approval
-- do not create GitHub releases without user approval
-- do not publish to PyPI
+- v0.4.0 — Local Release
+- v0.4.1 — SledTrace compatibility-preserving rebrand
+- v0.5.0 — Python SDK Packaging Readiness
+- v0.6.0 — Local CLI / Startup UX
 
-Historical release finding:
+Current next step:
 
-- `b3cad60a10636dbf7a5d371f51bac0c04a4af936` is the clean v0.5.0 completion commit
-- it is the recommended target for a future annotated `v0.5.0` tag
-- the completed v0.6.0 release commit should be tagged separately only after review and approval
+- design the smallest v0.7 CI and clean-clone validation slice
+- keep user-visible Dashboard evidence alongside automated validation
+- make an explicit PyPI publication decision before documenting `pip install sledtrace`
+- use external first-run evidence to select later framework, distribution, diagnostic, or eval work
+
+Current publication boundary:
+
+- v0.5.0 and v0.6.0 tags and GitHub Releases exist
+- PyPI publication does not exist
+- do not rewrite or move published tags as part of post-release documentation work
 
 ## Important Guardrails
 
