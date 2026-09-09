@@ -2,27 +2,25 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-Current release candidate: **0.7.0rc1 — TestPyPI validation**
+Current release: **0.7.0 — External Developer Readiness**
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
 ## Distribution status
 
-This is a prerelease candidate intended for TestPyPI validation. It is not a production PyPI release, so ordinary `pip install sledtrace` is not currently a supported installation path.
-
-`0.7.0rc1` is published on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/). Install that exact candidate in a clean environment with:
+Install the released SDK and CLI from production PyPI:
 
 ```bash
-python -m pip install --index-url https://test.pypi.org/simple/ sledtrace==0.7.0rc1
+python -m pip install sledtrace==0.7.0
 ```
 
-For local development before or outside that validation, use one of the source or built-artifact paths below.
+The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
 
 ## Install from source for development
 
 ```bash
 cd sdk/python
-pip install -e .
+python -m pip install -e .
 ```
 
 ## Build a local wheel or sdist
@@ -39,7 +37,7 @@ This produces wheel and source-distribution artifacts in `dist/`.
 ## Install the built wheel
 
 ```bash
-pip install dist/*.whl
+python -m pip install dist/*.whl
 ```
 
 ## CLI
@@ -52,7 +50,7 @@ sledtrace serve --help
 sledtrace version
 ```
 
-`sledtrace version` reports `0.7.0rc1` for this candidate.
+`sledtrace version` reports `0.7.0` for this release.
 
 `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
@@ -121,14 +119,12 @@ Legacy `raglens` imports remain temporarily supported during migration, but new 
 from sledtrace import trace
 ```
 
-This candidate is for TestPyPI validation only. Production PyPI publication remains a separate release decision.
-
 ## More docs
 
 - [Full project README and screenshots](https://github.com/Schromeo/SledTrace#readme)
 - [User onboarding guide](https://github.com/Schromeo/SledTrace/blob/main/docs/product/USER_ONBOARDING.md)
 - [Python SDK integration guide](https://github.com/Schromeo/SledTrace/blob/main/docs/integrations/PYTHON_SDK_GUIDE.md)
-- [v0.6.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
+- [v0.7.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
 Repository examples such as `examples.custom_pipeline_demo` are local developer examples and not a separate public SDK surface.
 

@@ -22,7 +22,7 @@ Released on 2026-09-08:
 
 v0.7.0 — External Developer Readiness
 
-Status: implementation in progress; cross-stack CI and the published `0.7.0rc1` TestPyPI candidate validation are complete and green.
+Status: final release preparation on `release/v0.7.0`; production publication and clean-index validation remain pending.
 
 ## Current Project Status
 
@@ -109,10 +109,21 @@ Completed first slice:
 
 Known follow-up:
 
-- `main` branch protection and required-check enforcement are not configured yet
-- clean-clone and Docker/local first-run validation remain pending
+- two independent external first-run attempts remain post-release evidence
+- Docker smoke automation remains pending; the current Windows validation host could not start Docker Desktop because WSL2 virtualization was disabled
 - `npm audit` currently reports four transitive development-dependency advisories (one moderate and three high) through the Vite/Babel/PostCSS toolchain; they were recorded rather than mixed into the initial CI change
 - local validation in the restricted Codex environment required elevated reruns for package isolation, wheel temp-environment access, the Go build cache, and the npm cache; the exact CI run on GitHub completed without those host-specific permission failures
+
+Final release-preparation slice:
+
+- enabled strict `main` protection with required `Python 3.9`, `Python 3.13`, `Go Collector`, and `Dashboard` checks
+- applied protection to administrators, required linear history and resolved conversations, and disabled force pushes and deletion
+- created `release/v0.7.0` for the protected PR flow
+- clean-cloned the public repository and validated the non-Docker fallback after identifying and documenting the missing `npm ci` prerequisite
+- verified Collector health, all nine reference traces, conflict evidence, and weak/unsupported-answer diagnostics
+- displayed the clean-clone Dashboard in the browser and replaced stale RAGLens screenshots with current SledTrace evidence
+- added `CONTRIBUTING.md`, bug/feature issue forms, a PR template, a release checklist, and v0.7 release notes
+- prepared final Python and Dashboard `0.7.0` metadata without changing product contracts or behavior
 
 Python publication readiness completed so far:
 
@@ -137,7 +148,7 @@ Python publication readiness completed so far:
 Important sequencing:
 
 - do not pre-commit LangChain/LlamaIndex or eval work before external-use evidence
-- do not claim `pip install sledtrace` until PyPI publication and clean-install validation succeed
+- release-prep package content may describe the intended `0.7.0` install command, but do not claim that publication completed until production PyPI and clean-install validation succeed
 - keep the root README as the visual showcase
 - keep `sdk/python/README.md` suitable for package metadata without duplicating Dashboard screenshot assets
 
@@ -528,7 +539,7 @@ Current scope limits:
 
 - only retrieval and llm spans are implemented
 - onboarding path is local-first and repo-based
-- source and local wheel installation are supported; `0.7.0rc1` is available on TestPyPI, while production PyPI publication is not
+- source and local wheel installation are supported; `0.7.0rc1` is available on TestPyPI and final `0.7.0` production publication is the remaining release gate
 - the packaged CLI provides help and version behavior, while `serve` requires a source checkout
 - no LangChain adapter yet
 - no LlamaIndex adapter yet
@@ -561,7 +572,7 @@ SledTrace is not:
 
 ## Release State and Next Step
 
-v0.6.0 is the current completed and published release. The Python package, installed CLI behavior, source-checkout delegation, Collector tests, Dashboard build, repository hygiene, tags, push, and GitHub Release have been validated or verified.
+v0.6.0 remains the current completed and published release while v0.7.0 is prepared through a protected release branch. Cross-stack CI, TestPyPI, production publisher configuration, branch protection, clean-clone non-Docker startup, deterministic Dashboard evidence, current screenshots, and contributor entry points are complete or prepared.
 
 Published release history:
 
@@ -572,12 +583,11 @@ Published release history:
 
 Current next step:
 
-- audit the remaining v0.7 acceptance items and decide which are required before the final `0.7.0` package/release
-- prepare and validate the final `0.7.0` package only after that scope decision
-- make the explicit production publication go/no-go decision
-- keep user-visible Dashboard evidence alongside automated validation
-- make the production PyPI go/no-go decision only after the TestPyPI result
-- use external first-run evidence to select later framework, distribution, diagnostic, or eval work
+- run the complete local release validation on `release/v0.7.0`
+- push the branch, open a pull request, and require the four protected checks
+- merge through `main`, create the immutable `v0.7.0` tag, and publish through the protected `pypi` environment
+- clean-install `0.7.0` from production PyPI outside the checkout and publish the GitHub Release
+- collect post-release external first-run evidence before selecting later framework, distribution, diagnostic, or eval work
 
 Current publication boundary:
 

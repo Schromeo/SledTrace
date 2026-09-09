@@ -4,7 +4,7 @@
 
 SledTrace v0.7.0 — External Developer Readiness.
 
-Status: v0.6.0 is complete, validated, tagged, pushed, published, and closed in current documentation. v0.7 implementation is in progress; cross-stack CI and the published `0.7.0rc1` TestPyPI candidate validation are complete and green.
+Status: v0.6.0 is complete and released. v0.7 release preparation is in progress on `release/v0.7.0`; cross-stack CI, TestPyPI candidate validation, production publisher configuration, `main` protection, clean-clone non-Docker validation, browser evidence, screenshots, and contributor entry points are complete or prepared. Production publication has not occurred yet.
 
 ## Completed Release Baseline
 
@@ -96,12 +96,12 @@ Current evidence and decision:
 
 - [x] CI checks run on pull requests and pushes
 - [x] Python SDK, packaging, Collector, and Dashboard checks are visible and green
-- [ ] protect `main` with the agreed required CI checks
-- [ ] a fresh checkout can follow the documented first-run path without undocumented steps
-- [ ] deterministic reference traces and expected warnings are visible in the Dashboard
+- [x] protect `main` with the agreed required CI checks
+- [x] a fresh checkout can follow the documented non-Docker first-run path without undocumented steps
+- [x] deterministic reference traces and expected warnings are visible in the Dashboard
 - [ ] at least two external first-run attempts are recorded and their blockers are converted into actionable work
-- [ ] contributor entry points are clear
-- [ ] README and AI-context documents contain no known stale milestone claims
+- [x] contributor entry points are clear
+- [x] README and AI-context documents contain no known stale milestone claims in the release-prep branch
 - [x] PyPI publication has a documented go/no-go decision and validation plan
 - [x] TestPyPI trusted publication and clean-index installation pass
 - [ ] production PyPI publication and clean-index installation pass
@@ -118,13 +118,15 @@ Current evidence and decision:
 
 ## Immediate Next Step
 
-Audit the final v0.7 release scope before using the now-complete production publication path:
+Complete the protected release path:
 
-1. review the incomplete v0.7 acceptance items and decide which block the project-wide `v0.7.0` release
-2. prepare final `0.7.0` package and release content without rebuilding or moving the immutable `v0.7.0rc1` candidate
-3. run the final validation and make the explicit production go/no-go decision
-4. publish from a matching immutable `v0.7.0` tag, approve the protected `pypi` deployment, then validate ordinary `pip install sledtrace` outside the source repository
+1. validate the complete `release/v0.7.0` working tree
+2. push the branch, open a pull request, and require all four CI checks
+3. merge through protected `main`, then create the immutable annotated `v0.7.0` tag
+4. dispatch production publication from that tag and approve the protected `pypi` deployment
+5. validate ordinary `pip install sledtrace==0.7.0` outside the source repository
+6. publish the GitHub Release and record the actual release evidence
 
-Dashboard dependency advisories, Docker first-run validation, and branch protection remain recorded follow-up work, but they do not currently block Python SDK publication.
+Two independent external first-run attempts are post-release evidence rather than a blocker for the first production package. Docker smoke automation and the recorded Dashboard dependency advisories also remain follow-up work. The documented Docker path still needs a host with working virtualization for a fresh v0.7 runtime rerun; the non-Docker fallback is the validated v0.7 clean-clone path.
 
 Do not pre-commit v0.8 functionality until v0.7 external-use evidence identifies the highest-value next direction.

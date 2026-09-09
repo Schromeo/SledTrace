@@ -1,6 +1,6 @@
 # Python SDK Guide
 
-This guide covers the current SledTrace Python SDK API for v0.2.
+This guide covers the current SledTrace Python SDK API.
 
 It is intentionally API-focused. For broader product positioning and local-first onboarding flow, see `docs/product/USER_ONBOARDING.md`.
 
@@ -22,22 +22,26 @@ Out of scope for this guide:
 
 ## Installation
 
-SledTrace v0.2 uses local editable install from a repository checkout.
+Install the released SDK from PyPI:
+
+```bash
+python -m pip install sledtrace
+```
+
+Use an editable install when developing SledTrace itself.
 
 ### Install while working inside the SledTrace repo
 
 ```bash
 cd sdk/python
-pip install -e .
+python -m pip install -e .
 ```
 
 ### Install into another local application
 
 ```bash
-pip install -e /path/to/sledtrace/sdk/python
+python -m pip install -e /path/to/sledtrace/sdk/python
 ```
-
-Do not assume PyPI installation is available yet.
 
 ## Collector URL
 
@@ -47,7 +51,7 @@ The default local collector URL is:
 http://localhost:4319
 ```
 
-Recommended v0.2 local startup from the repo checkout:
+Recommended local startup from the repo checkout:
 
 From the SledTrace repo root:
 
@@ -70,11 +74,11 @@ Dashboard:
 
 ```bash
 cd dashboard/web
-npm install
+npm ci
 npm run dev
 ```
 
-If this is your first dashboard startup, run `npm install` before `npm run dev`.
+If this is your first non-Docker Dashboard startup, run `npm ci` before `npm run dev`.
 
 You can configure the collector URL through an environment variable in your app process.
 
@@ -326,9 +330,9 @@ Do not modify `local_rag_demo` for real usage. Instrument your own application c
 
 If your app runs in one virtual environment and `SledTrace` was installed into another, imports will fail.
 
-### Assuming PyPI install is available
+### Expecting `sledtrace serve` to work outside a source checkout
 
-For v0.2, the supported path is editable install from a local repo checkout.
+The installed CLI provides help and version commands everywhere, but `sledtrace serve` needs the repository's Collector and Dashboard files. Clone SledTrace and run `serve` from inside that checkout.
 
 ## Troubleshooting
 

@@ -10,7 +10,7 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 **Release status:** Complete, validated, tagged, pushed, and published on 2026-09-08
 
-**Next planned milestone:** v0.7.0 - External Developer Readiness
+**Release in preparation:** v0.7.0 - External Developer Readiness
 
 Release references:
 
@@ -22,7 +22,7 @@ Release references:
 
 ## v0.7.0 - External Developer Readiness
 
-**Status:** In progress; cross-stack CI and published `0.7.0rc1` TestPyPI candidate validation are complete and green
+**Status:** Final release preparation; production PyPI publication and clean-index validation remain pending
 
 ### Goal
 
@@ -39,30 +39,30 @@ This milestone creates the conditions for adoption. It does not claim adoption m
 * [x] Go Collector tests
 * [x] Dashboard production build
 * [x] visible checks on pull requests and pushes
-* [ ] protect `main` with the agreed required CI checks
+* [x] protect `main` with the agreed required CI checks
 
 #### P1 - External first-run evidence
 
-* [ ] clean-clone first-run path with no undocumented steps
-* [ ] deterministic reference trace generation
-* [ ] explicit Dashboard success criteria
-* [ ] actionable troubleshooting guidance
+* [x] clean-clone non-Docker first-run path with no undocumented steps
+* [x] deterministic reference trace generation
+* [x] explicit Dashboard success criteria
+* [x] actionable troubleshooting guidance, including Docker virtualization prerequisites
 * [ ] at least two external first-run attempts recorded
 
 #### P2 - Contributor readiness
 
-* [ ] focused `CONTRIBUTING.md`
-* [ ] bug report and feature request templates
-* [ ] pull-request template
+* [x] focused `CONTRIBUTING.md`
+* [x] bug report and feature request templates
+* [x] pull-request template
 * [ ] small, real, near-term public issue backlog
-* [ ] repeatable release checklist
+* [x] repeatable release checklist
 
 #### P3 - Visible validation and project presentation
 
-* [ ] live browser/Dashboard evidence for dashboard-facing changes
-* [ ] deterministic screenshots for visible changes
-* [ ] README screenshots refreshed only when product presentation materially changes
-* [ ] release-quality visual pass before any release that changes the Dashboard
+* [x] live browser/Dashboard evidence for the v0.7 clean-clone validation
+* [x] deterministic screenshots refreshed to remove stale RAGLens branding and paths
+* [x] README screenshots refreshed because public product presentation was stale
+* [x] release-quality visual pass completed without changing Dashboard behavior
 
 ### PyPI Decision Gate
 

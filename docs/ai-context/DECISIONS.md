@@ -1,5 +1,29 @@
 # Architecture Decisions
 
+## 2026-09-09 — Separate project-release blockers from post-release adoption evidence
+
+### Decision
+
+Before declaring the project-wide v0.7.0 External Developer Readiness milestone complete, require protected `main` checks, one current clean-clone first run, browser-visible deterministic diagnostics, accurate public screenshots, contributor entry points, a release checklist, and production PyPI clean-install validation.
+
+Treat two independent external first-run attempts and a small public issue backlog as post-release evidence rather than blockers for the first production package. Do not create synthetic issues to make the repository appear active.
+
+Accept the non-Docker clean-clone path as the v0.7 runtime evidence on the current Windows host because Docker Desktop reported that WSL2 virtualization was disabled. Document that prerequisite honestly; do not represent the Docker path as freshly validated.
+
+### Reason
+
+- the v0.7 name promises an author-independent, trustworthy path, so repository protection, complete instructions, and visible runtime evidence are part of the project release—not cosmetic follow-up
+- production PyPI availability is needed before most external developers can try the canonical installation path
+- external participation cannot be manufactured or guaranteed before release
+- the current README screenshots contained old RAGLens branding and paths, so refreshing them corrects public product evidence without changing Dashboard behavior
+
+### Outcome
+
+- `main` requires `Python 3.9`, `Python 3.13`, `Go Collector`, and `Dashboard` checks, applies to administrators, requires linear history and resolved conversations, and disallows force pushes and deletion
+- final v0.7 work proceeds through `release/v0.7.0` and a protected pull request
+- the clean-clone non-Docker path explicitly includes `npm ci` and an SDK install before startup and trace generation
+- external first-run attempts, Docker smoke automation, dependency-advisory work, and a real evidence-backed issue backlog remain visible post-release work
+
 ## 2026-09-08 — Use v0.7.0 and OIDC Trusted Publishing for the first PyPI release
 
 ### Decision

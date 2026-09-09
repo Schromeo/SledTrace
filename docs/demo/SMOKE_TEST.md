@@ -1,6 +1,6 @@
 # Smoke Test
 
-This document defines the v0.4 local-first smoke test for first-run developer experience.
+This document defines the current local-first smoke test for first-run developer experience.
 
 Goal:
 
@@ -13,6 +13,8 @@ Fresh clone
 ```
 
 ## Path A: Docker (recommended)
+
+Prerequisites: Git, Python 3.9+, and a running Docker Engine with Docker Compose. On Windows, Docker Desktop requires its WSL2 or Hyper-V virtualization backend to be enabled.
 
 From repository root:
 
@@ -39,7 +41,7 @@ Generate reference traces:
 
 ```bash
 cd sdk/python
-pip install -e .
+python -m pip install -e .
 python -m examples.reference_rag_app.run all
 ```
 
@@ -51,7 +53,17 @@ http://localhost:5173
 
 ## Path B: Non-Docker fallback
 
-From repository root:
+Prerequisites: Python 3.9+, Go, Node.js 22, and npm.
+
+From repository root, install the locked Dashboard dependencies once:
+
+```bash
+cd dashboard/web
+npm ci
+cd ../..
+```
+
+Start the Collector and Dashboard:
 
 ```bash
 python scripts/start-sledtrace.py
@@ -61,6 +73,7 @@ Then:
 
 ```bash
 cd sdk/python
+python -m pip install -e .
 python -m examples.reference_rag_app.run all
 ```
 
@@ -125,5 +138,17 @@ reference-rag-app run all: pass / fail
 dashboard loads: pass / fail
 reference traces visible: pass / fail
 ```
+
+## v0.7 clean-clone record
+
+On 2026-09-09, a new checkout of `main` completed the non-Docker path on Windows after the documented `npm ci` and editable SDK install:
+
+- Collector `/health`: pass
+- all nine deterministic reference traces: pass
+- Dashboard load and current SledTrace branding: pass
+- conflict evidence (30-day versus 14-day values): pass
+- weak-retrieval and unsupported-claim evidence: pass
+
+The same host could not execute the Docker path because Docker Desktop reported that WSL2 virtualization was disabled. This is an environment prerequisite failure, not a SledTrace container failure; Docker validation was not represented as passing in this v0.7 run.
 
 

@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a focused improvement grounded in a real developer workflow.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Developer problem
+      description: What concrete workflow or debugging problem should SledTrace improve?
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current workaround
+      description: How do you handle this problem today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe the smallest useful outcome, not only an implementation idea.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I understand this proposal is not implemented until it is accepted and merged.
+          required: true
