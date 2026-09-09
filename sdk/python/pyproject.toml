@@ -23,6 +23,12 @@ classifiers = [
 ]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/Schromeo/SledTrace"
+Documentation = "https://github.com/Schromeo/SledTrace#readme"
+Repository = "https://github.com/Schromeo/SledTrace"
+Issues = "https://github.com/Schromeo/SledTrace/issues"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8",
