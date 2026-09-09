@@ -1,5 +1,31 @@
 # Architecture Decisions
 
+## 2026-09-08 — Use v0.7.0 and OIDC Trusted Publishing for the first PyPI release
+
+### Decision
+
+Target v0.7.0 as SledTrace's first production PyPI release. Do not retroactively upload or rebuild v0.6.0: the immutable v0.6.0 package README correctly records that PyPI publication had not occurred, and rebuilding that version with different publication metadata would weaken release provenance.
+
+Publish through a manually dispatched GitHub Actions workflow using PyPI Trusted Publishing and short-lived OIDC credentials. Default the workflow to validation only, require an explicit TestPyPI or PyPI target, and require the selected `v`-prefixed tag to match the package version. Validate through TestPyPI before the production PyPI decision.
+
+### Reason
+
+- package index publication is the shortest path to the user-visible `pip install sledtrace` outcome
+- v0.6.0 is already an immutable GitHub release with historically accurate non-PyPI documentation
+- OIDC avoids storing a long-lived PyPI API token in GitHub secrets
+- manual target selection and version/tag matching reduce accidental or mismatched publication risk
+- a validate-only path proves artifact construction without requiring package-index credentials
+
+### Outcome
+
+- `publish-python.yml` has separate validate, TestPyPI, and PyPI paths
+- publishing actions are pinned to verified commits and only selected upload jobs receive `id-token: write`
+- package metadata, README rendering, project URLs, and included license text are validated
+- the first remote validate-only run passed and did not upload a package
+- TestPyPI and production PyPI Trusted Publisher registration remain owner-side prerequisites
+
+---
+
 ## 2026-09-08 — Establish independent cross-stack CI as the v0.7 baseline
 
 ### Decision

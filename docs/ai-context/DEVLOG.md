@@ -1,5 +1,37 @@
 # Devlog
 
+## 2026-09-08 (v0.7 Python Trusted Publishing Preparation)
+
+### Completed
+
+- Confirmed the public PyPI and TestPyPI APIs had no `sledtrace` project record; the official PyPI project URL displayed a 404 page.
+- Added project homepage, documentation, repository, and issue URLs to the Python package metadata.
+- Added the MIT license inside the Python package build context and verified it appears in the wheel.
+- Added `twine check` to both Python CI matrix jobs.
+- Added `.github/workflows/publish-python.yml` with manual validate, TestPyPI, and PyPI targets.
+- Restricted OIDC `id-token: write` permission to the selected package-index upload job.
+- Added tag/package-version matching for real publication targets.
+- Pinned release-workflow actions to the verified commits corresponding to checkout v7.0.1, setup-python v7.0.0, upload-artifact v7.0.1, download-artifact v8.0.1, and gh-action-pypi-publish v1.14.2.
+- Created and pushed commit `4c6108c0c0ad35e060b2dca9a439bbb425d33717`.
+
+### Validation Status
+
+- local package build succeeded
+- `twine check` passed for the wheel and source distribution
+- clean-wheel imports and installed CLI validation passed
+- isolated Pytest validation passed with 17 tests and the expected legacy-import warning
+- GitHub CI run https://github.com/Schromeo/SledTrace/actions/runs/34306672732 passed all four jobs, including `twine check` on Python 3.9 and 3.13
+- validate-only publishing run https://github.com/Schromeo/SledTrace/actions/runs/34306741532 succeeded in 25 seconds
+- the publishing dry-run retained one `python-package` artifact; TestPyPI and PyPI jobs were both skipped
+
+### Decision and Next Gate
+
+- v0.7.0 is the intended first production PyPI release; do not rebuild or retroactively publish a different v0.6.0 artifact
+- no package has been uploaded to TestPyPI or PyPI
+- the next gate is owner-side pending Trusted Publisher registration on TestPyPI for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
+
+---
+
 ## 2026-09-08 (v0.7 Initial Cross-Stack CI Baseline)
 
 ### Completed

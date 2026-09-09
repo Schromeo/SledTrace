@@ -72,6 +72,19 @@ v0.7 must produce an explicit, evidence-backed go/no-go decision covering packag
 
 Do not claim PyPI availability until publication and validation have succeeded.
 
+Current progress:
+
+* [x] confirm no public `sledtrace` project currently exists on PyPI or TestPyPI
+* [x] add PyPI project URLs and include the MIT license in wheel/sdist artifacts
+* [x] validate package metadata and long-description rendering with `twine check`
+* [x] add an OIDC Trusted Publishing workflow with separate validate, TestPyPI, and PyPI paths
+* [x] complete a remote validate-only run with a retained distribution artifact and no package-index upload
+* [x] select v0.7.0, rather than retroactively rebuilding v0.6.0, as the intended first production PyPI release
+* [ ] configure the pending TestPyPI Trusted Publisher
+* [ ] publish and clean-install a tagged v0.7.0 candidate from TestPyPI
+* [ ] configure production PyPI Trusted Publishing and make the final go/no-go decision
+* [ ] publish and clean-install `sledtrace` from production PyPI
+
 ### Scope Boundary
 
 Do not add LangChain/LlamaIndex adapters, cloud/auth/hosted functionality, new span types, LLM-as-judge, or unrelated warning features as incidental v0.7 work. Select later product work from external-use evidence rather than pre-committing v0.8 scope.

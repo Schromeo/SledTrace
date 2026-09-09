@@ -74,6 +74,17 @@ v0.7 must make an explicit decision about:
 
 Do not document PyPI installation as supported until publication and clean-install verification have actually succeeded.
 
+Current evidence and decision:
+
+- PyPI and TestPyPI had no public `sledtrace` project record when checked on 2026-09-08
+- `sdk/python` package metadata and long description pass `twine check`
+- the wheel now includes the MIT license text and project URLs
+- `.github/workflows/publish-python.yml` provides manual `validate`, `testpypi`, and `pypi` targets using OIDC Trusted Publishing
+- publishing requires an existing `v`-prefixed tag that matches the package version
+- remote `validate` run https://github.com/Schromeo/SledTrace/actions/runs/34306741532 passed and produced the `python-package` artifact while skipping both publish jobs
+- do not republish v0.6.0: its immutable release artifact says PyPI publication has not occurred; use v0.7.0 as the first intended production PyPI release
+- Trusted Publisher registration in the owner's TestPyPI/PyPI accounts remains incomplete
+
 ## v0.7 Acceptance Direction
 
 - [x] CI checks run on pull requests and pushes
@@ -84,7 +95,9 @@ Do not document PyPI installation as supported until publication and clean-insta
 - [ ] at least two external first-run attempts are recorded and their blockers are converted into actionable work
 - [ ] contributor entry points are clear
 - [ ] README and AI-context documents contain no known stale milestone claims
-- [ ] PyPI publication has a documented go/no-go decision and validation plan
+- [x] PyPI publication has a documented go/no-go decision and validation plan
+- [ ] TestPyPI trusted publication and clean-index installation pass
+- [ ] production PyPI publication and clean-index installation pass
 
 ## Current Guardrails
 
@@ -98,10 +111,13 @@ Do not document PyPI installation as supported until publication and clean-insta
 
 ## Immediate Next Step
 
-Use the new CI baseline to complete the next external-readiness slice:
+Complete the first real Python package publication path:
 
-1. address the currently reported transitive Dashboard development-dependency advisories with a focused, validated dependency update
-2. validate the documented first-run path from a fresh checkout, including Docker/local smoke behavior
-3. decide and configure the required checks for `main`
+1. register the pending Trusted Publisher on TestPyPI for repository `Schromeo/SledTrace`, workflow `publish-python.yml`, and environment `testpypi`
+2. prepare the v0.7.0 package/version/release content without claiming publication early
+3. publish to TestPyPI from a matching immutable tag and validate installation outside the source repository
+4. only after TestPyPI succeeds, register the production PyPI publisher using environment `pypi` and make the final publication decision
+
+Dashboard dependency advisories, Docker first-run validation, and branch protection remain recorded follow-up work, but they do not currently block Python SDK publication.
 
 Do not pre-commit v0.8 functionality until v0.7 external-use evidence identifies the highest-value next direction.

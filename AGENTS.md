@@ -28,6 +28,22 @@ Read `docs/ai-context/DECISIONS.md` before making architecture decisions.
 Use the repository and these documents as the source of truth.
 Do not assume old milestone information from this file overrides the current AI context documents.
 
+## Pre-Implementation Decision Gate
+
+Before each implementation slice, state a compact decision card covering:
+
+1. user value
+2. the actual current blocker
+3. capabilities already present in the repository
+4. the smallest deliverable change
+5. explicit non-goals for the slice
+6. proportional validation
+7. user-visible evidence
+
+Do not start implementation until these points form a coherent shortest path to the requested outcome.
+
+Keep one primary outcome per slice. Record newly discovered non-blocking work instead of following it immediately. After validation and documentation, stop and reassess the next slice rather than continuing through an old plan by inertia.
+
 ## Current Architecture
 
 ```text
@@ -183,10 +199,11 @@ Keep documentation aligned with actual tested repository behavior.
 
 Before coding:
 
-1. inspect the relevant implementation
-2. understand the current contract
-3. identify the smallest safe change
-4. state important assumptions
+1. complete the pre-implementation decision gate
+2. inspect the relevant implementation
+3. understand the current contract
+4. identify the smallest safe change
+5. state important assumptions
 
 After coding:
 

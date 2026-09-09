@@ -114,6 +114,19 @@ Known follow-up:
 - `npm audit` currently reports four transitive development-dependency advisories (one moderate and three high) through the Vite/Babel/PostCSS toolchain; they were recorded rather than mixed into the initial CI change
 - local validation in the restricted Codex environment required elevated reruns for package isolation, wheel temp-environment access, the Go build cache, and the npm cache; the exact CI run on GitHub completed without those host-specific permission failures
 
+Python publication readiness completed so far:
+
+- PyPI and TestPyPI public APIs returned no project record for `sledtrace` on 2026-09-08; final name availability is still established only by first publication
+- commit `4c6108c0c0ad35e060b2dca9a439bbb425d33717` added the trusted-publication preparation
+- package metadata now exposes homepage, documentation, repository, and issue URLs
+- the SDK distribution now includes the MIT license text
+- normal CI runs `twine check` on both Python 3.9 and 3.13
+- `.github/workflows/publish-python.yml` defaults to validation only and requires an explicit target for TestPyPI or PyPI
+- actual publishing requires a `v`-prefixed tag matching the package version and grants `id-token: write` only to the selected upload job
+- remote validate run https://github.com/Schromeo/SledTrace/actions/runs/34306741532 succeeded, retained one `python-package` artifact, and skipped both upload jobs
+- v0.7.0 is the intended first production PyPI version; do not rebuild a different v0.6.0 artifact after its immutable release
+- the next external action is owner-side pending Trusted Publisher registration on TestPyPI; no package has been uploaded yet
+
 Important sequencing:
 
 - do not pre-commit LangChain/LlamaIndex or eval work before external-use evidence
