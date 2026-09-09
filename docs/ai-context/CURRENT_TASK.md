@@ -2,11 +2,20 @@
 
 ## Current Focus
 
-SledTrace v0.7.0 — External Developer Readiness.
+Post-v0.7 external-use evidence and milestone selection.
 
-Status: v0.6.0 is complete and released. v0.7 release preparation is in progress on `release/v0.7.0`; cross-stack CI, TestPyPI candidate validation, production publisher configuration, `main` protection, clean-clone non-Docker validation, browser evidence, screenshots, and contributor entry points are complete or prepared. Production publication has not occurred yet.
+Status: v0.7.0 — External Developer Readiness is complete and released. Protected CI, TestPyPI candidate validation, production Trusted Publishing, clean-clone non-Docker validation, browser evidence, screenshots, contributor entry points, production PyPI installation, and the GitHub Release are complete. No v0.8 product scope has been selected.
 
 ## Completed Release Baseline
+
+v0.7.0 — External Developer Readiness was released on 2026-09-09.
+
+- release commit and immutable annotated tag target: `58887907973aff3948d2cf3667681832f4305ec6`
+- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0
+- production package: https://pypi.org/project/sledtrace/0.7.0/
+- protected publication workflow: https://github.com/Schromeo/SledTrace/actions/runs/34410674101
+- a no-cache clean install of `sledtrace==0.7.0` from production PyPI passed outside the source repository
+- preferred `sledtrace` and temporary legacy `raglens` imports, CLI help/version, and the expected non-zero out-of-checkout `serve` boundary passed
 
 v0.6.0 — Local CLI / Startup UX was released on 2026-09-08.
 
@@ -59,9 +68,9 @@ The milestone is named **External Developer Readiness**, not adoption, because r
 - update README screenshots only when the visible product or onboarding flow materially changes
 - refresh release-quality screenshots before releases that change the Dashboard
 
-## PyPI Decision Gate
+## PyPI Release Outcome
 
-Ordinary `pip install sledtrace` from production PyPI is a high-priority product and distribution goal, but it is not available today. The explicit `0.7.0rc1` prerelease is available from TestPyPI.
+Ordinary `python -m pip install sledtrace==0.7.0` from production PyPI is supported for the Python SDK and installed CLI. The explicit `0.7.0rc1` prerelease remains available from TestPyPI as immutable candidate history.
 
 v0.7 must make an explicit decision about:
 
@@ -89,8 +98,13 @@ Current evidence and decision:
 - GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34309033246 published `0.7.0rc1` to TestPyPI and skipped production PyPI
 - a no-cache clean install from the TestPyPI public index passed outside the source repository, including preferred and legacy imports, CLI version/help, and the expected non-zero `serve` boundary
 - TestPyPI project: https://test.pypi.org/project/sledtrace/0.7.0rc1/
-- the production PyPI pending Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
+- the production PyPI Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
 - GitHub environment `pypi` requires approval from `Schromeo`, permits self-review for the current single-maintainer workflow, blocks branch deployments, and allows only tags matching `v*`
+- protected pull request #1 merged release commit `58887907973aff3948d2cf3667681832f4305ec6` after all four required checks passed
+- annotated tag `v0.7.0` targets that release commit and was not moved after publication
+- production workflow https://github.com/Schromeo/SledTrace/actions/runs/34410674101 published `sledtrace==0.7.0` through Trusted Publishing
+- production project: https://pypi.org/project/sledtrace/0.7.0/
+- a no-cache clean production-index install passed outside the source repository, including preferred and legacy imports, CLI help/version, and the expected non-zero `serve` boundary
 
 ## v0.7 Acceptance Direction
 
@@ -104,7 +118,7 @@ Current evidence and decision:
 - [x] README and AI-context documents contain no known stale milestone claims in the release-prep branch
 - [x] PyPI publication has a documented go/no-go decision and validation plan
 - [x] TestPyPI trusted publication and clean-index installation pass
-- [ ] production PyPI publication and clean-index installation pass
+- [x] production PyPI publication and clean-index installation pass
 
 ## Current Guardrails
 
@@ -118,15 +132,11 @@ Current evidence and decision:
 
 ## Immediate Next Step
 
-Complete the protected release path:
+Use the released package to collect evidence before selecting v0.8:
 
-1. validate the complete `release/v0.7.0` working tree
-2. push the branch, open a pull request, and require all four CI checks
-3. merge through protected `main`, then create the immutable annotated `v0.7.0` tag
-4. dispatch production publication from that tag and approve the protected `pypi` deployment
-5. validate ordinary `pip install sledtrace==0.7.0` outside the source repository
-6. publish the GitHub Release and record the actual release evidence
+1. record at least two external first-run attempts and convert real blockers into actionable issues
+2. rerun the documented Docker path on a host with working WSL2/Hyper-V virtualization
+3. deliberately review the four recorded Dashboard development-dependency advisories
+4. choose the next milestone from observed integration, distribution, diagnostic, or evaluation friction
 
-Two independent external first-run attempts are post-release evidence rather than a blocker for the first production package. Docker smoke automation and the recorded Dashboard dependency advisories also remain follow-up work. The documented Docker path still needs a host with working virtualization for a fresh v0.7 runtime rerun; the non-Docker fallback is the validated v0.7 clean-clone path.
-
-Do not pre-commit v0.8 functionality until v0.7 external-use evidence identifies the highest-value next direction.
+Do not create synthetic community activity or pre-commit LangChain/LlamaIndex adapters, new spans, cloud/auth, or LLM-as-judge work without evidence that it is the highest-value next step.

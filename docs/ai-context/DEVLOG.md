@@ -1,5 +1,33 @@
 # Devlog
 
+## 2026-09-09 (v0.7.0 Published and Clean-Install Validated)
+
+### Completed
+
+- Merged protected pull request #1 after the required `Python 3.9`, `Python 3.13`, `Go Collector`, and `Dashboard` checks passed.
+- Created and pushed immutable annotated tag `v0.7.0` at release commit `58887907973aff3948d2cf3667681832f4305ec6`.
+- Dispatched production publishing from that exact tag and approved the protected `pypi` environment.
+- Published `sledtrace==0.7.0` to production PyPI through OIDC Trusted Publishing.
+- Created GitHub Release `SledTrace v0.7.0 — External Developer Readiness`.
+
+### Production Validation
+
+- workflow https://github.com/Schromeo/SledTrace/actions/runs/34410674101 completed successfully
+- production project: https://pypi.org/project/sledtrace/0.7.0/
+- a no-cache install downloaded `sledtrace-0.7.0-py3-none-any.whl` from the production index into a new virtual environment outside the repository
+- preferred `sledtrace` import reported `0.7.0`
+- temporary legacy `raglens` import reported `0.7.0` with the expected deprecation warning
+- `sledtrace --help`, `sledtrace serve --help`, and `sledtrace version` passed
+- `sledtrace serve` outside a checkout exited 1 with the documented source-checkout guidance
+
+### Next Evidence
+
+- collect two external first-run attempts before selecting a v0.8 product milestone
+- rerun the Docker path on a host with working virtualization
+- deliberately review the four recorded Dashboard development-dependency advisories
+
+---
+
 ## 2026-09-09 (v0.7 Final Release Preparation and Clean-Clone Evidence)
 
 ### Completed

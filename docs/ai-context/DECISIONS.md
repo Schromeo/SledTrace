@@ -1,5 +1,30 @@
 # Architecture Decisions
 
+## 2026-09-09 — Close v0.7.0 only after protected publication and clean-index validation
+
+### Decision
+
+Declare v0.7.0 External Developer Readiness complete after the protected pull request and required checks pass, the immutable `v0.7.0` tag publishes through the approval-gated `pypi` environment, a no-cache install from production PyPI succeeds outside the repository, and the GitHub Release is published.
+
+Keep the release tag fixed at `58887907973aff3948d2cf3667681832f4305ec6`. Record later documentation closure in a separate protected pull request rather than moving or rebuilding the released artifact.
+
+### Reason
+
+- package upload success alone does not prove that ordinary users can install the published artifact
+- keeping the tag immutable preserves release provenance
+- separating post-release documentation from the release artifact avoids silently changing published package contents
+
+### Outcome
+
+- pull request #1 merged after `Python 3.9`, `Python 3.13`, `Go Collector`, and `Dashboard` passed
+- production publishing workflow https://github.com/Schromeo/SledTrace/actions/runs/34410674101 completed successfully
+- `sledtrace==0.7.0` installed from production PyPI in a clean environment outside the source repository
+- preferred and legacy imports, CLI help/version, and the expected out-of-checkout `serve` failure path passed
+- GitHub Release https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0 was published
+- external first-run evidence, Docker validation on a suitable host, and dependency-advisory review remain post-release inputs to the next milestone
+
+---
+
 ## 2026-09-09 — Separate project-release blockers from post-release adoption evidence
 
 ### Decision

@@ -6,11 +6,11 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 ## Current Snapshot
 
-**Current released version:** v0.6.0 - Local CLI / Startup UX
+**Current released version:** v0.7.0 - External Developer Readiness
 
-**Release status:** Complete, validated, tagged, pushed, and published on 2026-09-08
+**Release status:** Complete, validated, tagged, published to production PyPI, and published as a GitHub Release on 2026-09-09
 
-**Release in preparation:** v0.7.0 - External Developer Readiness
+**Next product milestone:** Not selected; gather post-release external-use evidence first
 
 Release references:
 
@@ -18,11 +18,14 @@ Release references:
 * v0.5.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
 * v0.6.0 tag targets `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
 * v0.6.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
-* TestPyPI `0.7.0rc1` publication and clean-index validation are complete; production PyPI publication has not occurred
+* v0.7.0 tag targets `58887907973aff3948d2cf3667681832f4305ec6`
+* v0.7.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0
+* production package: https://pypi.org/project/sledtrace/0.7.0/
+* production publication workflow: https://github.com/Schromeo/SledTrace/actions/runs/34410674101
 
 ## v0.7.0 - External Developer Readiness
 
-**Status:** Final release preparation; production PyPI publication and clean-index validation remain pending
+**Status:** Complete and released on 2026-09-09
 
 ### Goal
 
@@ -66,7 +69,7 @@ This milestone creates the conditions for adoption. It does not claim adoption m
 
 ### PyPI Decision Gate
 
-Ordinary `pip install sledtrace` from production PyPI is a high-priority distribution goal, but it is not implemented today. The explicit `0.7.0rc1` prerelease is available from TestPyPI.
+Ordinary `python -m pip install sledtrace==0.7.0` from production PyPI is supported for the Python SDK and installed CLI. The explicit `0.7.0rc1` prerelease remains available from TestPyPI as candidate history.
 
 v0.7 must produce an explicit, evidence-backed go/no-go decision covering package ownership, secure publication, TestPyPI/PyPI sequencing, long-description rendering, clean-install validation, and the relationship between the installable SDK/CLI and the source-checkout runtime.
 
@@ -83,8 +86,8 @@ Current progress:
 * [x] register the pending TestPyPI Trusted Publisher
 * [x] publish and clean-install tagged `v0.7.0rc1` from TestPyPI
 * [x] configure production PyPI Trusted Publishing with required approval and a `v*` tag-only deployment policy
-* [ ] make the final production PyPI go/no-go decision
-* [ ] publish and clean-install `sledtrace` from production PyPI
+* [x] make the final production PyPI go/no-go decision
+* [x] publish and clean-install `sledtrace` from production PyPI
 
 ### Scope Boundary
 

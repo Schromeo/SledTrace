@@ -9,11 +9,11 @@ Former project name: RAGLens.
 
 Current stable project direction is SledTrace-first. Legacy RAGLens compatibility may remain temporarily where explicitly documented.
 
-Current released version: **v0.6.0 — Local CLI / Startup UX**. The `release/v0.7.0` branch prepares the next release; do not describe v0.7.0 as published until the protected tag workflow and production-index install both pass.
+Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current planned milestone: **v0.7.0 — External Developer Readiness**.
+Current focus: collect post-release external first-run evidence before selecting a v0.8 product milestone.
 
-The Python package is buildable as a wheel/sdist, and `0.7.0rc1` is published and clean-install validated on TestPyPI. Final `0.7.0` metadata and release documentation are being prepared for production PyPI. Treat release-facing `pip install sledtrace` language on the release branch as intended final artifact content; do not claim that production publication has completed until a clean production-index install verifies it.
+The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
 ## Before Doing Meaningful Work
 
