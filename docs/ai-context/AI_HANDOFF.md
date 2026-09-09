@@ -10,19 +10,21 @@ SledTrace is a local-first visual debugger for RAG pipelines.
 
 ## Current Released Version
 
-v0.6.0 — Local CLI / Startup UX
+v0.7.0 — External Developer Readiness
 
-Released on 2026-09-08:
+Released on 2026-09-09:
 
-- release commit: `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
-- annotated tag: `v0.6.0`
-- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
+- release commit and annotated tag target: `58887907973aff3948d2cf3667681832f4305ec6`
+- annotated tag: `v0.7.0`
+- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0
+- production package: https://pypi.org/project/sledtrace/0.7.0/
+- protected publishing workflow: https://github.com/Schromeo/SledTrace/actions/runs/34410674101
 
 ## Current Planned Milestone
 
-v0.7.0 — External Developer Readiness
+No v0.8 product milestone has been selected.
 
-Status: final release preparation on `release/v0.7.0`; production publication and clean-index validation remain pending.
+Status: collect post-release external first-run evidence, validate Docker on a virtualization-capable host, and review the recorded Dashboard dependency advisories before choosing the next scope.
 
 ## Current Project Status
 
@@ -83,9 +85,9 @@ Release outcome:
 - GitHub Release published: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
 - PyPI publication was not performed
 
-### v0.7.0 Current Progress
+### v0.7.0 Status
 
-**v0.7.0 is External Developer Readiness, not a claim of external adoption.**
+**v0.7.0 External Developer Readiness is complete and released; this remains a readiness milestone, not a claim of external adoption.**
 
 Selected priorities:
 
@@ -125,7 +127,7 @@ Final release-preparation slice:
 - added `CONTRIBUTING.md`, bug/feature issue forms, a PR template, a release checklist, and v0.7 release notes
 - prepared final Python and Dashboard `0.7.0` metadata without changing product contracts or behavior
 
-Python publication readiness completed so far:
+Python publication outcome:
 
 - PyPI and TestPyPI public APIs returned no project record for `sledtrace` before publication on 2026-09-08; the successful TestPyPI upload established the project there
 - commit `4c6108c0c0ad35e060b2dca9a439bbb425d33717` added the trusted-publication preparation
@@ -135,20 +137,26 @@ Python publication readiness completed so far:
 - `.github/workflows/publish-python.yml` defaults to validation only and requires an explicit target for TestPyPI or PyPI
 - actual publishing requires a `v`-prefixed tag matching the package version and grants `id-token: write` only to the selected upload job
 - remote validate run https://github.com/Schromeo/SledTrace/actions/runs/34306741532 succeeded, retained one `python-package` artifact, and skipped both upload jobs
-- v0.7.0 is the intended first production PyPI version; do not rebuild a different v0.6.0 artifact after its immutable release
+- v0.7.0 is the first production PyPI version; do not rebuild a different v0.6.0 artifact after its immutable release
 - the pending Trusted Publisher for TestPyPI is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
 - local `0.7.0rc1` tests, isolated build, `twine check`, and clean-wheel import/CLI validation passed
 - commit `01a443f2d94c4574948edfc8a495fb997aad3de9` and annotated tag `v0.7.0rc1` are pushed
 - GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34309033246 published the candidate to TestPyPI; the production PyPI job was skipped
 - a no-cache install from the TestPyPI public index passed outside the source repository, including imports, CLI version/help, and the expected non-zero `serve` boundary
 - TestPyPI project: https://test.pypi.org/project/sledtrace/0.7.0rc1/
-- the production PyPI pending Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
+- the production PyPI Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
 - GitHub environment `pypi` requires approval from `Schromeo`, allows self-review for the single-maintainer workflow, rejects branch deployments, and allows only tags matching `v*`
+- protected pull request #1 merged release commit `58887907973aff3948d2cf3667681832f4305ec6` after all four required checks passed
+- immutable annotated tag `v0.7.0` targets that release commit
+- production workflow https://github.com/Schromeo/SledTrace/actions/runs/34410674101 completed successfully and published through Trusted Publishing
+- production project: https://pypi.org/project/sledtrace/0.7.0/
+- a no-cache clean production-index install of `sledtrace==0.7.0` passed outside the source repository, including preferred and legacy imports, CLI version/help, and the expected non-zero `serve` boundary
+- GitHub Release: https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0
 
 Important sequencing:
 
 - do not pre-commit LangChain/LlamaIndex or eval work before external-use evidence
-- release-prep package content may describe the intended `0.7.0` install command, but do not claim that publication completed until production PyPI and clean-install validation succeed
+- production PyPI publication and clean-install validation are complete; keep future release claims gated on their own immutable tag workflows and post-publication installs
 - keep the root README as the visual showcase
 - keep `sdk/python/README.md` suitable for package metadata without duplicating Dashboard screenshot assets
 
@@ -572,7 +580,7 @@ SledTrace is not:
 
 ## Release State and Next Step
 
-v0.6.0 remains the current completed and published release while v0.7.0 is prepared through a protected release branch. Cross-stack CI, TestPyPI, production publisher configuration, branch protection, clean-clone non-Docker startup, deterministic Dashboard evidence, current screenshots, and contributor entry points are complete or prepared.
+v0.7.0 is the current completed and published release. Cross-stack CI, TestPyPI, production PyPI, branch protection, clean-clone non-Docker startup, deterministic Dashboard evidence, current screenshots, contributor entry points, and GitHub Release publication are complete.
 
 Published release history:
 
@@ -580,20 +588,20 @@ Published release history:
 - v0.4.1 — SledTrace compatibility-preserving rebrand
 - v0.5.0 — Python SDK Packaging Readiness
 - v0.6.0 — Local CLI / Startup UX
+- v0.7.0 — External Developer Readiness
 
 Current next step:
 
-- run the complete local release validation on `release/v0.7.0`
-- push the branch, open a pull request, and require the four protected checks
-- merge through `main`, create the immutable `v0.7.0` tag, and publish through the protected `pypi` environment
-- clean-install `0.7.0` from production PyPI outside the checkout and publish the GitHub Release
-- collect post-release external first-run evidence before selecting later framework, distribution, diagnostic, or eval work
+- collect at least two post-release external first-run attempts and convert real blockers into actionable issues
+- validate the Docker path on a host with working WSL2/Hyper-V virtualization
+- deliberately review the recorded Dashboard dependency-advisory baseline
+- select later framework, distribution, diagnostic, or eval work from observed evidence
 
 Current publication boundary:
 
-- v0.5.0 and v0.6.0 tags and GitHub Releases exist
+- v0.5.0, v0.6.0, and v0.7.0 tags and GitHub Releases exist
 - TestPyPI `0.7.0rc1` publication exists and is clean-install validated
-- production PyPI publication does not exist
+- production PyPI `sledtrace==0.7.0` publication exists and is clean-install validated
 - do not rewrite or move published tags as part of post-release documentation work
 
 ## Important Guardrails
