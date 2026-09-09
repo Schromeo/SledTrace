@@ -18,11 +18,11 @@ Release references:
 * v0.5.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
 * v0.6.0 tag targets `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
 * v0.6.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
-* PyPI publication has not occurred
+* TestPyPI `0.7.0rc1` publication and clean-index validation are complete; production PyPI publication has not occurred
 
 ## v0.7.0 - External Developer Readiness
 
-**Status:** In progress; cross-stack CI and local `0.7.0rc1` TestPyPI candidate validation are complete and green
+**Status:** In progress; cross-stack CI and published `0.7.0rc1` TestPyPI candidate validation are complete and green
 
 ### Goal
 
@@ -66,7 +66,7 @@ This milestone creates the conditions for adoption. It does not claim adoption m
 
 ### PyPI Decision Gate
 
-`pip install sledtrace` is a high-priority distribution goal, but it is not implemented today.
+Ordinary `pip install sledtrace` from production PyPI is a high-priority distribution goal, but it is not implemented today. The explicit `0.7.0rc1` prerelease is available from TestPyPI.
 
 v0.7 must produce an explicit, evidence-backed go/no-go decision covering package ownership, secure publication, TestPyPI/PyPI sequencing, long-description rendering, clean-install validation, and the relationship between the installable SDK/CLI and the source-checkout runtime.
 
@@ -81,7 +81,7 @@ Current progress:
 * [x] complete a remote validate-only run with a retained distribution artifact and no package-index upload
 * [x] select v0.7.0, rather than retroactively rebuilding v0.6.0, as the intended first production PyPI release
 * [x] register the pending TestPyPI Trusted Publisher
-* [ ] publish and clean-install a tagged v0.7.0 candidate from TestPyPI
+* [x] publish and clean-install tagged `v0.7.0rc1` from TestPyPI
 * [ ] configure production PyPI Trusted Publishing and make the final go/no-go decision
 * [ ] publish and clean-install `sledtrace` from production PyPI
 

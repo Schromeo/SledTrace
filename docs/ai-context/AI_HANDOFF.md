@@ -22,7 +22,7 @@ Released on 2026-09-08:
 
 v0.7.0 — External Developer Readiness
 
-Status: implementation in progress; cross-stack CI and the local `0.7.0rc1` TestPyPI candidate validation are complete and green.
+Status: implementation in progress; cross-stack CI and the published `0.7.0rc1` TestPyPI candidate validation are complete and green.
 
 ## Current Project Status
 
@@ -116,7 +116,7 @@ Known follow-up:
 
 Python publication readiness completed so far:
 
-- PyPI and TestPyPI public APIs returned no project record for `sledtrace` on 2026-09-08; final name availability is still established only by first publication
+- PyPI and TestPyPI public APIs returned no project record for `sledtrace` before publication on 2026-09-08; the successful TestPyPI upload established the project there
 - commit `4c6108c0c0ad35e060b2dca9a439bbb425d33717` added the trusted-publication preparation
 - package metadata now exposes homepage, documentation, repository, and issue URLs
 - the SDK distribution now includes the MIT license text
@@ -127,7 +127,10 @@ Python publication readiness completed so far:
 - v0.7.0 is the intended first production PyPI version; do not rebuild a different v0.6.0 artifact after its immutable release
 - the pending Trusted Publisher for TestPyPI is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
 - local `0.7.0rc1` tests, isolated build, `twine check`, and clean-wheel import/CLI validation passed
-- no package has been uploaded yet; the next external action is to publish the immutable `v0.7.0rc1` candidate to TestPyPI and validate a clean index install
+- commit `01a443f2d94c4574948edfc8a495fb997aad3de9` and annotated tag `v0.7.0rc1` are pushed
+- GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34309033246 published the candidate to TestPyPI; the production PyPI job was skipped
+- a no-cache install from the TestPyPI public index passed outside the source repository, including imports, CLI version/help, and the expected non-zero `serve` boundary
+- TestPyPI project: https://test.pypi.org/project/sledtrace/0.7.0rc1/
 
 Important sequencing:
 
@@ -523,7 +526,7 @@ Current scope limits:
 
 - only retrieval and llm spans are implemented
 - onboarding path is local-first and repo-based
-- source and local wheel installation are supported; PyPI publication is not
+- source and local wheel installation are supported; `0.7.0rc1` is available on TestPyPI, while production PyPI publication is not
 - the packaged CLI provides help and version behavior, while `serve` requires a source checkout
 - no LangChain adapter yet
 - no LlamaIndex adapter yet
@@ -567,8 +570,8 @@ Published release history:
 
 Current next step:
 
-- publish the validated `v0.7.0rc1` candidate to TestPyPI through the trusted workflow
-- validate installation and CLI behavior from TestPyPI outside the source repository
+- register the production PyPI Trusted Publisher using environment `pypi`
+- make the explicit production publication go/no-go decision for final v0.7.0
 - keep user-visible Dashboard evidence alongside automated validation
 - make the production PyPI go/no-go decision only after the TestPyPI result
 - use external first-run evidence to select later framework, distribution, diagnostic, or eval work
@@ -576,7 +579,8 @@ Current next step:
 Current publication boundary:
 
 - v0.5.0 and v0.6.0 tags and GitHub Releases exist
-- PyPI publication does not exist
+- TestPyPI `0.7.0rc1` publication exists and is clean-install validated
+- production PyPI publication does not exist
 - do not rewrite or move published tags as part of post-release documentation work
 
 ## Important Guardrails

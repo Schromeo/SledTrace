@@ -10,7 +10,7 @@ SledTrace is designed for local development first. The default local demo is det
 
 Latest release: [SledTrace v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
 
-Distribution status: the Python SDK can be installed from source or a locally built wheel. SledTrace is not published to PyPI yet, so `pip install sledtrace` is not currently a supported installation path.
+Distribution status: the Python SDK can be installed from source or a locally built wheel. The `0.7.0rc1` prerelease is [published on TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) and has passed a clean index-install validation. SledTrace is not published to production PyPI yet, so ordinary `pip install sledtrace` is not currently a supported installation path.
 
 #### Why "SledTrace"?
 
@@ -475,7 +475,7 @@ Current scope limits:
 
 * only `retrieval` and `llm` spans are implemented
 * onboarding path is local-first and repo-based
-* the SDK is distributed from source or local wheel artifacts; it is not published to PyPI
+* the SDK is distributed from source or local wheel artifacts; `0.7.0rc1` is available on TestPyPI, but production PyPI publication is not complete
 * `sledtrace serve` requires a SledTrace source checkout and is not a standalone wheel-installed runtime
 * no LangChain adapter yet
 * no LlamaIndex adapter yet
@@ -504,10 +504,10 @@ Near-term focus:
 * automated CI for the Python SDK, Go Collector, and Dashboard
 * clean-clone first-run validation with user-visible evidence
 * contributor entry points and a small evidence-backed public issue backlog
-* an explicit PyPI publication decision and repeatable publishing plan
+* complete the production PyPI publication decision after the successful TestPyPI `0.7.0rc1` validation
 * preserve deterministic-first warning generation and stable trace contracts
 
-PyPI publishing is a high-priority v0.7 decision gate, not a shipped capability. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope.
+The TestPyPI trusted-publishing path is validated with `0.7.0rc1`; production PyPI remains a v0.7 decision gate rather than a shipped capability. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope.
 
 ## Design principles
 

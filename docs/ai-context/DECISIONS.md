@@ -23,6 +23,7 @@ Publish through a manually dispatched GitHub Actions workflow using PyPI Trusted
 - package metadata, README rendering, project URLs, and included license text are validated
 - the first remote validate-only run passed and did not upload a package
 - the TestPyPI pending Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
+- tagged candidate `v0.7.0rc1` was published through Trusted Publishing and clean-installed from the public TestPyPI index outside the source repository
 - production PyPI Trusted Publisher registration remains an owner-side prerequisite after TestPyPI validation
 
 ---

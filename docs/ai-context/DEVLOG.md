@@ -1,6 +1,6 @@
 # Devlog
 
-## 2026-09-08 (v0.7.0rc1 TestPyPI Candidate Prepared)
+## 2026-09-08 (v0.7.0rc1 TestPyPI Candidate Published and Validated)
 
 ### Completed
 
@@ -9,6 +9,8 @@
 - Updated package metadata, runtime SDK metadata, installed CLI version output, validation expectations, and package README consistently.
 - Kept the temporary `raglens` compatibility import and version aligned with the preferred `sledtrace` package.
 - Reworded the wheel-installed `serve` limitation so it remains accurate without embedding a stale release number.
+- Pushed commit `01a443f2d94c4574948edfc8a495fb997aad3de9` and annotated tag `v0.7.0rc1`.
+- Published `0.7.0rc1` to TestPyPI through OIDC Trusted Publishing: https://test.pypi.org/project/sledtrace/0.7.0rc1/
 
 ### Validation Status
 
@@ -16,12 +18,16 @@
 - isolated wheel/sdist build succeeded and produced `sledtrace-0.7.0rc1-py3-none-any.whl` and `sledtrace-0.7.0rc1.tar.gz`
 - `twine check` passed for both artifacts
 - clean-wheel installation, `sledtrace` and legacy `raglens` imports, CLI help, `sledtrace version`, and the repository-outside `serve` failure path passed
+- GitHub CI run https://github.com/Schromeo/SledTrace/actions/runs/34308937339 passed Go, Dashboard, Python 3.9, and Python 3.13 jobs
+- publishing run https://github.com/Schromeo/SledTrace/actions/runs/34309033246 passed the build and TestPyPI jobs while skipping production PyPI
+- a no-cache install from `https://test.pypi.org/simple/` succeeded outside the source repository and reported `0.7.0rc1`
 - `git diff --check` passed
 
 ### Current Boundary
 
-- no package has been uploaded to TestPyPI or production PyPI yet
-- the next external step is an immutable `v0.7.0rc1` tag and explicit TestPyPI workflow run
+- TestPyPI publication and clean-index validation are complete
+- no package has been uploaded to production PyPI yet
+- the next external step is production Trusted Publisher registration followed by the final v0.7.0 go/no-go decision
 - ordinary `pip install sledtrace` remains unsupported until production PyPI publication and clean-install validation succeed
 
 ---

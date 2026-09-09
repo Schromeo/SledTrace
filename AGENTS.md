@@ -13,7 +13,7 @@ Current released version: **v0.6.0 — Local CLI / Startup UX**.
 
 Current planned milestone: **v0.7.0 — External Developer Readiness**.
 
-The Python package is buildable as a wheel/sdist but is not published to PyPI yet. Do not document `pip install sledtrace` as an available installation path until publication has actually been completed and verified.
+The Python package is buildable as a wheel/sdist, and `0.7.0rc1` is published and clean-install validated on TestPyPI. It is not published to production PyPI yet. Do not document ordinary `pip install sledtrace` as an available installation path until production publication has actually been completed and verified.
 
 ## Before Doing Meaningful Work
 

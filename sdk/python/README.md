@@ -10,7 +10,7 @@ Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/
 
 This is a prerelease candidate intended for TestPyPI validation. It is not a production PyPI release, so ordinary `pip install sledtrace` is not currently a supported installation path.
 
-After `0.7.0rc1` is published to TestPyPI, install that exact candidate in a clean environment with:
+`0.7.0rc1` is published on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/). Install that exact candidate in a clean environment with:
 
 ```bash
 python -m pip install --index-url https://test.pypi.org/simple/ sledtrace==0.7.0rc1
