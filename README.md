@@ -8,9 +8,15 @@ It helps developers inspect why a RAG application produced a bad answer by showi
 
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
-Latest release: [SledTrace v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
+Latest release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
-Distribution status: the Python SDK can be installed from source or a locally built wheel. The `0.7.0rc1` prerelease is [published on TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) and has passed a clean index-install validation. SledTrace is not published to production PyPI yet, so ordinary `pip install sledtrace` is not currently a supported installation path.
+Install the Python SDK from PyPI:
+
+```bash
+python -m pip install sledtrace
+```
+
+The `0.7.0rc1` prerelease remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) as the immutable publication candidate that preceded the production release.
 
 #### Why "SledTrace"?
 
@@ -95,6 +101,8 @@ See `docs/demo/WARNING_RULES.md` for current rule definitions and limitations.
 
 Use this path when you are fresh-cloning the repo and want the fastest first run.
 
+Prerequisites: Git, Python 3.9+, and Docker Desktop (or another Docker Engine with Compose). Start Docker before running the command. On Windows, Docker Desktop also requires its WSL2 or Hyper-V virtualization backend to be enabled.
+
 ```bash
 docker compose up --build
 ```
@@ -109,7 +117,7 @@ Then generate reference traces:
 
 ```bash
 cd sdk/python
-pip install -e .
+python -m pip install -e .
 python -m examples.reference_rag_app.run all
 ```
 
@@ -119,18 +127,12 @@ Open:
 http://localhost:5173
 ```
 
-### SDK packaging milestone (v0.5.0)
-
-This release completed the Python SDK packaging readiness work for local distribution without publishing to PyPI.
+### Install and inspect the Python SDK
 
 ```bash
-cd sdk/python
-pip install -e .
-
-python -m pip install --upgrade pip
-python -m pip install build
-python -m build
-pip install dist/*.whl
+python -m pip install sledtrace
+sledtrace --help
+sledtrace version
 ```
 
 New code should use the SledTrace import path:
@@ -139,17 +141,15 @@ New code should use the SledTrace import path:
 from sledtrace import trace
 ```
 
-Legacy `raglens` compatibility remains temporary for migration support, but the project is now SledTrace-first.
+Legacy `raglens` compatibility remains temporary for migration support, but the project is SledTrace-first.
 
-PyPI publishing is not part of v0.5.0 unless a later release decides to publish manually.
+### CLI and local services
 
-### CLI milestone (v0.6.0)
-
-The released v0.6.0 local developer startup flow has a small installable CLI entry point.
+The package-installed CLI exposes help and version information everywhere. Starting the Collector and Dashboard remains source-checkout based:
 
 ```bash
 cd sdk/python
-pip install -e .
+python -m pip install -e .
 
 sledtrace --help
 sledtrace version
@@ -158,9 +158,7 @@ sledtrace serve
 
 `serve` delegates to the existing repo-local startup script so the collector and dashboard launch in the same way as the current local workflow.
 
-`sledtrace serve` is a source-checkout command in v0.6.0. Run it from the repository root or any directory inside the checkout. A normal wheel installation still supports `sledtrace --help` and `sledtrace version`, but it does not bundle the collector, dashboard, Docker assets, or a standalone serving runtime. Outside a checkout, `serve` exits with guidance instead of guessing a repository path.
-
-See the [v0.6.0 GitHub Release](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0) for the completed release scope and validation record.
+Run `sledtrace serve` from the repository root or any directory inside the checkout. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime. Outside a checkout, `serve` exits with guidance instead of guessing a repository path.
 
 Current recommended local stack:
 
@@ -172,7 +170,15 @@ docker compose up --build
 
 Use this path when you do not want Docker.
 
-From the repo root:
+Prerequisites: Python 3.9+, Go, Node.js 22, and npm. From the repo root, install the locked Dashboard dependencies once:
+
+```bash
+cd dashboard/web
+npm ci
+cd ../..
+```
+
+Then start local services:
 
 ```bash
 python scripts/start-sledtrace.py
@@ -182,6 +188,7 @@ Then run traces in another terminal:
 
 ```bash
 cd sdk/python
+python -m pip install -e .
 python -m examples.reference_rag_app.run all
 ```
 
@@ -208,11 +215,13 @@ Use this path when you want to instrument an existing Python RAG application ins
 python scripts/start-sledtrace.py
 ```
 
-3. In your own app virtual environment, install the SDK from the local checkout:
+3. In your own app virtual environment, install the SDK:
 
 ```bash
-pip install -e /path/to/sledtrace/sdk/python
+python -m pip install sledtrace
 ```
+
+Contributors working against local SDK changes can instead use `python -m pip install -e /path/to/sledtrace/sdk/python`.
 
 4. Instrument your own request path with the Python SDK:
 
@@ -399,10 +408,13 @@ bash ./scripts/mac/smoke.sh
 * `docs/releases/V0_4_1.md` - SledTrace v0.4.1 rebrand release notes.
 * `docs/releases/V0_5_0.md` - Python SDK distribution and packaging-readiness release notes.
 * `docs/releases/V0_6_0.md` - Local CLI and startup UX release notes.
+* `docs/releases/V0_7_0.md` - External Developer Readiness release notes.
 * `docs/REBRANDING.md` - migration notes for the RAGLens to SledTrace rename.
 
 ### For contributors / maintainers
 
+* `CONTRIBUTING.md` - Local setup, validation, and pull-request expectations.
+* `docs/releases/RELEASE_CHECKLIST.md` - Repeatable project and Python publication checklist.
 * `docs/ai-context/ROADMAP.md` - Milestones and planned sequencing.
 * `docs/ai-context/DEVLOG.md` - Chronological implementation log.
 * `docs/ai-context/CURRENT_TASK.md` - Current focus and immediate next steps.
@@ -422,16 +434,18 @@ Milestone snapshot:
 * v0.4.1 rebrand release: complete
 * v0.5.0 Python SDK distribution / packaging readiness: complete
 * v0.6.0 local CLI / startup UX: complete
+* v0.7.0 external developer readiness: complete
 
 Published releases:
 
 * [v0.5.0 — Python SDK Packaging Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0)
 * [v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
+* [v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
 Current version:
 
 ```text
-v0.6.0 - Local CLI / Startup UX
+v0.7.0 - External Developer Readiness
 ```
 
 Completed:
@@ -466,6 +480,11 @@ Completed:
 * locally buildable Python wheel and sdist
 * installable `sledtrace` console script with help and version commands
 * source-checkout-aware `sledtrace serve` delegation
+* cross-stack GitHub Actions CI and protected `main` checks
+* OIDC Trusted Publishing for the Python package
+* production PyPI installation path
+* clean-clone and browser-visible reference-trace validation
+* contributor templates and repeatable release checklist
 
 The default demo requires no external LLM API and no API key.
 
@@ -475,7 +494,7 @@ Current scope limits:
 
 * only `retrieval` and `llm` spans are implemented
 * onboarding path is local-first and repo-based
-* the SDK is distributed from source or local wheel artifacts; `0.7.0rc1` is available on TestPyPI, but production PyPI publication is not complete
+* the SDK is distributed through PyPI, source checkout, or locally built wheel artifacts
 * `sledtrace serve` requires a SledTrace source checkout and is not a standalone wheel-installed runtime
 * no LangChain adapter yet
 * no LlamaIndex adapter yet
@@ -498,16 +517,15 @@ In that direction, SledTrace can grow beyond retrieval and LLM spans toward tool
 
 Future agent harness observability may also include running traces across multi-step executions, partial span ingestion, additional span types such as agent, tool, and retry spans, plus diagnostics for agent loops, oscillation, retry storms, and no-progress execution. These are not implemented in current SledTrace.
 
-Near-term focus:
+Near-term focus after v0.7:
 
-* v0.7.0 External Developer Readiness
-* automated CI for the Python SDK, Go Collector, and Dashboard
-* clean-clone first-run validation with user-visible evidence
-* contributor entry points and a small evidence-backed public issue backlog
-* complete the production PyPI publication decision after the successful TestPyPI `0.7.0rc1` validation
+* collect evidence from external first-run attempts
+* convert real onboarding blockers into a small public issue backlog
+* automate Docker smoke validation when the maintenance cost is justified
+* deliberately review the Dashboard dependency advisory baseline
 * preserve deterministic-first warning generation and stable trace contracts
 
-The TestPyPI trusted-publishing path is validated with `0.7.0rc1`; production PyPI remains a v0.7 decision gate rather than a shipped capability. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope.
+The TestPyPI candidate and production PyPI paths use OIDC Trusted Publishing. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope; the next product milestone will be selected from external-use evidence.
 
 ## Design principles
 

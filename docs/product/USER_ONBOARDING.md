@@ -25,7 +25,7 @@ SledTrace is not:
 - a hosted AI platform
 - a replacement for your RAG application
 
-For v0.2 onboarding scope, SledTrace also does not include:
+The current release also does not include:
 
 - LangChain integration
 - LlamaIndex integration
@@ -46,14 +46,26 @@ You should already have your own:
 
 ## Two Ways to Use SledTrace
 
-SledTrace v0.2 has two practical local-first entry points.
+SledTrace has two practical local-first entry points.
 
 ### 1. Try the built-in demo
 
 Use this path when you want to verify that SledTrace itself works on your machine.
 
 1. Clone the SledTrace repo.
-2. Start the collector and dashboard from that repo.
+2. Start the Collector and Dashboard from that repo. Docker Compose is the recommended path:
+
+```bash
+docker compose up --build
+```
+
+For the non-Docker fallback, install Dashboard dependencies first:
+
+```bash
+cd dashboard/web
+npm ci
+cd ../..
+```
 
 ```bash
 python scripts/start-sledtrace.py
@@ -75,10 +87,10 @@ Use this path when you want to instrument an existing application.
 python scripts/start-sledtrace.py
 ```
 
-3. In your own app's virtual environment, install the SDK from the local checkout:
+3. In your own app's virtual environment, install the SDK from PyPI:
 
 ```bash
-pip install -e /path/to/sledtrace/sdk/python
+python -m pip install sledtrace
 ```
 
 4. Import `trace` from `sledtrace`.
@@ -87,9 +99,7 @@ pip install -e /path/to/sledtrace/sdk/python
 7. Call `flush()` after the trace context exits.
 8. Inspect traces in the local dashboard.
 
-This is the actual v0.2 onboarding path for real integration.
-
-Future releases may support `pip install sledtrace`, CLI startup helpers, or Docker Compose shortcuts, but those are not the current v0.2 flow.
+For development against local SDK changes, use `python -m pip install -e /path/to/sledtrace/sdk/python` instead.
 
 ## How SledTrace Fits Into an Existing RAG App
 
@@ -115,7 +125,19 @@ Use this loop while iterating on quality:
 
 ## Start Local Services
 
-Recommended v0.2 startup from the repo root:
+Recommended startup from the repo root:
+
+```bash
+docker compose up --build
+```
+
+Non-Docker fallback prerequisites are Python 3.9+, Go, Node.js 22, and npm. Install Dashboard dependencies once before starting:
+
+```bash
+cd dashboard/web
+npm ci
+cd ../..
+```
 
 ```bash
 python scripts/start-sledtrace.py
@@ -142,7 +164,7 @@ curl http://localhost:4319/health
 
 ```bash
 cd dashboard/web
-npm install
+npm ci
 npm run dev
 ```
 
@@ -150,22 +172,26 @@ Keep collector at `http://localhost:4319` for local SDK flushes.
 
 ## Use the Python SDK
 
-v0.2 uses local editable install from a repo checkout.
+Install the released SDK from PyPI:
+
+```bash
+python -m pip install sledtrace
+```
+
+Use an editable install when contributing inside a checkout.
 
 If you are working inside the SledTrace repo:
 
 ```bash
 cd sdk/python
-pip install -e .
+python -m pip install -e .
 ```
 
-If you are installing the SDK into another local project:
+If you are developing against a local SledTrace checkout from another project:
 
 ```bash
-pip install -e /path/to/sledtrace/sdk/python
+python -m pip install -e /path/to/sledtrace/sdk/python
 ```
-
-Do not assume PyPI installation is available yet.
 
 Basic import:
 

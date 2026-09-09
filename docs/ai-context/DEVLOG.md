@@ -1,5 +1,47 @@
 # Devlog
 
+## 2026-09-09 (v0.7 Final Release Preparation and Clean-Clone Evidence)
+
+### Completed
+
+- Enabled `main` branch protection with strict required checks `Python 3.9`, `Python 3.13`, `Go Collector`, and `Dashboard`.
+- Applied protection to administrators, required linear history and resolved conversations, and disabled force pushes and branch deletion.
+- Created local release branch `release/v0.7.0` so the final work can return through a protected pull request.
+- Cloned the public repository into a new temporary directory and exercised the documented startup path.
+- Identified that the non-Docker fallback omitted the first-run `npm` dependency-install step; selected a documentation correction rather than adding automatic dependency installation to the startup script.
+- Installed locked Dashboard dependencies with `npm ci`, installed the SDK into a new virtual environment, and started the Collector and Dashboard from the clean clone.
+- Generated all nine deterministic reference traces and inspected the trace list, conflict case, and weak/unsupported-answer case in a live browser.
+- Replaced README screenshots that contained stale RAGLens branding, old local paths, and old demo traces.
+- Added focused contributor entry points, issue/PR templates, a repeatable release checklist, and v0.7 release notes.
+- Prepared final `0.7.0` Python and Dashboard version metadata without changing trace contracts, API/storage behavior, or warning rules.
+
+### Validation Evidence
+
+- Collector `/health` returned `{"service":"sledtrace-collector","status":"ok"}`.
+- `python -m examples.reference_rag_app.run all` flushed all nine expected traces.
+- `reference-rag-app-conflict` displayed 30-day versus 14-day retrieved-chunk evidence.
+- `reference-rag-app-weak` displayed low-score, weak-match, and unsupported-claim diagnostics.
+- Docker Desktop could not start on the validation host because WSL2 virtualization was disabled; Docker was not represented as freshly validated.
+- The non-Docker clean-clone fallback passed after the now-documented `npm ci` prerequisite.
+- `npm ci` reported the known baseline of 4 dependency advisories (1 moderate, 3 high); no automatic audit fix was applied.
+
+### Next Gate
+
+- push `release/v0.7.0`, open a pull request, and require all four CI checks
+- merge through protected `main`, tag `v0.7.0`, publish through the protected production environment, and clean-install from production PyPI
+
+### Final Local Validation
+
+- Python SDK: 17 tests passed
+- `python -m build` produced `sledtrace-0.7.0-py3-none-any.whl` and `sledtrace-0.7.0.tar.gz`
+- `twine check` passed for the final wheel and sdist after using an isolated environment with the required tool and workspace read permission
+- clean-wheel imports, CLI help/version, and expected non-zero out-of-checkout `serve` behavior passed
+- Go Collector tests passed
+- Dashboard `npm ci` completed with the recorded advisory baseline and `npm.cmd run build` passed as `sledtrace-dashboard@0.7.0`
+- `git diff --check` passed; line-ending notices are host configuration warnings rather than whitespace errors
+
+---
+
 ## 2026-09-09 (Production PyPI Trusted Publishing Protected)
 
 ### Completed

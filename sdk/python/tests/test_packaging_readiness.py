@@ -13,7 +13,7 @@ from sledtrace import trace as new_trace
 
 def test_sdk_version_exists() -> None:
     assert hasattr(sledtrace, "__version__")
-    assert sledtrace.__version__ == "0.7.0rc1"
+    assert sledtrace.__version__ == "0.7.0"
 
 
 def test_public_trace_imports() -> None:
@@ -81,7 +81,7 @@ def test_cli_help_describes_source_checkout_limit(capsys) -> None:
 
 def test_cli_version_reports_package_version(capsys) -> None:
     assert sledtrace.cli.main(["version"]) == 0
-    assert capsys.readouterr().out.strip() == "0.7.0rc1"
+    assert capsys.readouterr().out.strip() == "0.7.0"
 
 
 def test_find_repo_root_walks_up_from_nested_directory(tmp_path: Path) -> None:

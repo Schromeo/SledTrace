@@ -22,7 +22,7 @@ def run_conflicting_chunks_demo():
         query=query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.7.0rc1",
+            "sdk_version": "0.7.0",
             "app": "warning-rules-demo",
             "case": "conflicting_chunks",
             "environment": "local",
@@ -100,7 +100,7 @@ def run_no_chunks_demo():
         query=query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.7.0rc1",
+            "sdk_version": "0.7.0",
             "app": "warning-rules-demo",
             "case": "no_retrieved_chunks",
             "environment": "local",
@@ -149,7 +149,7 @@ def run_low_score_demo():
         query=query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.7.0rc1",
+            "sdk_version": "0.7.0",
             "app": "warning-rules-demo",
             "case": "low_retrieval_score",
             "environment": "local",
@@ -226,7 +226,7 @@ def run_duplicate_chunks_demo():
         query=query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.7.0rc1",
+            "sdk_version": "0.7.0",
             "app": "warning-rules-demo",
             "case": "duplicate_chunks",
             "environment": "local",
@@ -302,7 +302,7 @@ def run_ungrounded_answer_demo():
         query=query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.7.0rc1",
+            "sdk_version": "0.7.0",
             "app": "warning-rules-demo",
             "case": "answer_not_grounded",
             "environment": "local",
