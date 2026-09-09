@@ -1,5 +1,7 @@
 # SledTrace
 
+[![CI](https://github.com/Schromeo/SledTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/Schromeo/SledTrace/actions/workflows/ci.yml)
+
 SledTrace is an open-source, local-first observability and debugging tool for RAG pipelines.
 
 It helps developers inspect why a RAG application produced a bad answer by showing the full pipeline: retrieved chunks, retrieval scores, prompts, responses, and diagnostic warnings.
