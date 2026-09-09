@@ -4,7 +4,7 @@
 
 SledTrace v0.7.0 — External Developer Readiness.
 
-Status: v0.6.0 is complete, validated, tagged, pushed, published, and closed in current documentation. v0.7 implementation is in progress; the first cross-stack CI slice is complete and green.
+Status: v0.6.0 is complete, validated, tagged, pushed, published, and closed in current documentation. v0.7 implementation is in progress; cross-stack CI and the local `0.7.0rc1` TestPyPI candidate validation are complete and green.
 
 ## Completed Release Baseline
 
@@ -83,7 +83,9 @@ Current evidence and decision:
 - publishing requires an existing `v`-prefixed tag that matches the package version
 - remote `validate` run https://github.com/Schromeo/SledTrace/actions/runs/34306741532 passed and produced the `python-package` artifact while skipping both publish jobs
 - do not republish v0.6.0: its immutable release artifact says PyPI publication has not occurred; use v0.7.0 as the first intended production PyPI release
-- Trusted Publisher registration in the owner's TestPyPI/PyPI accounts remains incomplete
+- the pending TestPyPI Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
+- local `0.7.0rc1` tests, isolated build, `twine check`, and clean-wheel import/CLI validation passed
+- production PyPI Trusted Publisher registration remains incomplete
 
 ## v0.7 Acceptance Direction
 
@@ -113,9 +115,9 @@ Current evidence and decision:
 
 Complete the first real Python package publication path:
 
-1. register the pending Trusted Publisher on TestPyPI for repository `Schromeo/SledTrace`, workflow `publish-python.yml`, and environment `testpypi`
-2. prepare the v0.7.0 package/version/release content without claiming publication early
-3. publish to TestPyPI from a matching immutable tag and validate installation outside the source repository
+1. commit and push the locally validated `0.7.0rc1` package candidate
+2. create the matching immutable `v0.7.0rc1` tag without claiming a production release
+3. publish from that tag to TestPyPI and validate installation outside the source repository
 4. only after TestPyPI succeeds, register the production PyPI publisher using environment `pypi` and make the final publication decision
 
 Dashboard dependency advisories, Docker first-run validation, and branch protection remain recorded follow-up work, but they do not currently block Python SDK publication.

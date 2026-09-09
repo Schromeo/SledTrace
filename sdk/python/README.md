@@ -2,15 +2,21 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-Current release: **0.6.0 — Local CLI / Startup UX**
+Current release candidate: **0.7.0rc1 — TestPyPI validation**
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
 ## Distribution status
 
-The SDK is ready for installation from source or a locally built wheel. It is not published to PyPI yet, so `pip install sledtrace` is not currently a supported command.
+This is a prerelease candidate intended for TestPyPI validation. It is not a production PyPI release, so ordinary `pip install sledtrace` is not currently a supported installation path.
 
-PyPI publication is a high-priority decision for the next external-developer-readiness milestone. Until that decision is completed, use one of the installation paths below.
+After `0.7.0rc1` is published to TestPyPI, install that exact candidate in a clean environment with:
+
+```bash
+python -m pip install --index-url https://test.pypi.org/simple/ sledtrace==0.7.0rc1
+```
+
+For local development before or outside that validation, use one of the source or built-artifact paths below.
 
 ## Install from source for development
 
@@ -46,9 +52,9 @@ sledtrace serve --help
 sledtrace version
 ```
 
-`sledtrace version` reports `0.6.0`.
+`sledtrace version` reports `0.7.0rc1` for this candidate.
 
-In v0.6.0, `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
+`sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
 ## Basic usage
 
@@ -115,7 +121,7 @@ Legacy `raglens` imports remain temporarily supported during migration, but new 
 from sledtrace import trace
 ```
 
-Do not rely on PyPI publishing for this release; this package is prepared for local distribution and installation from a built artifact.
+This candidate is for TestPyPI validation only. Production PyPI publication remains a separate release decision.
 
 ## More docs
 

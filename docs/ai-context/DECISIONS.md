@@ -22,7 +22,8 @@ Publish through a manually dispatched GitHub Actions workflow using PyPI Trusted
 - publishing actions are pinned to verified commits and only selected upload jobs receive `id-token: write`
 - package metadata, README rendering, project URLs, and included license text are validated
 - the first remote validate-only run passed and did not upload a package
-- TestPyPI and production PyPI Trusted Publisher registration remain owner-side prerequisites
+- the TestPyPI pending Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
+- production PyPI Trusted Publisher registration remains an owner-side prerequisite after TestPyPI validation
 
 ---
 

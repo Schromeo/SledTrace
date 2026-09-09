@@ -313,7 +313,7 @@ def run_traced_case(case: DemoCase, verbose: bool = True) -> Any:
         query=case.query,
         metadata={
             "sdk_language": "python",
-            "sdk_version": "0.6.0",
+            "sdk_version": "0.7.0rc1",
             "app": "real-local-rag-demo",
             "case": case.name,
             "environment": "local",

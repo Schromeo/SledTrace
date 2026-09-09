@@ -11,7 +11,7 @@ with warnings.catch_warnings():
         trace,
     )
 
-__version__ = "0.6.0"
+__version__ = "0.7.0rc1"
 
 __all__ = [
     "__version__",

@@ -18,7 +18,7 @@ REPO_MARKERS = (
 SERVE_CHECKOUT_ERROR = (
     "sledtrace serve currently requires a SledTrace source checkout. "
     "Run it from the repository, or use Docker Compose from the repository root. "
-    "Standalone wheel-installed serving is not supported in v0.6.0."
+    "Standalone wheel-installed serving is not supported by this package."
 )
 
 
@@ -70,7 +70,7 @@ def build_parser() -> argparse.ArgumentParser:
         description=(
             "Start the local collector and dashboard. This command must be run "
             "from inside a SledTrace source checkout; standalone wheel-installed "
-            "serving is not supported in v0.6.0."
+            "serving is not supported by this package."
         ),
     )
     serve_parser.set_defaults(func=lambda _args: serve())

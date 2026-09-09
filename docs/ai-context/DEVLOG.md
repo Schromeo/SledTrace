@@ -1,5 +1,31 @@
 # Devlog
 
+## 2026-09-08 (v0.7.0rc1 TestPyPI Candidate Prepared)
+
+### Completed
+
+- Registered the pending TestPyPI Trusted Publisher for project `sledtrace`, owner `Schromeo`, repository `SledTrace`, workflow `publish-python.yml`, and environment `testpypi`.
+- Prepared Python package version `0.7.0rc1` as a prerelease candidate; v0.6.0 remains the current stable SledTrace release.
+- Updated package metadata, runtime SDK metadata, installed CLI version output, validation expectations, and package README consistently.
+- Kept the temporary `raglens` compatibility import and version aligned with the preferred `sledtrace` package.
+- Reworded the wheel-installed `serve` limitation so it remains accurate without embedding a stale release number.
+
+### Validation Status
+
+- Python tests passed: 17 tests with the expected legacy-import warning.
+- isolated wheel/sdist build succeeded and produced `sledtrace-0.7.0rc1-py3-none-any.whl` and `sledtrace-0.7.0rc1.tar.gz`
+- `twine check` passed for both artifacts
+- clean-wheel installation, `sledtrace` and legacy `raglens` imports, CLI help, `sledtrace version`, and the repository-outside `serve` failure path passed
+- `git diff --check` passed
+
+### Current Boundary
+
+- no package has been uploaded to TestPyPI or production PyPI yet
+- the next external step is an immutable `v0.7.0rc1` tag and explicit TestPyPI workflow run
+- ordinary `pip install sledtrace` remains unsupported until production PyPI publication and clean-install validation succeed
+
+---
+
 ## 2026-09-08 (v0.7 Python Trusted Publishing Preparation)
 
 ### Completed
@@ -28,7 +54,7 @@
 
 - v0.7.0 is the intended first production PyPI release; do not rebuild or retroactively publish a different v0.6.0 artifact
 - no package has been uploaded to TestPyPI or PyPI
-- the next gate is owner-side pending Trusted Publisher registration on TestPyPI for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
+- at that point, the next gate was owner-side pending Trusted Publisher registration on TestPyPI for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`; it was completed later the same day
 
 ---
 

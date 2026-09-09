@@ -3,7 +3,7 @@ import warnings
 from .trace import trace, RAGLensTrace, SledTraceTrace
 from .chunks import ChunkNormalizationError, normalize_chunk, normalize_chunks
 
-__version__ = "0.6.0"
+__version__ = "0.7.0rc1"
 
 warnings.warn(
     "The 'raglens' package is deprecated and kept only for temporary compatibility. "

@@ -13,11 +13,11 @@ from typing import Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST_DIR = ROOT / "dist"
-EXPECTED_VERSION = "0.6.0"
+EXPECTED_VERSION = "0.7.0rc1"
 EXPECTED_SERVE_ERROR = (
     "sledtrace serve currently requires a SledTrace source checkout. "
     "Run it from the repository, or use Docker Compose from the repository root. "
-    "Standalone wheel-installed serving is not supported in v0.6.0."
+    "Standalone wheel-installed serving is not supported by this package."
 )
 
 

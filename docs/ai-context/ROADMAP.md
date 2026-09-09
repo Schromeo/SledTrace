@@ -22,7 +22,7 @@ Release references:
 
 ## v0.7.0 - External Developer Readiness
 
-**Status:** In progress; initial cross-stack CI is complete and green
+**Status:** In progress; cross-stack CI and local `0.7.0rc1` TestPyPI candidate validation are complete and green
 
 ### Goal
 
@@ -80,7 +80,7 @@ Current progress:
 * [x] add an OIDC Trusted Publishing workflow with separate validate, TestPyPI, and PyPI paths
 * [x] complete a remote validate-only run with a retained distribution artifact and no package-index upload
 * [x] select v0.7.0, rather than retroactively rebuilding v0.6.0, as the intended first production PyPI release
-* [ ] configure the pending TestPyPI Trusted Publisher
+* [x] register the pending TestPyPI Trusted Publisher
 * [ ] publish and clean-install a tagged v0.7.0 candidate from TestPyPI
 * [ ] configure production PyPI Trusted Publishing and make the final go/no-go decision
 * [ ] publish and clean-install `sledtrace` from production PyPI

@@ -22,7 +22,7 @@ Released on 2026-09-08:
 
 v0.7.0 — External Developer Readiness
 
-Status: implementation in progress; the first cross-stack CI slice is complete and green.
+Status: implementation in progress; cross-stack CI and the local `0.7.0rc1` TestPyPI candidate validation are complete and green.
 
 ## Current Project Status
 
@@ -125,7 +125,9 @@ Python publication readiness completed so far:
 - actual publishing requires a `v`-prefixed tag matching the package version and grants `id-token: write` only to the selected upload job
 - remote validate run https://github.com/Schromeo/SledTrace/actions/runs/34306741532 succeeded, retained one `python-package` artifact, and skipped both upload jobs
 - v0.7.0 is the intended first production PyPI version; do not rebuild a different v0.6.0 artifact after its immutable release
-- the next external action is owner-side pending Trusted Publisher registration on TestPyPI; no package has been uploaded yet
+- the pending Trusted Publisher for TestPyPI is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `testpypi`
+- local `0.7.0rc1` tests, isolated build, `twine check`, and clean-wheel import/CLI validation passed
+- no package has been uploaded yet; the next external action is to publish the immutable `v0.7.0rc1` candidate to TestPyPI and validate a clean index install
 
 Important sequencing:
 
@@ -565,9 +567,10 @@ Published release history:
 
 Current next step:
 
-- design the smallest v0.7 CI and clean-clone validation slice
+- publish the validated `v0.7.0rc1` candidate to TestPyPI through the trusted workflow
+- validate installation and CLI behavior from TestPyPI outside the source repository
 - keep user-visible Dashboard evidence alongside automated validation
-- make an explicit PyPI publication decision before documenting `pip install sledtrace`
+- make the production PyPI go/no-go decision only after the TestPyPI result
 - use external first-run evidence to select later framework, distribution, diagnostic, or eval work
 
 Current publication boundary:
