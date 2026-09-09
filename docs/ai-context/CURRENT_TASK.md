@@ -4,7 +4,7 @@
 
 SledTrace v0.7.0 — External Developer Readiness.
 
-Status: v0.6.0 is complete, validated, tagged, pushed, published, and closed in current documentation. No v0.7 implementation has started yet.
+Status: v0.6.0 is complete, validated, tagged, pushed, published, and closed in current documentation. v0.7 implementation is in progress; the first cross-stack CI slice is complete and green.
 
 ## Completed Release Baseline
 
@@ -76,8 +76,9 @@ Do not document PyPI installation as supported until publication and clean-insta
 
 ## v0.7 Acceptance Direction
 
-- [ ] required CI checks run on pull requests and pushes
-- [ ] Python SDK, packaging, Collector, and Dashboard checks are visible and green
+- [x] CI checks run on pull requests and pushes
+- [x] Python SDK, packaging, Collector, and Dashboard checks are visible and green
+- [ ] protect `main` with the agreed required CI checks
 - [ ] a fresh checkout can follow the documented first-run path without undocumented steps
 - [ ] deterministic reference traces and expected warnings are visible in the Dashboard
 - [ ] at least two external first-run attempts are recorded and their blockers are converted into actionable work
@@ -97,4 +98,10 @@ Do not document PyPI installation as supported until publication and clean-insta
 
 ## Immediate Next Step
 
-Design the smallest v0.7 CI and clean-clone validation slice. Do not pre-commit v0.8 functionality until v0.7 external-use evidence identifies the highest-value next direction.
+Use the new CI baseline to complete the next external-readiness slice:
+
+1. address the currently reported transitive Dashboard development-dependency advisories with a focused, validated dependency update
+2. validate the documented first-run path from a fresh checkout, including Docker/local smoke behavior
+3. decide and configure the required checks for `main`
+
+Do not pre-commit v0.8 functionality until v0.7 external-use evidence identifies the highest-value next direction.

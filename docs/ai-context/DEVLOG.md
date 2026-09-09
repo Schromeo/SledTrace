@@ -1,5 +1,35 @@
 # Devlog
 
+## 2026-09-08 (v0.7 Initial Cross-Stack CI Baseline)
+
+### Completed
+
+- Added `.github/workflows/ci.yml` for pushes to `main`, pull requests, and manual dispatch.
+- Added Python 3.9 and 3.13 matrix jobs covering `pytest -q`, wheel/sdist build, and clean-wheel validation.
+- Added independent Go Collector tests and Dashboard production-build jobs.
+- Added a live CI badge to the root README.
+- Created and pushed commit `9d6435ce226e7701d24a133958fa1f32e8a58cac` with message `ci: add cross-stack validation workflow`.
+- Verified GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34304017537 completed successfully.
+- Opened the successful run as visible browser evidence; no Dashboard screenshot was changed because this slice did not alter Dashboard UI behavior.
+
+### Validation Status
+
+- GitHub Actions total duration: 41 seconds.
+- Python 3.9: passed in 26 seconds.
+- Python 3.13: passed in 21 seconds.
+- Go Collector: passed in 37 seconds.
+- Dashboard: passed in 11 seconds.
+- Local Python tests passed with 17 tests and the expected legacy-import warning.
+- Local package build, clean-wheel validation, Go tests, and Dashboard build passed after rerunning outside host-specific sandbox/cache restrictions.
+
+### Known Follow-up
+
+- `main` branch protection and required-check enforcement are not configured yet.
+- Clean-clone and Docker/local first-run validation remain pending.
+- `npm audit` reports four transitive development-dependency advisories: one moderate and three high. They are reached through the current Vite/Babel/PostCSS build toolchain and should be handled in a focused dependency-update slice rather than silently ignored or mixed into the initial CI commit.
+
+---
+
 ## 2026-09-08 (v0.6.0 Release Closure and v0.7 Direction Selected)
 
 ### Completed

@@ -22,7 +22,7 @@ Released on 2026-09-08:
 
 v0.7.0 — External Developer Readiness
 
-Status: direction selected; implementation has not started.
+Status: implementation in progress; the first cross-stack CI slice is complete and green.
 
 ## Current Project Status
 
@@ -83,7 +83,7 @@ Release outcome:
 - GitHub Release published: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
 - PyPI publication was not performed
 
-### v0.7.0 Planned Direction
+### v0.7.0 Current Progress
 
 **v0.7.0 is External Developer Readiness, not a claim of external adoption.**
 
@@ -96,6 +96,23 @@ Selected priorities:
 - focused contributor entry points and a small real issue backlog
 - at least two recorded external first-run attempts
 - an explicit PyPI go/no-go and publication-workflow decision
+
+Completed first slice:
+
+- added `.github/workflows/ci.yml` for pushes to `main`, pull requests, and manual runs
+- added independent Python 3.9, Python 3.13, Go Collector, and Dashboard jobs
+- Python CI runs tests, wheel/sdist build, and clean-wheel validation
+- added the CI status badge to the root README
+- pushed commit `9d6435ce226e7701d24a133958fa1f32e8a58cac`
+- verified GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34304017537 completed successfully in 41 seconds
+- observed successful job durations: Dashboard 11s, Python 3.13 21s, Python 3.9 26s, Go Collector 37s
+
+Known follow-up:
+
+- `main` branch protection and required-check enforcement are not configured yet
+- clean-clone and Docker/local first-run validation remain pending
+- `npm audit` currently reports four transitive development-dependency advisories (one moderate and three high) through the Vite/Babel/PostCSS toolchain; they were recorded rather than mixed into the initial CI change
+- local validation in the restricted Codex environment required elevated reruns for package isolation, wheel temp-environment access, the Go build cache, and the npm cache; the exact CI run on GitHub completed without those host-specific permission failures
 
 Important sequencing:
 

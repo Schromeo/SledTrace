@@ -1,5 +1,32 @@
 # Architecture Decisions
 
+## 2026-09-08 — Establish independent cross-stack CI as the v0.7 baseline
+
+### Decision
+
+Run the Python SDK/package, Go Collector, and Dashboard validations as independent GitHub Actions jobs on pushes to `main` and on pull requests.
+
+Test the Python package on both the declared minimum Python version, 3.9, and the current development version, 3.13. Run package build and clean-wheel CLI validation in both matrix jobs so the supported import, compatibility, and startup-boundary contracts are exercised from built artifacts.
+
+Keep Docker first-run smoke validation and branch-protection enforcement as explicit follow-up work instead of representing them as part of the initial CI baseline. Do not make `npm audit` a failing CI gate until the current transitive development-dependency baseline is deliberately updated and validated.
+
+### Reason
+
+- independent jobs make failures visible by stack and allow them to run concurrently
+- testing the minimum and current Python versions catches both compatibility drift and local-development regressions
+- built-wheel validation protects the distribution surface that editable-install tests alone do not cover
+- Docker smoke and required-check enforcement have different operational risks and deserve their own validation steps
+- introducing a failing security gate before resolving the known baseline would make CI permanently red without improving safety
+
+### Outcome
+
+- `.github/workflows/ci.yml` is the repository CI entry point
+- the first remote run passed Python 3.9, Python 3.13, Go Collector, and Dashboard validation
+- the root README exposes the live CI status
+- dependency advisories, Docker smoke validation, and branch protection remain visible v0.7 work rather than hidden or overstated completion
+
+---
+
 ## 2026-09-08 — Select v0.7 External Developer Readiness after releasing v0.6
 
 ### Decision

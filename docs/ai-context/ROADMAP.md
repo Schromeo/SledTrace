@@ -22,7 +22,7 @@ Release references:
 
 ## v0.7.0 - External Developer Readiness
 
-**Status:** Planned; implementation not started
+**Status:** In progress; initial cross-stack CI is complete and green
 
 ### Goal
 
@@ -34,11 +34,12 @@ This milestone creates the conditions for adoption. It does not claim adoption m
 
 #### P0 - Continuous validation
 
-* [ ] GitHub Actions for Python SDK tests
-* [ ] wheel/package validation in CI where practical
-* [ ] Go Collector tests
-* [ ] Dashboard production build
-* [ ] visible required checks on pull requests and pushes
+* [x] GitHub Actions for Python SDK tests on Python 3.9 and 3.13
+* [x] wheel/package validation in CI
+* [x] Go Collector tests
+* [x] Dashboard production build
+* [x] visible checks on pull requests and pushes
+* [ ] protect `main` with the agreed required CI checks
 
 #### P1 - External first-run evidence
 
