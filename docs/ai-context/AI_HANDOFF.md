@@ -131,6 +131,8 @@ Python publication readiness completed so far:
 - GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34309033246 published the candidate to TestPyPI; the production PyPI job was skipped
 - a no-cache install from the TestPyPI public index passed outside the source repository, including imports, CLI version/help, and the expected non-zero `serve` boundary
 - TestPyPI project: https://test.pypi.org/project/sledtrace/0.7.0rc1/
+- the production PyPI pending Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
+- GitHub environment `pypi` requires approval from `Schromeo`, allows self-review for the single-maintainer workflow, rejects branch deployments, and allows only tags matching `v*`
 
 Important sequencing:
 
@@ -570,8 +572,9 @@ Published release history:
 
 Current next step:
 
-- register the production PyPI Trusted Publisher using environment `pypi`
-- make the explicit production publication go/no-go decision for final v0.7.0
+- audit the remaining v0.7 acceptance items and decide which are required before the final `0.7.0` package/release
+- prepare and validate the final `0.7.0` package only after that scope decision
+- make the explicit production publication go/no-go decision
 - keep user-visible Dashboard evidence alongside automated validation
 - make the production PyPI go/no-go decision only after the TestPyPI result
 - use external first-run evidence to select later framework, distribution, diagnostic, or eval work

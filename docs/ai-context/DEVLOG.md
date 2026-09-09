@@ -1,5 +1,30 @@
 # Devlog
 
+## 2026-09-09 (Production PyPI Trusted Publishing Protected)
+
+### Completed
+
+- Registered the production PyPI pending Trusted Publisher for project `sledtrace`, owner `Schromeo`, repository `SledTrace`, workflow `publish-python.yml`, and environment `pypi`.
+- Created the GitHub `pypi` deployment environment.
+- Required approval from GitHub user `Schromeo` before production publication jobs can proceed.
+- Allowed self-review because SledTrace currently has one maintainer; disabling self-review with no second reviewer would deadlock releases.
+- Disabled branch deployments and added one custom deployment policy allowing only Git tags matching `v*`.
+
+### Validation Status
+
+- GitHub environment API returned the required-reviewer rule for `Schromeo` with `prevent_self_review: false`.
+- GitHub environment API returned `protected_branches: false` and `custom_branch_policies: true`.
+- deployment-policy API returned exactly one rule: name `v*`, type `tag`.
+- no workflow was triggered and no package was uploaded to production PyPI.
+- no repository functional files were changed.
+
+### Next Gate
+
+- audit the remaining v0.7 acceptance items before declaring the project-wide `v0.7.0` release ready
+- after that decision, prepare the final package, validate it, create an immutable tag, approve the protected deployment, and verify ordinary production-index installation
+
+---
+
 ## 2026-09-08 (v0.7.0rc1 TestPyPI Candidate Published and Validated)
 
 ### Completed

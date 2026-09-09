@@ -89,7 +89,8 @@ Current evidence and decision:
 - GitHub Actions run https://github.com/Schromeo/SledTrace/actions/runs/34309033246 published `0.7.0rc1` to TestPyPI and skipped production PyPI
 - a no-cache clean install from the TestPyPI public index passed outside the source repository, including preferred and legacy imports, CLI version/help, and the expected non-zero `serve` boundary
 - TestPyPI project: https://test.pypi.org/project/sledtrace/0.7.0rc1/
-- production PyPI Trusted Publisher registration remains incomplete
+- the production PyPI pending Trusted Publisher is registered for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
+- GitHub environment `pypi` requires approval from `Schromeo`, permits self-review for the current single-maintainer workflow, blocks branch deployments, and allows only tags matching `v*`
 
 ## v0.7 Acceptance Direction
 
@@ -117,12 +118,12 @@ Current evidence and decision:
 
 ## Immediate Next Step
 
-Complete the production Python package publication path:
+Audit the final v0.7 release scope before using the now-complete production publication path:
 
-1. register the production PyPI Trusted Publisher for `Schromeo/SledTrace`, workflow `publish-python.yml`, environment `pypi`
+1. review the incomplete v0.7 acceptance items and decide which block the project-wide `v0.7.0` release
 2. prepare final `0.7.0` package and release content without rebuilding or moving the immutable `v0.7.0rc1` candidate
 3. run the final validation and make the explicit production go/no-go decision
-4. publish from a matching immutable `v0.7.0` tag, then validate ordinary `pip install sledtrace` outside the source repository
+4. publish from a matching immutable `v0.7.0` tag, approve the protected `pypi` deployment, then validate ordinary `pip install sledtrace` outside the source repository
 
 Dashboard dependency advisories, Docker first-run validation, and branch protection remain recorded follow-up work, but they do not currently block Python SDK publication.
 

@@ -82,7 +82,8 @@ Current progress:
 * [x] select v0.7.0, rather than retroactively rebuilding v0.6.0, as the intended first production PyPI release
 * [x] register the pending TestPyPI Trusted Publisher
 * [x] publish and clean-install tagged `v0.7.0rc1` from TestPyPI
-* [ ] configure production PyPI Trusted Publishing and make the final go/no-go decision
+* [x] configure production PyPI Trusted Publishing with required approval and a `v*` tag-only deployment policy
+* [ ] make the final production PyPI go/no-go decision
 * [ ] publish and clean-install `sledtrace` from production PyPI
 
 ### Scope Boundary
