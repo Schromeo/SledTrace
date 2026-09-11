@@ -246,6 +246,11 @@ def main() -> int:
         # String scores such as "0.72" are converted to float.
         score="rank_score",
 
+        # Explicit score mappings remain higher-is-better by default. Declare
+        # these fields when a custom metric has different or unknown semantics.
+        score_type="rerank",
+        score_direction="higher_is_better",
+
         # Callable extractor:
         # Build metadata by combining fields from "extra" and "document".
         metadata=lambda item: {

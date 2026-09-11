@@ -271,11 +271,20 @@ A minimal chunk shape looks like this:
     "id": "chunk_1",
     "text": "Customers may return most physical products within 30 days.",
     "score": 0.92,
+    "score_type": "similarity",
+    "score_direction": "higher_is_better",
     "metadata": {
         "source": "refund_policy.md"
     }
 }
 ```
+
+Canonical `score` values are treated as higher-is-better for compatibility. Use
+`normalize_chunk(...)` / `normalize_chunks(...)` for retriever-native results:
+named similarity/relevance scores and distances keep their type and direction,
+while ambiguous tuple scores remain direction-unknown. SledTrace does not guess a
+universal `1 - distance` conversion, and distance/unknown values do not enter the
+higher-is-better low-score threshold.
 
 Current implemented span types are `retrieval` and `llm` only.
 

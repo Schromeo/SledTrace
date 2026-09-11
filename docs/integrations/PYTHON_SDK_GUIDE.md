@@ -227,6 +227,8 @@ chunks = [
         "id": "chunk_refund_current",
         "text": "Customers may request a refund within 30 days of purchase.",
         "score": 0.93,
+        "score_type": "similarity",
+        "score_direction": "higher_is_better",
         "rank": 1,
         "source": "refund_policy.md",
         "document_id": "refund_policy",
@@ -243,6 +245,8 @@ Recommended fields for better diagnostics:
 - `id`
 - `text`
 - `score`
+- `score_type`
+- `score_direction`
 - `rank`
 - `source`
 - `document_id`
@@ -255,7 +259,39 @@ Current SDK chunk behavior:
 - if `metadata` is missing or `None`, SDK auto-fills it as `{}`
 - the SDK does not currently hard-validate fields like `text`, `score`, or `source`
 
-Sparse chunks may still ingest, but diagnostics are better when `text`, `score`, `source`, `document_id`, `rank`, and `metadata` are present.
+Sparse chunks may still ingest, but diagnostics are better when `text`, `score`, `score_type`, `score_direction`, `source`, `document_id`, `rank`, and `metadata` are present.
+
+### Retrieval score semantics
+
+The legacy/canonical `score` field remains higher-is-better when no annotations
+are present. For native retriever outputs, prefer `normalize_chunk(...)` or
+`normalize_chunks(...)` so the metric meaning is retained:
+
+- `score`, `similarity`, `similarity_score`, `relevance_score`, and
+  `rerank_score` are higher-is-better
+- `distance` is lower-is-better
+- the second value in an unannotated `(document, value)` tuple is direction-unknown
+- unscored chunks remain unscored
+
+Distance and unknown values are preserved for display but do not participate in
+the higher-is-better `low_retrieval_score` threshold or score-based diagnostic
+ordering. SledTrace does not apply a universal `1 - distance` conversion because
+distance scales and ranges vary by retriever.
+
+For a custom metric, declare the mapping explicitly:
+
+```python
+chunk = normalize_chunk(
+    raw_result,
+    text="passage",
+    score="metric_value",
+    score_type="euclidean_distance",
+    score_direction="lower_is_better",
+)
+```
+
+Valid directions are `higher_is_better`, `lower_is_better`, and `unknown`.
+Existing explicit `score=` mappings default to higher-is-better for compatibility.
 
 ## LLM Span Examples
 
@@ -358,7 +394,7 @@ This can send a trace before `ended_at` and `duration_ms` are finalized.
 
 The SDK expects chunk dictionaries, not arbitrary retriever-native objects.
 
-### Missing chunk `text`, `score`, or `source`
+### Missing chunk `text`, score semantics, or `source`
 
 The SDK may still ingest sparse chunks, but dashboard readability and warning quality will be worse.
 

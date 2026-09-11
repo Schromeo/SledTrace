@@ -1,5 +1,40 @@
 # Architecture Decisions
 
+## 2026-09-11 — Preserve retrieval metric type and direction without inventing conversions
+
+### Decision
+
+- Keep the raw numeric `score`, and add nullable `score_type` plus
+  `score_direction` to normalized chunks.
+- Treat named score/similarity/relevance/rerank values as higher-is-better and
+  named distance as lower-is-better. Treat an unannotated tuple value as unknown.
+- Preserve existing explicit `score=` mappings and historical bare scores as
+  higher-is-better by default. Let callers declare custom type/direction.
+- Only higher-is-better and legacy bare scores participate in the Collector's
+  low-score threshold and score-based ordering. Fail closed for lower, unknown,
+  custom-without-direction, and invalid directions.
+- Display the metric and direction in the Dashboard. Do not transform distance.
+
+### Reason
+
+Retrievers expose cosine similarity, relevance, distances, rerank outputs, and
+framework-dependent tuple values with incompatible ranges and directions. The
+old normalizer erased that difference, so a strong distance of 0.10 became a
+weak higher-is-better score under the 0.5 threshold. A universal
+`1 - distance` formula would be wrong for many metrics. Additive annotations
+preserve evidence and compatibility without claiming a normalized scale.
+
+### Scope and outcome
+
+Implemented, locally validated, and committed on
+`codex/s2-retrieval-score-semantics` after S1 local commit `5b5d254`.
+Similarity/distance/unscored/tuple/explicit cases, Collector gating, Dashboard
+labels, packaging, and live traces passed. S2 is not merged, versioned, or
+released. Threshold calibration, adapters,
+delivery policy, and new diagnostics remain separate work.
+
+---
+
 ## 2026-09-11 — Represent measured, explicit, and unknown span timing honestly
 
 ### Decision
@@ -15,7 +50,7 @@ The old record methods measured their own bookkeeping after the real operation. 
 
 ### Scope
 
-Implemented and locally validated on `codex/s1-trustworthy-span-timing`; not yet committed, merged, versioned, or released. Score semantics, delivery behavior, local network defaults, runtime packaging, and new spans remain separate decisions.
+Implemented and locally validated on `codex/s1-trustworthy-span-timing`, then preserved in local commit `5b5d254`; not merged, versioned, or released. Score semantics, delivery behavior, local network defaults, runtime packaging, and new spans remain separate decisions.
 
 ---
 

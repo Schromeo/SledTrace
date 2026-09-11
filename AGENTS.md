@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current focus: S1 span timing correctness is implemented and validated on the local `codex/s1-trustworthy-span-timing` working branch as of 2026-09-11, but is not committed, merged, versioned, or released. Read CURRENT_TASK before continuing; the next product slice and v0.7.1/v0.8 labels are not selected commitments.
+Current focus: S1 span timing correctness is preserved in local commit `5b5d254`; S2 retrieval score semantics is implemented, validated, and committed on local branch `codex/s2-retrieval-score-semantics` as of 2026-09-11, but is not merged, versioned, or released. Read CURRENT_TASK before continuing; the next action and v0.7.1/v0.8 labels are not selected commitments.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 

@@ -1,5 +1,51 @@
 # Devlog
 
+## 2026-09-11 (S2 Retrieval Score Semantics)
+
+### Completed
+
+- Closed S1 into local commit `5b5d254` and created
+  `codex/s2-retrieval-score-semantics`; no push, PR, merge, version, tag, or
+  release was created.
+- Reproduced that similarity 0.10, distance 0.10, explicit score 0.10, and a
+  tuple value 0.10 all collapsed into the same bare `score` contract.
+- Added `score_type` and `score_direction` to normalized chunks, automatic known
+  metric semantics, explicit custom overrides, unknown tuple semantics, and
+  non-finite-value handling while preserving explicit/legacy score behavior.
+- Gated the Collector's low-score threshold and score-based diagnostic ordering
+  so lower/unknown/unannotated-custom/invalid directions cannot be silently
+  interpreted as higher-is-better.
+- Added Dashboard metric/direction labels and dependency-free behavior tests.
+- Added `examples.score_semantics_demo` and aligned SDK, onboarding, architecture,
+  active-context, and handoff documentation.
+
+### Validation
+
+- `cd sdk/python && pytest -q`: 52 passed.
+- `cd sdk/python && python -m build`: passed.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed.
+- Clean-wheel score-semantics probe outside the checkout: passed.
+- `cd collector/go && go test ./... -count=1`: all packages passed.
+- `cd dashboard/web && npm.cmd test`: ten tests passed.
+- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- `git diff --check`: passed with line-ending conversion warnings only.
+- Live trace/API/Dashboard evidence: similarity 0.10 produced
+  `low_retrieval_score` and `Similarity 0.10 ↑`; distance 0.10 produced no
+  warning and `Distance 0.10 ↓`.
+
+### Boundary
+
+- S2 is complete and committed only on the local branch; it is not pushed,
+  merged, versioned, or released.
+- No score conversion, retriever-specific adapter, threshold tuning, new span or
+  warning, delivery behavior, runtime packaging, or publication work was added.
+- README prose was updated for the contract, but showcase images were not
+  replaced. The existing images remain accurate; live screenshots cover this
+  localized checkpoint, with release-quality refresh deferred to a selected
+  Dashboard-changing release.
+
+---
+
 ## 2026-09-11 (S1 Trustworthy Span Timing)
 
 ### Completed

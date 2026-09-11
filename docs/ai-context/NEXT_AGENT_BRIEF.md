@@ -6,7 +6,7 @@
 
 ## 2026-09-11 接续状态
 
-GPT-5.6 已按本信接手，并在 `codex/s1-trustworthy-span-timing` 分支完成 S1。计时 API、null/0 存储往返、Dashboard 同义展示、包构建和真实浏览器验收均已通过；改动尚未提交、合并、选择版本或发布。不要重做 S1，先读 CURRENT_TASK 的完成证据并确认 Git 状态。下一项产品任务仍未选择，S2 只是候选。
+GPT-5.6 已按本信接手。S1 已通过验证并收在本地 commit `5b5d254`；S2 retrieval score semantics 已在 `codex/s2-retrieval-score-semantics` 完成实现、测试、真实 Dashboard 验收和本地提交。不要重做 S1/S2；先读 CURRENT_TASK 并确认 Git 状态。S2 尚未 push、PR、merge、升版或发布，下一项产品任务仍未选择。
 
 ## 先知道你接手了什么
 
@@ -20,7 +20,7 @@ SledTrace 已完成 v0.7.0，并正式发布到 PyPI 和 GitHub。之前的发�
 2. [CURRENT_TASK.md](CURRENT_TASK.md)：下一项任务的明确细纲和完成标准。
 3. [ROADMAP.md](ROADMAP.md#proposed-post-v07-sequence)：后续候选顺序，不必把整段历史重新读一遍。
 
-交接时的已提交基线是 906fd29；新交接文档是本地未提交修改。先用 git status 和 HEAD 确认现状，保留用户及本轮文档修改，不要清理或覆盖它们。版本和发布引用以 AI_HANDOFF 为准。
+已发布 `main` 基线是 906fd29；S1 与交接文档保存在本地 commit `5b5d254`，S2 是其上的第二个本地 commit。先用 git status 和 HEAD 确认现状，不要重写这些提交。版本和发布引用以 AI_HANDOFF 为准。
 
 ## 我留给你的判断
 

@@ -80,6 +80,15 @@ def validate_wheel() -> int:
         import_checks = [
             f"import sledtrace; assert sledtrace.__version__ == '{EXPECTED_VERSION}'; print(sledtrace.__version__)",
             "from sledtrace import SpanTiming, trace; assert isinstance(trace('timing').measure(), SpanTiming); print(trace)",
+            (
+                "from sledtrace import normalize_chunk; "
+                "similarity=normalize_chunk({'text':'x','similarity':0.1}); "
+                "distance=normalize_chunk({'text':'x','distance':0.1}); "
+                "assert similarity['score_direction']=='higher_is_better'; "
+                "assert distance['score_type']=='distance'; "
+                "assert distance['score_direction']=='lower_is_better'; "
+                "print('score semantics ok')"
+            ),
             "import raglens; print('legacy raglens import ok')",
         ]
 

@@ -66,6 +66,8 @@ with trace("example") as t:
                 "id": "chunk-1",
                 "text": "Refunds are accepted within 30 days with proof of purchase.",
                 "score": 0.92,
+                "score_type": "similarity",
+                "score_direction": "higher_is_better",
                 "metadata": {"source": "refund_policy.md"},
             }
         ]
@@ -92,6 +94,14 @@ t.flush()
 ```
 
 `t.measure()` captures actual operation timing. Calls recorded only after the work, without `timing`, `duration_ms` for retrieval, or `latency_ms` for LLM, remain compatible and are shown as not measured.
+
+For retriever-native results, use `normalize_chunk(...)` or `normalize_chunks(...)`.
+The normalizer preserves `score_type` and `score_direction`: named distances are
+lower-is-better, named similarity/relevance scores are higher-is-better, and
+ambiguous tuple scores are unknown. SledTrace never assumes a universal
+`1 - distance` conversion. Explicit custom mappings can set `score_type` and
+`score_direction`; existing explicit `score=` mappings remain higher-is-better by
+default for compatibility.
 
 ## Collector URL configuration
 
