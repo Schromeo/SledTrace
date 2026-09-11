@@ -79,7 +79,7 @@ def validate_wheel() -> int:
 
         import_checks = [
             f"import sledtrace; assert sledtrace.__version__ == '{EXPECTED_VERSION}'; print(sledtrace.__version__)",
-            "from sledtrace import trace; print(trace)",
+            "from sledtrace import SpanTiming, trace; assert isinstance(trace('timing').measure(), SpanTiming); print(trace)",
             "import raglens; print('legacy raglens import ok')",
         ]
 

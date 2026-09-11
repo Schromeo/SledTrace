@@ -1,6 +1,6 @@
 import warnings
 
-from .trace import trace, RAGLensTrace, SledTraceTrace
+from .trace import trace, RAGLensTrace, SledTraceTrace, SpanTiming
 from .chunks import ChunkNormalizationError, normalize_chunk, normalize_chunks
 
 __version__ = "0.7.0"
@@ -17,6 +17,7 @@ __all__ = [
     "trace",
     "SledTraceTrace",
     "RAGLensTrace",
+    "SpanTiming",
     "ChunkNormalizationError",
     "normalize_chunk",
     "normalize_chunks",

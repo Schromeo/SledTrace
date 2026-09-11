@@ -19,6 +19,53 @@ from .models import (
 )
 
 
+class SpanTiming:
+    """Measure an operation before recording its span."""
+
+    def __init__(self) -> None:
+        self.started_at: Optional[str] = None
+        self.ended_at: Optional[str] = None
+        self.duration_ms: Optional[int] = None
+        self._start_ms: Optional[float] = None
+
+    def __enter__(self) -> "SpanTiming":
+        if self._start_ms is not None or self.duration_ms is not None:
+            raise RuntimeError("A SledTrace timing measurement cannot be reused.")
+
+        self.started_at = utc_now_iso()
+        self._start_ms = now_ms()
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
+        if self._start_ms is None:
+            raise RuntimeError("SledTrace timing measurement was not started.")
+
+        self.ended_at = utc_now_iso()
+        elapsed_ms = now_ms() - self._start_ms
+        if elapsed_ms < 0:
+            raise RuntimeError("SledTrace monotonic clock moved backwards.")
+
+        # The wire format stores integer milliseconds. Preserve measured zero
+        # rather than treating a sub-millisecond operation as unknown.
+        self.duration_ms = int(elapsed_ms)
+        return False
+
+    def span_fields(self) -> tuple[str, str, int]:
+        if (
+            self.started_at is None
+            or self.ended_at is None
+            or self.duration_ms is None
+        ):
+            raise RuntimeError(
+                "SledTrace timing measurement must finish before recording a span."
+            )
+
+        return self.started_at, self.ended_at, _validate_duration_ms(
+            self.duration_ms,
+            "timing.duration_ms",
+        )
+
+
 class RAGLensTrace:
     """
     A lightweight trace context manager for recording one RAG request.
@@ -77,6 +124,10 @@ class RAGLensTrace:
         # Do not suppress exceptions.
         return False
 
+    def measure(self) -> SpanTiming:
+        """Return a one-shot context manager for measuring an actual operation."""
+        return SpanTiming()
+
     def retrieval(
         self,
         query: str,
@@ -84,6 +135,8 @@ class RAGLensTrace:
         name: str = "retrieval",
         top_k: Optional[int] = None,
         metadata: Optional[JsonDict] = None,
+        duration_ms: Optional[int] = None,
+        timing: Optional[SpanTiming] = None,
     ) -> None:
         """
         Record a retrieval span.
@@ -94,9 +147,14 @@ class RAGLensTrace:
             name: Human-readable span name.
             top_k: Number of requested chunks.
             metadata: Retriever metadata.
+            duration_ms: Explicit retriever latency in integer milliseconds.
+            timing: Completed measurement returned by ``t.measure()``.
         """
-        start = now_ms()
-        started_at = utc_now_iso()
+        started_at, ended_at, resolved_duration_ms = _resolve_span_timing(
+            timing=timing,
+            explicit_duration_ms=duration_ms,
+            explicit_name="duration_ms",
+        )
 
         normalized_chunks = self._normalize_chunks(chunks)
 
@@ -120,8 +178,8 @@ class RAGLensTrace:
             },
             metadata=metadata or {},
             started_at=started_at,
-            ended_at=utc_now_iso(),
-            duration_ms=int(now_ms() - start),
+            ended_at=ended_at,
+            duration_ms=resolved_duration_ms,
             error=None,
         )
 
@@ -142,6 +200,7 @@ class RAGLensTrace:
         output_tokens: Optional[int] = None,
         latency_ms: Optional[int] = None,
         metadata: Optional[JsonDict] = None,
+        timing: Optional[SpanTiming] = None,
     ) -> None:
         """
         Record an LLM span.
@@ -157,9 +216,13 @@ class RAGLensTrace:
             output_tokens: Output token count.
             latency_ms: LLM call latency.
             metadata: Additional metadata.
+            timing: Completed measurement returned by ``t.measure()``.
         """
-        start = now_ms()
-        started_at = utc_now_iso()
+        started_at, ended_at, resolved_duration_ms = _resolve_span_timing(
+            timing=timing,
+            explicit_duration_ms=latency_ms,
+            explicit_name="latency_ms",
+        )
 
         span_input: JsonDict = {
             "model": model,
@@ -192,7 +255,7 @@ class RAGLensTrace:
             span_metadata["total_tokens"] = input_tokens + output_tokens
 
         if latency_ms is not None:
-            span_metadata["latency_ms"] = latency_ms
+            span_metadata["latency_ms"] = resolved_duration_ms
 
         span = Span(
             span_id=new_id("span"),
@@ -205,8 +268,8 @@ class RAGLensTrace:
             output=span_output,
             metadata=span_metadata,
             started_at=started_at,
-            ended_at=utc_now_iso(),
-            duration_ms=latency_ms if latency_ms is not None else int(now_ms() - start),
+            ended_at=ended_at,
+            duration_ms=resolved_duration_ms,
             error=None,
         )
 
@@ -317,6 +380,41 @@ class RAGLensTrace:
             normalized.append(normalized_chunk)
 
         return normalized
+
+
+def _resolve_span_timing(
+    timing: Optional[SpanTiming],
+    explicit_duration_ms: Optional[int],
+    explicit_name: str,
+) -> tuple[str, Optional[str], Optional[int]]:
+    if timing is not None:
+        if not isinstance(timing, SpanTiming):
+            raise TypeError("timing must be a completed value returned by t.measure().")
+        if explicit_duration_ms is not None:
+            raise ValueError(
+                f"Pass either timing or {explicit_name}, not both."
+            )
+
+        started_at, ended_at, duration_ms = timing.span_fields()
+        return started_at, ended_at, duration_ms
+
+    recorded_at = utc_now_iso()
+    if explicit_duration_ms is None:
+        return recorded_at, None, None
+
+    return (
+        recorded_at,
+        None,
+        _validate_duration_ms(explicit_duration_ms, explicit_name),
+    )
+
+
+def _validate_duration_ms(value: int, name: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError(f"{name} must be an integer number of milliseconds.")
+    if value < 0:
+        raise ValueError(f"{name} must be greater than or equal to zero.")
+    return value
 
 
 def trace(

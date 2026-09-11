@@ -10,7 +10,7 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 **Release status:** Complete, validated, tagged, published to production PyPI, and published as a GitHub Release on 2026-09-09
 
-**Next product milestone:** Not selected; gather post-release external-use evidence first
+**Next product milestone:** Not selected. S1 timing correctness is implemented and locally validated on the current working branch; it is not committed, merged, versioned, or released. Reassess before selecting S2 or a release grouping, and gather external-use evidence alongside confirmed fixes.
 
 Release references:
 
@@ -22,6 +22,73 @@ Release references:
 * v0.7.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0
 * production package: https://pypi.org/project/sledtrace/0.7.0/
 * production publication workflow: https://github.com/Schromeo/SledTrace/actions/runs/34410674101
+
+## Proposed post-v0.7 sequence
+
+Status: **S1 complete in the local working tree; remaining sequence is planning, not a release commitment**. Exact timing/API results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
+
+The proposed product outcome is: a Python RAG developer can find verifiable evidence for a bad answer and confirm the effect of a subsequent change. Shipping milestones measures readiness; external use, confirmed diagnoses, and repeat usage measure product value.
+
+### A — Reliability candidates before broader onboarding (possible v0.7.1)
+
+Planning budget: 3-5 focused development days, not a deadline. Release grouping/version is selected after the fixes and compatibility impact are understood.
+
+| Order | Bounded slice | Acceptance outcome |
+| --- | --- | --- |
+| S1 — locally complete | Trustworthy span timing | Actual operation measurements and unmeasured records are represented honestly; existing call forms work; timeline and detail agree. See CURRENT_TASK for validation. |
+| S2 | Retrieval score semantics | Preserve score type/direction; distance and unknown scores do not silently enter higher-is-better thresholds. Cover similarity, distance, unscored, and explicit mapping cases. Never universally assume `1 - distance`. |
+| S3 | Trace delivery policy | Preserve current strict behavior while designing an explicit business-safe path; test offline/timeout/serialization and original application exceptions. Failures remain observable. Do not add an unbounded queue or retry system incidentally. |
+| S4 | Local network defaults | Host listener and Docker published ports default to loopback; allowed origins are explicit; normal SDK/UI flows pass. Container-internal listening remains compatible with Docker networking; intentional remote use has documented configuration. |
+
+Take one slice per focused PR where practical. A confirmed active exposure or data-loss issue can change the order. Do not wait indefinitely for external testers before fixing reproducible defects.
+
+### B — Reliable First Integration (candidate v0.8)
+
+Planning budget: 1-2 development weeks, adjusted from evidence. The milestone name and final scope are still proposals.
+
+- One complete path starts in the user's own application environment with the released SDK.
+- A minimal integration example covers success, application failure, and Collector unavailability with explicit behavior.
+- Startup checks explain dependencies, occupied ports, health failures, and the actual Dashboard address.
+- Empty-state instructions work for the selected installation method; wheel users are not sent to unavailable example modules without checkout guidance.
+- One automated end-to-end check sends a deterministic trace, opens its detail, and inspects evidence. Show the same flow in the user's browser.
+- Record at least two independent first-run attempts, including dependency setup time, time to first application trace, help requests, and blockers. A proposed goal is at most 10 minutes from satisfied prerequisites to the first application trace; report total setup time separately.
+
+Two people are an initial usability sample, not proof of adoption. If they cannot be recruited promptly, internal independent-app checks can improve the product but must not be relabeled external validation.
+
+### Optional bounded investigation — installed local runtime
+
+The user values installing the Python package and directly seeing the product. Allow a 1-2 day feasibility budget when this is the next selected slice. Prefer investigating the existing Go Collector with embedded built Dashboard assets and a prebuilt runtime launched by the CLI; a Python backend rewrite is not assumed.
+
+Before selecting delivery, compare platform support, artifact version/checksum verification, installation size, offline startup after installation, runtime cleanup/upgrade behavior, and maintenance cost. The exact distribution channel and CLI interface are not chosen. Changing the source-checkout-only boundary requires an explicit architecture decision and aligned package/docs/tests.
+
+If runtime distribution exceeds the budget or obscures the first-integration goal, report the prototype/tradeoffs and split it from v0.8. Do not silently download executables or promise universal platform support through the existing pure-Python wheel.
+
+### C — Diagnostic quality evidence
+
+Planning budget: about one development week; data collection may overlap onboarding.
+
+- Build roughly 60-100 labeled positive/negative cases covering current store policies, technical documents, and another real domain. Include unsupported-language behavior.
+- Reserve evaluation cases before tuning; report per-rule false positives, false negatives, and unassessed cases with sample counts.
+- Preserve deterministic execution. Current rules are not a semantic factuality evaluator, and fixed confidence values are not calibrated probabilities.
+- Display rule evidence and applicability clearly; an unassessed case must not imply a correct answer.
+- Treat external confirmation that a warning helped fix an actual problem as stronger product evidence than more curated demo warnings.
+
+### D — Confirming an improvement (later candidate, no version selected)
+
+Prioritize evidence-to-chunk/span navigation, comparison of two runs for the same question, and search/pagination if users need them. Display source/answer changes alongside warnings; fewer warnings alone is not proof of a better answer. Retention/export and a full evaluation system require their own scope.
+
+### Separate maintenance backlog
+
+- Review and remeasure the four Dashboard dependency advisories recorded during v0.7; do not blindly run an automatic audit fix.
+- Rerun Docker smoke on a virtualization-capable host; review the existing fixed amd64 build and Node-version difference before claiming broader support.
+- Investigate atomic trace/span/warning persistence and duplicate submission semantics before adding delivery retries.
+- Keep secrets out of shared trace evidence; any redaction/export capability needs explicit behavior and tests.
+
+### Decision and stopping rules
+
+After each slice, record the observed user benefit, validation, known limits, and whether the next priority changed. Do not broaden testing after required checks pass without a new change or unresolved concern. Budgets are estimates, not automatic permission to execute every slice.
+
+Before selecting later adapters, cloud/auth, new spans, or LLM-as-judge, require a concrete user case and compare it with improving current diagnosis/installation. No v0.9 or v1.0 date is committed. A future v1.0 should be defined by reliable repeated real use and a stable supported contract, not feature count.
 
 ## v0.7.0 - External Developer Readiness
 
@@ -71,13 +138,13 @@ This milestone creates the conditions for adoption. It does not claim adoption m
 
 Ordinary `python -m pip install sledtrace==0.7.0` from production PyPI is supported for the Python SDK and installed CLI. The explicit `0.7.0rc1` prerelease remains available from TestPyPI as candidate history.
 
-v0.7 must produce an explicit, evidence-backed go/no-go decision covering package ownership, secure publication, TestPyPI/PyPI sequencing, long-description rendering, clean-install validation, and the relationship between the installable SDK/CLI and the source-checkout runtime.
+The v0.7 release decision covered package ownership, secure publication, TestPyPI/PyPI sequencing, long-description rendering, clean-install validation, and the relationship between the installable SDK/CLI and the source-checkout runtime.
 
 Do not claim PyPI availability until publication and validation have succeeded.
 
 Current progress:
 
-* [x] confirm no public `sledtrace` project currently exists on PyPI or TestPyPI
+* [x] confirm no public `sledtrace` project existed on PyPI or TestPyPI during the pre-publication check on 2026-09-08
 * [x] add PyPI project URLs and include the MIT license in wheel/sdist artifacts
 * [x] validate package metadata and long-description rendering with `twine check`
 * [x] add an OIDC Trusted Publishing workflow with separate validate, TestPyPI, and PyPI paths

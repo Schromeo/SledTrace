@@ -7,8 +7,10 @@ import raglens
 import sledtrace
 import sledtrace.cli
 from raglens import trace as legacy_trace
+from raglens import SpanTiming as LegacySpanTiming
 from raglens.trace import resolve_collector_url
 from sledtrace import trace as new_trace
+from sledtrace import SpanTiming
 
 
 def test_sdk_version_exists() -> None:
@@ -20,6 +22,8 @@ def test_public_trace_imports() -> None:
     assert new_trace is not None
     assert legacy_trace is not None
     assert new_trace is legacy_trace
+    assert SpanTiming is LegacySpanTiming
+    assert isinstance(new_trace("timing").measure(), SpanTiming)
 
 
 def test_default_collector_url() -> None:

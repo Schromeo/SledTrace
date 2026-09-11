@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current focus: collect post-release external first-run evidence before selecting a v0.8 product milestone.
+Current focus: S1 span timing correctness is implemented and validated on the local `codex/s1-trustworthy-span-timing` working branch as of 2026-09-11, but is not committed, merged, versioned, or released. Read CURRENT_TASK before continuing; the next product slice and v0.7.1/v0.8 labels are not selected commitments.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
@@ -19,14 +19,17 @@ The Python package is published on production PyPI as `sledtrace==0.7.0`; its wh
 
 Always read these files first:
 
-1. `docs/ai-context/AI_HANDOFF.md`
-2. `docs/ai-context/CURRENT_TASK.md`
-3. `docs/ai-context/ROADMAP.md`
+1. `docs/ai-context/NEXT_AGENT_BRIEF.md` when taking over this work
+2. `docs/ai-context/AI_HANDOFF.md`
+3. `docs/ai-context/CURRENT_TASK.md`
+4. `docs/ai-context/ROADMAP.md` current snapshot and proposed sequence
 
 Read `docs/ai-context/DECISIONS.md` before making architecture decisions.
 
 Use the repository and these documents as the source of truth.
 Do not assume old milestone information from this file overrides the current AI context documents.
+
+CURRENT_TASK owns the next slice and its acceptance criteria. AI_HANDOFF owns the current snapshot and known findings. ROADMAP owns candidate sequencing; DECISIONS owns rationale; DEVLOG owns historical execution evidence. Avoid duplicating long release histories across active documents or rereading historical sections for every small change.
 
 ## Pre-Implementation Decision Gate
 
@@ -196,6 +199,13 @@ After meaningful completed work:
 Keep documentation aligned with actual tested repository behavior.
 
 ## Working Style
+
+- Respond in Chinese unless the user explicitly requests English.
+- Inherit the user's already authorized scope across model changes; do not ask them to repeat context or reconfirm routine implementation choices.
+- Keep review findings, proposed milestones, authorized work, and completed/validated work distinct. This handover request authorizes documentation, not implementation of the entire candidate roadmap or a new publication.
+- When the user continues development, use CURRENT_TASK as the default first slice and complete its decision card before editing.
+- Show real product/test evidence at relevant checkpoints. Known Docker/WSL environment failure is not a reason to block unrelated SDK work.
+- Use bounded investigations. Once the required checks and acceptance criteria pass, hand off the result and reassess the next slice instead of extending the scope.
 
 Before coding:
 

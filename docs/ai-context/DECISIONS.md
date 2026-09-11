@@ -1,5 +1,46 @@
 # Architecture Decisions
 
+## 2026-09-11 — Represent measured, explicit, and unknown span timing honestly
+
+### Decision
+
+- Add a one-shot `t.measure()` context manager that captures actual UTC operation boundaries and monotonic elapsed time, then pass its completed `SpanTiming` to existing retrieval/LLM record methods.
+- Preserve every prior positional argument. Add retrieval `duration_ms` after existing arguments and retain LLM `latency_ms`; reject ambiguous overlap with `timing` and invalid duration types/values.
+- Keep post-hoc calls compatible but set span duration/end to null when timing was not supplied. Do not infer the earlier operation duration from the later logging call.
+- Treat canonical null as `Not measured` in the Dashboard, preserve measured zero, retain fallbacks only for objects without a canonical duration field, and keep trace duration authoritative instead of summing spans.
+
+### Reason
+
+The old record methods measured their own bookkeeping after the real operation. This produced confident but false 0ms spans. A post-hoc API cannot recover elapsed time or actual start time, while a small explicit timer works without wrapping provider calls, changing span types, or intercepting application exceptions. Null is therefore more truthful than fabricated precision.
+
+### Scope
+
+Implemented and locally validated on `codex/s1-trustworthy-span-timing`; not yet committed, merged, versioned, or released. Score semantics, delivery behavior, local network defaults, runtime packaging, and new spans remain separate decisions.
+
+---
+
+## 2026-09-10 — Preserve review evidence and bounded next actions across assistant handover
+
+### Status and authority
+
+The user requested written handover and action instructions for the incoming assistant, expected to be GPT-5.6, after the strategy review. This records a development recommendation and documentation organization; it does not select an entire v0.8 scope, authorize product implementation in this handover turn, or authorize a new release.
+
+### Handover approach
+
+- Recommend span timing correctness as the first slice when development resumes; CURRENT_TASK contains its implementation outline and acceptance criteria.
+- Keep score semantics, delivery behavior, local defaults, onboarding, and diagnostic quality as separately bounded candidates. Real first-run evidence can reprioritize them without blocking confirmed fixes indefinitely.
+- Keep existing Go/Python/React architecture and source-checkout serving as the released baseline. An installed standalone runtime is only a time-bounded investigation candidate, not an approved rewrite or selected package format.
+- Separate code evidence from interpretation: timing and score behavior were reproduced, network exposure follows from configuration but actual reachability was not tested, and diagnostic accuracy has not been measured on a representative dataset.
+- Use CURRENT_TASK for the next action, AI_HANDOFF for the current snapshot, ROADMAP for candidate sequencing, and DEVLOG for chronological history. The short Chinese NEXT_AGENT_BRIEF explains how to resume without repeating completed release work.
+
+### Reason
+
+The review found gaps in measurement and real integration that existing packaging/compatibility tests did not exercise. It also found stale release-state wording in the old handoff despite the successful v0.7 release. A concise current snapshot and explicit acceptance contract reduce context cost and prevent speculative roadmap items from becoming assumed instructions.
+
+The review's competitive context came from the official [Phoenix repository](https://github.com/arize-ai/phoenix), [Langfuse observability documentation](https://langfuse.com/docs/observability/overview), and [LangSmith concepts](https://docs.langchain.com/langsmith/observability-concepts), consulted on 2026-09-10. These establish existing alternatives; the proposed focus on verifiable RAG diagnosis is our strategy judgment, not proof of product-market fit.
+
+---
+
 ## 2026-09-09 — Close v0.7.0 only after protected publication and clean-index validation
 
 ### Decision

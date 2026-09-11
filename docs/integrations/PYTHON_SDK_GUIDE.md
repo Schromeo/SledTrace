@@ -102,8 +102,9 @@ Current implemented API:
 
 ```python
 trace(name, query=None, metadata=None, collector_url=None)
-t.retrieval(query, chunks, name="retrieval", top_k=None, metadata=None)
-t.llm(model, prompt=None, response=None, messages=None, name="llm", provider=None, input_tokens=None, output_tokens=None, latency_ms=None, metadata=None)
+t.measure()
+t.retrieval(query, chunks, name="retrieval", top_k=None, metadata=None, duration_ms=None, timing=None)
+t.llm(model, prompt=None, response=None, messages=None, name="llm", provider=None, input_tokens=None, output_tokens=None, latency_ms=None, metadata=None, timing=None)
 t.flush(collector_url=None, timeout=5.0)
 ```
 
@@ -126,7 +127,8 @@ def answer_question(user_query: str) -> str:
             "environment": "local",
         },
     ) as t:
-        chunks = my_retriever(user_query)
+        with t.measure() as retrieval_timing:
+            chunks = my_retriever(user_query)
 
         t.retrieval(
             query=user_query,
@@ -136,9 +138,11 @@ def answer_question(user_query: str) -> str:
             metadata={
                 "retriever": "my_retriever_v1",
             },
+            timing=retrieval_timing,
         )
 
-        prompt, answer = my_answerer(user_query, chunks)
+        with t.measure() as llm_timing:
+            prompt, answer = my_answerer(user_query, chunks)
 
         t.llm(
             model="local-answerer-v1",
@@ -146,10 +150,44 @@ def answer_question(user_query: str) -> str:
             response=answer,
             name="answer_generation",
             provider="local",
+            timing=llm_timing,
         )
 
     t.flush()
     return answer
+```
+
+## Span Timing Contract
+
+The recording calls run after your retriever or model has returned, so they cannot infer how long that earlier work took. Use `t.measure()` around the actual operation:
+
+```python
+with t.measure() as retrieval_timing:
+    chunks = my_retriever(user_query)
+
+t.retrieval(
+    query=user_query,
+    chunks=chunks,
+    timing=retrieval_timing,
+)
+```
+
+The timer uses a monotonic clock for elapsed time and UTC timestamps for the actual operation boundaries. Fractional milliseconds are truncated to the integer wire format; a measured sub-millisecond operation remains a real `0ms`.
+
+For applications that already measure latency, pass an explicit non-negative integer instead:
+
+```python
+t.retrieval(query=user_query, chunks=chunks, duration_ms=retrieval_ms)
+t.llm(model=model, response=answer, latency_ms=llm_ms)
+```
+
+Do not combine `timing` with `duration_ms` or `latency_ms` on the same span. Duration-only recording knows the elapsed time but not the original UTC boundaries, so `ended_at` remains `null`. A post-hoc call with neither form remains supported, but its `duration_ms` and `ended_at` are `null`; the Dashboard labels it **Not measured** instead of reconstructing timing from the later recording timestamps.
+
+With the local Collector and Dashboard running, generate one measured and one deliberately unmeasured trace for visual verification:
+
+```bash
+cd sdk/python
+python -m examples.timing_demo
 ```
 
 ## Retrieval Span Example
@@ -175,6 +213,7 @@ Behavior:
 - stores the retrieval query in span input
 - stores retrieved chunks in span output
 - if the trace-level query was not set, the retrieval query becomes the trace query
+- accepts a completed `timing` measurement or an explicit `duration_ms`
 
 ## Recommended Chunk Shape
 
@@ -228,6 +267,7 @@ Current behavior:
 - supports both `prompt` and `messages`
 - if `response` is provided, it becomes the trace final answer
 - `provider`, `input_tokens`, `output_tokens`, `total_tokens`, and `latency_ms` are stored in span metadata
+- a completed `timing` measurement records the actual operation boundaries and duration
 
 Usage note:
 

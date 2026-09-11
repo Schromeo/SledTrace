@@ -3,6 +3,11 @@ import { fetchTraceDetail } from "../api/client";
 import ChunkCard from "../components/ChunkCard";
 import JsonViewer from "../components/JsonViewer";
 import SpanTimeline from "../components/SpanTimeline";
+import {
+  formatDurationMs,
+  getDurationMs,
+  getTraceDurationMs,
+} from "../utils/timing";
 import type {
   Chunk,
   EvidenceItem,
@@ -15,175 +20,8 @@ type Props = {
   traceId: string;
 };
 
-function parseTimestampMs(value: any): number | null {
-  if (value === null || value === undefined) {
-    return null;
-  }
-
-  if (typeof value === "number" && Number.isFinite(value)) {
-    // Heuristic:
-    // - seconds timestamp: 10 digits-ish
-    // - milliseconds timestamp: 13 digits-ish
-    if (value > 0 && value < 10_000_000_000) {
-      return value * 1000;
-    }
-
-    return value;
-  }
-
-  if (typeof value === "string" && value.trim() !== "") {
-    const trimmed = value.trim();
-
-    const numeric = Number(trimmed);
-    if (Number.isFinite(numeric)) {
-      if (numeric > 0 && numeric < 10_000_000_000) {
-        return numeric * 1000;
-      }
-
-      return numeric;
-    }
-
-    const parsed = Date.parse(trimmed);
-    if (Number.isFinite(parsed)) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
-
-function parseDurationMs(value: any): number | null {
-  if (value === null || value === undefined) {
-    return null;
-  }
-
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === "string" && value.trim() !== "") {
-    const parsed = Number(value);
-
-    if (Number.isFinite(parsed)) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
-
-function getSpanDurationMs(span: any): number | null {
-  const directCandidates = [
-    span.duration_ms,
-    span.durationMs,
-    span.duration,
-    span.latency_ms,
-    span.latencyMs,
-    span.metadata?.duration_ms,
-    span.metadata?.durationMs,
-    span.metadata?.latency_ms,
-    span.metadata?.latencyMs,
-  ];
-
-  for (const value of directCandidates) {
-    const parsed = parseDurationMs(value);
-
-    if (parsed !== null) {
-      return parsed;
-    }
-  }
-
-  const startCandidates = [
-    span.start_time,
-    span.startTime,
-    span.started_at,
-    span.startedAt,
-    span.start,
-    span.metadata?.start_time,
-    span.metadata?.startTime,
-    span.metadata?.started_at,
-    span.metadata?.startedAt,
-    span.metadata?.start,
-  ];
-
-  const endCandidates = [
-    span.end_time,
-    span.endTime,
-    span.ended_at,
-    span.endedAt,
-    span.end,
-    span.finish_time,
-    span.finishTime,
-    span.finished_at,
-    span.finishedAt,
-    span.metadata?.end_time,
-    span.metadata?.endTime,
-    span.metadata?.ended_at,
-    span.metadata?.endedAt,
-    span.metadata?.end,
-    span.metadata?.finish_time,
-    span.metadata?.finishTime,
-    span.metadata?.finished_at,
-    span.metadata?.finishedAt,
-  ];
-
-  for (const startValue of startCandidates) {
-    const startMs = parseTimestampMs(startValue);
-
-    if (startMs === null) {
-      continue;
-    }
-
-    for (const endValue of endCandidates) {
-      const endMs = parseTimestampMs(endValue);
-
-      if (endMs === null) {
-        continue;
-      }
-
-      const durationMs = endMs - startMs;
-
-      if (Number.isFinite(durationMs) && durationMs >= 0) {
-        return durationMs;
-      }
-    }
-  }
-
-  return null;
-}
-
-function formatDurationMs(durationMs: number | null): string {
-  if (durationMs === null) {
-    return "—";
-  }
-
-  if (durationMs < 1000) {
-    return `${Math.round(durationMs)}ms`;
-  }
-
-  return `${(durationMs / 1000).toFixed(2)}s`;
-}
-
-function formatDuration(span: any): string {
-  return formatDurationMs(getSpanDurationMs(span));
-}
-
-function getTraceDurationMs(detail: TraceDetailResponse): number | null {
-  const traceDuration = getSpanDurationMs(detail.trace);
-
-  if (traceDuration !== null) {
-    return traceDuration;
-  }
-
-  const spanDurations = detail.spans
-    .map((span) => getSpanDurationMs(span))
-    .filter((duration): duration is number => duration !== null);
-
-  if (spanDurations.length === 0) {
-    return null;
-  }
-
-  return spanDurations.reduce((sum, duration) => sum + duration, 0);
+function formatDuration(span: Span): string {
+  return formatDurationMs(getDurationMs(span));
 }
 
 function formatTraceDuration(detail: TraceDetailResponse): string {

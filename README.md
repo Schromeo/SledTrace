@@ -231,18 +231,21 @@ from sledtrace import trace
 
 def answer_question(user_query: str) -> str:
     with trace(name="my-rag-request", query=user_query) as t:
-        retrieved = my_retriever(user_query)
-        chunks = to_sledtrace_chunks(retrieved)
+        with t.measure() as retrieval_timing:
+            retrieved = my_retriever(user_query)
+            chunks = to_sledtrace_chunks(retrieved)
 
         t.retrieval(
             query=user_query,
             chunks=chunks,
             name="primary_retrieval",
             top_k=len(chunks),
+            timing=retrieval_timing,
         )
 
         prompt = build_prompt(user_query, chunks)
-        answer = my_answerer(prompt)
+        with t.measure() as llm_timing:
+            answer = my_answerer(prompt)
 
         t.llm(
             model="my-model-name",
@@ -250,6 +253,7 @@ def answer_question(user_query: str) -> str:
             response=answer,
             name="answer_generation",
             provider="local",
+            timing=llm_timing,
         )
 
     t.flush()
@@ -257,6 +261,8 @@ def answer_question(user_query: str) -> str:
 ```
 
 `to_sledtrace_chunks(...)` represents your app-owned adapter from retriever-native results to SledTrace chunk dictionaries.
+
+`t.measure()` times the actual operation with a monotonic clock and records its real UTC boundaries. Existing post-hoc `t.retrieval(...)` and `t.llm(...)` calls remain valid, but without a completed measurement or explicit latency their span duration is reported as not measured rather than a misleading `0ms`.
 
 A minimal chunk shape looks like this:
 

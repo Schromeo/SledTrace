@@ -60,28 +60,38 @@ sledtrace version
 from sledtrace import trace
 
 with trace("example") as t:
-    t.retrieval(
-        query="What is the refund policy?",
-        chunks=[
+    with t.measure() as retrieval_timing:
+        chunks = [
             {
                 "id": "chunk-1",
                 "text": "Refunds are accepted within 30 days with proof of purchase.",
                 "score": 0.92,
                 "metadata": {"source": "refund_policy.md"},
             }
-        ],
+        ]
+
+    t.retrieval(
+        query="What is the refund policy?",
+        chunks=chunks,
         top_k=1,
+        timing=retrieval_timing,
     )
+
+    with t.measure() as llm_timing:
+        answer = "Refunds are accepted within 30 days with proof of purchase."
 
     t.llm(
         model="demo-model",
         prompt="Question: What is the refund policy?",
-        response="Refunds are accepted within 30 days with proof of purchase.",
+        response=answer,
         provider="local-demo",
+        timing=llm_timing,
     )
 
 t.flush()
 ```
+
+`t.measure()` captures actual operation timing. Calls recorded only after the work, without `timing`, `duration_ms` for retrieval, or `latency_ms` for LLM, remain compatible and are shown as not measured.
 
 ## Collector URL configuration
 

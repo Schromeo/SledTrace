@@ -152,6 +152,102 @@ func TestGetTraceDetailReturnsNotFoundForMissingTrace(t *testing.T) {
 	}
 }
 
+func TestPostAndGetTracePreservesUnknownAndZeroSpanDurations(t *testing.T) {
+	store, err := storage.NewStore(":memory:")
+	if err != nil {
+		t.Fatalf("create in-memory store: %v", err)
+	}
+	defer store.Close()
+
+	zero := 0
+	payload := models.TracePayload{
+		Trace: models.TraceRecord{
+			TraceID:   "trace_timing_round_trip",
+			Name:      "timing-round-trip",
+			Status:    "ok",
+			Input:     models.JSONMap{"query": "timing"},
+			Output:    models.JSONMap{},
+			Metadata:  models.JSONMap{},
+			StartedAt: "2026-09-11T10:00:00Z",
+		},
+		Spans: []models.Span{
+			{
+				SpanID:    "span_unknown_duration",
+				TraceID:   "trace_timing_round_trip",
+				Type:      "retrieval",
+				Name:      "unknown-duration",
+				Status:    "ok",
+				Input:     models.JSONMap{"query": "timing"},
+				Output:    models.JSONMap{"chunks": []models.JSONMap{}},
+				Metadata:  models.JSONMap{},
+				StartedAt: "2026-09-11T10:00:01Z",
+			},
+			{
+				SpanID:     "span_zero_duration",
+				TraceID:    "trace_timing_round_trip",
+				Type:       "llm",
+				Name:       "zero-duration",
+				Status:     "ok",
+				Input:      models.JSONMap{"model": "test"},
+				Output:     models.JSONMap{"response": "done"},
+				Metadata:   models.JSONMap{},
+				StartedAt:  "2026-09-11T10:00:02Z",
+				DurationMS: &zero,
+			},
+		},
+	}
+
+	postBody, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal trace payload: %v", err)
+	}
+
+	handler := NewServer(store).Routes()
+	postReq := httptest.NewRequest(http.MethodPost, "/api/traces", bytes.NewReader(postBody))
+	postReq.Header.Set("Content-Type", "application/json")
+	postRec := httptest.NewRecorder()
+	handler.ServeHTTP(postRec, postReq)
+
+	if postRec.Code != http.StatusCreated {
+		t.Fatalf("expected POST status %d, got %d body=%s", http.StatusCreated, postRec.Code, postRec.Body.String())
+	}
+
+	getReq := httptest.NewRequest(http.MethodGet, "/api/traces/trace_timing_round_trip", nil)
+	getRec := httptest.NewRecorder()
+	handler.ServeHTTP(getRec, getReq)
+
+	if getRec.Code != http.StatusOK {
+		t.Fatalf("expected GET status %d, got %d body=%s", http.StatusOK, getRec.Code, getRec.Body.String())
+	}
+
+	var detail map[string]any
+	if err := json.Unmarshal(getRec.Body.Bytes(), &detail); err != nil {
+		t.Fatalf("decode trace detail response: %v", err)
+	}
+
+	spansValue := field(t, detail, "spans", "Spans")
+	spans, ok := spansValue.([]any)
+	if !ok || len(spans) != 2 {
+		t.Fatalf("expected two spans, got %#v", spansValue)
+	}
+
+	unknownSpan, ok := spans[0].(map[string]any)
+	if !ok {
+		t.Fatalf("expected first span object, got %#v", spans[0])
+	}
+	zeroSpan, ok := spans[1].(map[string]any)
+	if !ok {
+		t.Fatalf("expected second span object, got %#v", spans[1])
+	}
+
+	if duration := field(t, unknownSpan, "duration_ms", "DurationMS"); duration != nil {
+		t.Fatalf("expected unknown duration to remain null, got %#v", duration)
+	}
+	if duration := field(t, zeroSpan, "duration_ms", "DurationMS"); duration != float64(0) {
+		t.Fatalf("expected measured zero duration to remain 0, got %#v", duration)
+	}
+}
+
 func apiTestNumericMismatchPayload() models.TracePayload {
 	traceID := "trace_api_numeric_mismatch"
 

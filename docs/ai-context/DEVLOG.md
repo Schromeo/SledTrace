@@ -1,5 +1,60 @@
 # Devlog
 
+## 2026-09-11 (S1 Trustworthy Span Timing)
+
+### Completed
+
+- Continued from the assistant handover on branch `codex/s1-trustworthy-span-timing`, preserving all uncommitted handover documentation.
+- Added public `SpanTiming` and `t.measure()` for actual-operation UTC boundaries plus monotonic elapsed time.
+- Changed unmeasured post-hoc retrieval/LLM records from logging-overhead duration to null; added retrieval `duration_ms`, retained LLM `latency_ms`, and preserved prior positional argument order and `sledtrace`/`raglens` compatibility.
+- Added controlled-clock, invalid-input, real-zero, exception-propagation, compatibility, and payload tests.
+- Added POST → SQLite → GET coverage proving null and zero remain distinct.
+- Centralized Dashboard timing resolution, rendered canonical null as `Not measured`, preserved legacy data fallback, and removed misleading trace span-sum fallback.
+- Added five dependency-free Node timing tests and wired them into Dashboard CI.
+- Updated root/package SDK examples, the integration guide, custom/reference examples, and a deterministic `examples.timing_demo` visual fixture.
+
+### Validation
+
+- `cd sdk/python && pytest -q`: 34 passed.
+- `cd sdk/python && python -m build`: passed; produced wheel and sdist. The first restricted run failed while bootstrapping isolated build dependencies and then hit local error-output encoding; rerunning with normal dependency/temp access passed before project build assertions were evaluated.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed, including clean install, preferred/legacy imports, new timing API, CLI, and documented out-of-checkout `serve` behavior.
+- `cd collector/go && go test ./... -count=1`: passed. Initial restricted cache access failed before compilation; the normal-permission rerun passed.
+- `cd dashboard/web && npm.cmd test`: five tests passed.
+- `cd dashboard/web && npm.cmd run build`: passed. Initial sandbox path access failed before Vite loaded configuration; normal-permission reruns passed.
+- `git diff --check`: passed with line-ending conversion warnings only.
+- Live non-Docker Collector/Dashboard check used an isolated ignored database: measured trace displayed 200ms total, 80ms retrieval, and 120ms LLM; unmeasured trace displayed `Not measured` for both spans. The in-app browser was left open for the user.
+
+### Boundary
+
+- S1 is complete in the working tree only. No commit, push, PR, version bump, tag, or release was created.
+- No score, delivery, network-default, warning-rule, new-span, or standalone-runtime work was included.
+- Existing README showcase screenshots were not replaced: they still represent valid diagnostic views and do not demonstrate the new unknown-timing state. Conversation/browser evidence and `examples.timing_demo` cover this checkpoint; refresh release-quality screenshots if a selected release needs the state publicly showcased.
+
+---
+
+## 2026-09-10 (Strategy Review and Next-Assistant Handover)
+
+### Work recorded
+
+- Reviewed the released repository at `906fd2999a86fac5abb538cb83ee16b79ce4cda8` and compared the product direction with official competitor documentation.
+- Recorded SDK timing, distance/score semantics, strict trace-delivery behavior, heuristic diagnostic limits, uncalibrated confidence display, local network defaults, and persistence/UI follow-up findings in AI_HANDOFF.
+- During the preceding read-only review, an in-memory sample with about 80ms retrieval and 120ms LLM work produced about 200ms trace duration and two 0ms recorded spans; a no-network normalization sample mapped distance 0.1 to score 0.1. Mocked delivery/serialization failures were also reproduced. These were observations, not fixes.
+- At the user's request, wrote NEXT_AGENT_BRIEF for the incoming assistant and made CURRENT_TASK a focused span-timing action/acceptance contract.
+- Added explicitly proposed post-v0.7 sequencing to ROADMAP and documented its non-committed status in DECISIONS.
+- Condensed AI_HANDOFF into current state and evidence, leaving detailed release history in existing DEVLOG/release notes. Removed the stale pending-PyPI statement and incorrect API test path from the active handoff.
+- Updated AGENTS with Chinese-response preference, context ownership, visible-validation expectations, and bounded continuation guidance.
+
+### Scope and validation boundary
+
+- Documentation only; no SDK, Collector, Dashboard, dependency, version, or workflow changes.
+- No new commit, push, PR, tag, or release is part of this handover turn.
+- Documentation validation passed: `git diff --check` exited 0 (only existing LF/CRLF conversion warnings), all 17 internal file links across the seven changed documents resolved, and the proposed roadmap anchor was checked. Scope review confirmed only documentation changes; full product builds/tests were not rerun for this prose-only change.
+- Independent read-only handover review found no release-state or authority contradiction. Added explicit null/zero storage-round-trip and conditional wrapper-exception acceptance criteria to S1.
+- The v0.7 production installation, full suite results, and Docker/WSL limitation below remain dated historical evidence, not validations rerun on 2026-09-10.
+- No proposed fix or future milestone is marked complete. When development resumes, start with S1 in CURRENT_TASK and reassess after its acceptance criteria pass.
+
+---
+
 ## 2026-09-09 (v0.7.0 Published and Clean-Install Validated)
 
 ### Completed
