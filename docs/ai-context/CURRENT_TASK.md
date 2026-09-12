@@ -1,91 +1,82 @@
 # Current Task
 
-Updated: 2026-09-11. Status: **S4 local network defaults implemented, validated, and locally committed; not pushed, merged, versioned, or released**.
+Updated: 2026-09-11. Status: **v0.7.1 release candidate prepared and locally validated; clean-clone and protected PR checks remain**.
 
 ## Current focus and authority
 
-The user continued the bounded post-v0.7 reliability sequence. S1 timing is in
-local commit `5b5d254`, S2 score semantics is in `ee0a812`, S3 trace delivery is
-in `6562dc3`, and S4 is committed on `codex/s4-local-network-defaults`.
+The user selected **v0.7.1 — Trustworthy Local Tracing** as the patch release
+candidate for the four completed post-v0.7 reliability slices:
 
-Do not redo S1-S4 or publish a release. The next bounded action requires a fresh
-decision between grouping the reliability commits for integration/release and
-starting the proposed Reliable First Integration work. v0.7.0 remains the
-released version.
+- S1 timing: local commit `5b5d254`
+- S2 score semantics: local commit `ee0a812`
+- S3 trace delivery policy: local commit `6562dc3`
+- S4 local network defaults: local commit `fc85bda`
 
-## S4 decision card
+The active branch is `codex/v0.7.1-reliability`. The user authorized preparing,
+pushing, and opening the candidate pull request. This does not authorize merging,
+tagging, PyPI publication, a GitHub Release, or v0.8 implementation. v0.7.0
+remains the latest published release until the complete protected release path is
+proven.
+
+## Candidate decision card
 
 | Question | Current answer |
 | --- | --- |
-| User value | A normal local start does not unintentionally publish the unauthenticated Collector or Dashboard to every host interface, while intentional remote use remains possible through explicit configuration. |
-| Confirmed blocker | Native Collector defaulted to `:4319`, Vite development used `0.0.0.0`, Compose published both ports on all host interfaces, and Collector CORS returned `*`. |
-| Existing capability | Collector address overrides, Compose port overrides, Vite CLI overrides, a source startup helper, and Go HTTP tests already existed. |
-| Smallest deliverable | Default native listeners and Compose host publishing to loopback; preserve container-internal listeners; replace wildcard CORS with exact local origins and an explicit override; document the complete remote configuration. |
-| Non-goals | No authentication, TLS, firewall changes, network discovery, proxy, API redesign, SDK URL change, UI redesign, version bump, or release. |
-| Validation | Default/override address tests, CORS allow/deny/preflight tests, all Go tests, Dashboard tests/build, default and remote Compose expansion, live listeners, SDK ingestion, and browser-visible Dashboard retrieval. |
-| Visible evidence | A live `S4 loopback validation` trace is shown in the Dashboard at `127.0.0.1:5173`, backed by listeners on `127.0.0.1:4319` and `127.0.0.1:5173`. |
+| User value | Deliver four evidence/reliability fixes to existing users as one reviewable patch without mixing in speculative product expansion. |
+| Confirmed blocker | S1-S4 existed only as local commits with 0.7.0 metadata and no combined artifact, release notes, clean-clone result, or remote CI evidence. |
+| Existing capability | Protected main, cross-stack CI, tag-gated Trusted Publishing, clean-wheel validation, reference traces, and a repeatable release checklist already exist. |
+| Smallest deliverable | Align source metadata to 0.7.1, add release notes, refresh materially changed screenshots, complete local/clean-clone validation, then push and open one PR. |
+| Non-goals | No merge, tag, package upload, GitHub Release, v0.8 feature, auth/cloud, new span, adapter, retry queue, or unrelated dependency fix. |
+| Validation | Python tests/build/Twine/clean wheel; all Go tests; npm clean install/tests/build; Compose expansion; clean-clone source startup; live browser inspection; required PR checks. |
+| Visible evidence | Nine deterministic 0.7.1 traces and refreshed real Dashboard images show `Not measured` and explicit score direction. |
 
-## Implemented contract
+## Prepared candidate
 
-- A native Collector with no address environment variable listens on
-  `127.0.0.1:4319`.
-- `SLEDTRACE_COLLECTOR_ADDR` remains the preferred explicit override;
-  `RAGLENS_COLLECTOR_ADDR` remains the temporary compatibility fallback.
-- Vite development and preview scripts listen on `127.0.0.1:5173` by default.
-  An explicit trailing Vite `--host` option supports intentional remote use.
-- Compose publishes Collector and Dashboard ports through
-  `SLEDTRACE_BIND_HOST`, defaulting to `127.0.0.1`. Container-internal
-  Collector and Nginx listeners remain reachable inside Docker networking.
-- CORS defaults to the exact origins `http://localhost:5173` and
-  `http://127.0.0.1:5173`. `SLEDTRACE_ALLOWED_ORIGINS` replaces the defaults
-  with a comma-separated exact list.
-- Requests without `Origin` continue normally. An unconfigured browser origin
-  receives the normal response but no `Access-Control-Allow-Origin` header.
-- Remote access also requires the correct `VITE_SLEDTRACE_API_URL`; SDK clients
-  on another machine require `SLEDTRACE_COLLECTOR_URL`. README documents the
-  full boundary and warns that these services remain unauthenticated.
+- Python package, preferred and legacy import versions, CLI, payload metadata,
+  User-Agent, examples, test expectations, and wheel validator use `0.7.1`.
+- Dashboard `package.json` and lockfile use `0.7.1`.
+- Root README distinguishes the v0.7.1 source candidate from latest published
+  v0.7.0. Package README contains intended 0.7.1 artifact content.
+- `docs/releases/V0_7_1.md` records the four changes, compatibility constraints,
+  remote-network upgrade note, validation, and explicit non-goals.
+- All three README screenshots were recaptured from a clean temporary database
+  populated with nine deterministic reference traces from current source.
 
-## Acceptance criteria
+## Local validation completed
 
-- [x] Native Collector default is loopback and explicit/legacy overrides work.
-- [x] Source Dashboard development and preview defaults are loopback.
-- [x] Compose host ports default to `127.0.0.1`.
-- [x] Container-internal listeners remain compatible with Docker networking.
-- [x] Wildcard CORS is removed; both standard local Dashboard origins work.
-- [x] Explicit origins replace the default list and preflight headers are correct.
-- [x] SDK/curl requests without `Origin` still work.
-- [x] Intentional remote configuration is documented across binding, CORS, UI API URL, and SDK URL.
-- [x] No auth/TLS/firewall, API, storage, warning, span, or UI behavior was added.
+- [x] `cd sdk/python && pytest -q`: 62 passed.
+- [x] `cd sdk/python && python -m build`: 0.7.1 wheel/sdist built.
+- [x] `cd sdk/python && python -m twine check dist/*`: 0.7.1 artifacts passed.
+- [x] `cd sdk/python && python scripts/validate-wheel.py`: passed in a clean
+  temporary venv, including imports, version, CLI, timing, scores, delivery, and
+  out-of-checkout `serve` behavior.
+- [x] `cd collector/go && go test ./... -count=1`: all packages passed.
+- [x] `cd dashboard/web && npm.cmd ci`: passed.
+- [x] `cd dashboard/web && npm.cmd test`: 10 passed.
+- [x] `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- [x] Default and explicit-remote `docker compose config` expansion passed.
+- [x] Live non-Docker loopback stack stored and displayed nine reference traces.
+- [x] Three 1440x950 Dashboard screenshots refreshed and visually inspected.
+- [x] `git diff --check`: passed with Windows line-ending warnings only.
 
-## Validation evidence
+Environment notes:
 
-Completed on 2026-09-11:
+- The restricted build initially could not bootstrap its isolated environment;
+  the same build passed with normal temporary-directory/package-index access.
+- Host Python lacked Twine, so Twine 7.0.0 was installed only into a system
+  temporary directory for validation.
+- `npm ci` re-reported four known development-dependency advisories: one
+  moderate and three high. No automatic audit fix entered this candidate.
+- Docker runtime remains untested on this WSL2-disabled host. Static Compose
+  expansion is not being represented as a container startup smoke.
 
-- Focused Go tests for Collector address and API CORS packages: passed.
-- `cd collector/go && go test ./... -count=1`: all packages passed.
-- `cd dashboard/web && npm.cmd test`: 10 tests passed.
-- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
-- `docker compose config`: passed without contacting the daemon; both published
-  ports resolve to host IP `127.0.0.1`, Collector remains `:4319`, and the two
-  local allowed origins are present.
-- Remote Compose override expansion: both host IPs resolve to `0.0.0.0`, and the
-  supplied allowed origin and Dashboard API URL are preserved.
-- Live `netstat`: only `127.0.0.1:4319` and `127.0.0.1:5173` listened for the
-  current Collector and Dashboard.
-- Live HTTP: no-Origin health returned 200; both default local origins were
-  allowed exactly; `https://example.invalid` received no allow-origin header
-  and included `Vary: Origin`.
-- Live Python SDK flush stored trace
-  `trace_abc2dc4e6b494b6687a2472903863998`; the browser loaded its trace detail,
-  retrieval span, LLM span, and warning through the loopback-only services.
-- `git diff --check`: passed with line-ending conversion warnings only.
+## Remaining gates
 
-Docker runtime was not started because this host's Docker Desktop/WSL2 backend
-is unavailable. Compose expansion validates configuration structure, not a
-container runtime smoke test; that remains a separate host-capability check.
-
-## Exit boundary
-
-S4 is complete and committed only on the local branch. No push, PR, merge,
-version bump, tag, package upload, or release exists for S1-S4. The temporary
-live non-Docker services remain available so the user can inspect the S4 trace.
+1. Commit the release-facing metadata, docs, and screenshots.
+2. Create a clean clone of that commit and run the documented non-Docker startup
+   path, health check, reference trace, and Dashboard API smoke.
+3. Record the clean-clone evidence without changing product behavior.
+4. Push `codex/v0.7.1-reliability`, open a pull request to `main`, and wait for
+   all required checks on the exact remote commit.
+5. Stop. Merge, tag, package publication, production-index validation, and
+   GitHub Release require a separate release-stage decision.

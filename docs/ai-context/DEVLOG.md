@@ -1,5 +1,50 @@
 # Devlog
 
+## 2026-09-11 (v0.7.1 Release Candidate Preparation)
+
+### Completed
+
+- Selected **v0.7.1 — Trustworthy Local Tracing** as the patch release grouping
+  for S1 timing, S2 score semantics, S3 delivery policy, and S4 network defaults.
+- Created `codex/v0.7.1-reliability` from S4 commit `fc85bda`.
+- Aligned Python package/import/CLI/runtime/example validation and Dashboard
+  package metadata to 0.7.1.
+- Added `docs/releases/V0_7_1.md` and kept root release status explicit that
+  v0.7.0 remains the latest published version.
+- Generated nine deterministic reference traces from the 0.7.1 source and
+  refreshed all three README screenshots from the real local Dashboard at
+  1440x950. The images show honest unknown trace duration and score-direction
+  labels rather than generated or mocked UI.
+
+### Local validation
+
+- `cd sdk/python && pytest -q`: 62 passed.
+- `cd sdk/python && python -m build`: built
+  `sledtrace-0.7.1-py3-none-any.whl` and `sledtrace-0.7.1.tar.gz`.
+- `cd sdk/python && python -m twine check dist/*`: passed for the 0.7.1 artifacts
+  and retained historical local artifacts. Twine was installed only in a system
+  temporary directory because it was absent from the host Python environment.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed in a new temporary
+  virtual environment, including version 0.7.1, preferred/legacy imports,
+  timing, score semantics, delivery policy, CLI, and out-of-checkout `serve`.
+- `cd collector/go && go test ./... -count=1`: all packages passed.
+- `cd dashboard/web && npm.cmd ci`: passed; npm re-reported the known four
+  development-dependency advisories (one moderate, three high).
+- `cd dashboard/web && npm.cmd test`: 10 passed.
+- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- Default and explicit-remote `docker compose config` expansion passed.
+- Live Collector/Dashboard listeners were loopback-only and all nine reference
+  traces rendered in the browser.
+
+### Remaining candidate gates
+
+- Commit the release candidate and complete a clean-clone startup smoke.
+- Push the branch, open a pull request, and wait for all required checks on the
+  exact remote candidate commit.
+- Do not merge, tag, publish to PyPI, or create a GitHub Release in this stage.
+
+---
+
 ## 2026-09-11 (S4 Local Network Defaults)
 
 ### Completed

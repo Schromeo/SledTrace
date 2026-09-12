@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current focus: S1 span timing correctness is in local commit `5b5d254`, S2 retrieval score semantics is in `ee0a812`, S3 trace delivery policy is in `6562dc3`, and S4 local network defaults are implemented, validated, and locally committed on `codex/s4-local-network-defaults` as of 2026-09-11. None is pushed, merged, versioned, or released. Read CURRENT_TASK before continuing; the next action and v0.7.1/v0.8 labels are not selected commitments.
+Current focus: **v0.7.1 — Trustworthy Local Tracing** release-candidate preparation on `codex/v0.7.1-reliability`. Local S1-S4 reliability commits are grouped, package/Dashboard metadata is aligned to 0.7.1, local cross-stack validation and refreshed real Dashboard screenshots pass, and clean-clone/remote PR checks remain. The candidate is not pushed, merged, tagged, published, or released.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 

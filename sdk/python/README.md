@@ -2,7 +2,7 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-Current release: **0.7.0 — External Developer Readiness**
+Package version: **0.7.1 — Trustworthy Local Tracing**
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
@@ -11,7 +11,7 @@ Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/
 Install the released SDK and CLI from production PyPI:
 
 ```bash
-python -m pip install sledtrace==0.7.0
+python -m pip install sledtrace==0.7.1
 ```
 
 The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
@@ -50,7 +50,7 @@ sledtrace serve --help
 sledtrace version
 ```
 
-`sledtrace version` reports `0.7.0` for this release.
+`sledtrace version` reports `0.7.1` for this release.
 
 `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
@@ -159,6 +159,7 @@ from sledtrace import trace
 - [Full project README and screenshots](https://github.com/Schromeo/SledTrace#readme)
 - [User onboarding guide](https://github.com/Schromeo/SledTrace/blob/main/docs/product/USER_ONBOARDING.md)
 - [Python SDK integration guide](https://github.com/Schromeo/SledTrace/blob/main/docs/integrations/PYTHON_SDK_GUIDE.md)
+- [v0.7.1 release notes](https://github.com/Schromeo/SledTrace/blob/main/docs/releases/V0_7_1.md)
 - [v0.7.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
 Repository examples such as `examples.custom_pipeline_demo` are local developer examples and not a separate public SDK surface.

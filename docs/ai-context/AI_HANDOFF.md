@@ -1,7 +1,7 @@
 # AI Handoff
 
-Last reviewed: 2026-09-11 on branch `codex/s4-local-network-defaults`, based on local S3 commit `6562dc3`, S2 commit `ee0a812`, S1 commit `5b5d254`, and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
-This snapshot distinguishes released behavior from the locally completed reliability work. S1-S4 are implemented, validated, and locally committed. None is pushed, merged, versioned, or released.
+Last reviewed: 2026-09-11 on branch `codex/v0.7.1-reliability`, based on local S4 commit `fc85bda`, S3 commit `6562dc3`, S2 commit `ee0a812`, S1 commit `5b5d254`, and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
+This snapshot distinguishes released behavior from the v0.7.1 candidate. S1-S4 are locally committed; version/release metadata, local cross-stack validation, live Dashboard evidence, and refreshed screenshots are prepared for v0.7.1. Clean-clone and remote PR checks remain. Nothing is pushed, merged, tagged, published, or released.
 
 ## Read this first
 
@@ -85,6 +85,8 @@ S3 local validation on 2026-09-11: 62 Python tests, wheel/sdist build, clean-whe
 
 S4 local validation on 2026-09-11: all Go tests, ten Dashboard tests, Dashboard production build, default and explicit-remote Compose configuration expansion, live loopback listeners, SDK ingestion, CORS allow/deny checks, and browser-visible trace detail passed. Docker runtime was not started because this host's WSL2 backend is unavailable; Compose structure was validated without the daemon.
 
+v0.7.1 candidate validation on 2026-09-11: 62 Python tests, wheel/sdist build, Twine metadata check, clean-wheel install/API/CLI validation at version 0.7.1, all Go tests, ten Dashboard tests, Dashboard 0.7.1 production build, Compose default/remote expansion, nine live reference traces, and three refreshed 1440x950 Dashboard screenshots passed. The clean-clone smoke and exact remote PR checks are the remaining release-candidate gates.
+
 Environment facts last observed:
 
 - Local host is Windows/PowerShell. Use `npm.cmd` where needed.
@@ -99,7 +101,7 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user authorized and completed S1-S4 development on 2026-09-11. That does not authorize a new release or every later roadmap item. Use CURRENT_TASK for the completed evidence, then make a fresh bounded decision before integration/release preparation or selecting another slice. Candidate v0.7.1/v0.8 labels are not selected release commitments.
+The user authorized v0.7.1 candidate preparation and PR creation on 2026-09-11. This does not authorize merging, tagging, package publication, a GitHub Release, or v0.8 implementation. Use CURRENT_TASK for the remaining clean-clone and PR checks, and keep v0.7.0 as the released version until publication is proven.
 
 For scope that changes architecture or publication, inspect DECISIONS and the current user instruction. Preserve prior authorization where it actually applies, and never bypass protected branch or deployment rules.
 

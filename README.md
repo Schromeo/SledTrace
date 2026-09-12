@@ -8,7 +8,10 @@ It helps developers inspect why a RAG application produced a bad answer by showi
 
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
-Latest release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
+Latest published release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
+
+Current source candidate: **v0.7.1 — Trustworthy Local Tracing**. It is not yet
+merged, tagged, or published.
 
 Install the Python SDK from PyPI:
 
@@ -468,6 +471,7 @@ bash ./scripts/mac/smoke.sh
 * `docs/releases/V0_5_0.md` - Python SDK distribution and packaging-readiness release notes.
 * `docs/releases/V0_6_0.md` - Local CLI and startup UX release notes.
 * `docs/releases/V0_7_0.md` - External Developer Readiness release notes.
+* `docs/releases/V0_7_1.md` - Trustworthy Local Tracing release notes.
 * `docs/REBRANDING.md` - migration notes for the RAGLens to SledTrace rename.
 
 ### For contributors / maintainers
@@ -494,6 +498,7 @@ Milestone snapshot:
 * v0.5.0 Python SDK distribution / packaging readiness: complete
 * v0.6.0 local CLI / startup UX: complete
 * v0.7.0 external developer readiness: complete
+* v0.7.1 trustworthy local tracing: release candidate; not yet published
 
 Published releases:
 
@@ -501,10 +506,10 @@ Published releases:
 * [v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
 * [v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
-Current version:
+Current source version:
 
 ```text
-v0.7.0 - External Developer Readiness
+v0.7.1 - Trustworthy Local Tracing (release candidate)
 ```
 
 Completed:

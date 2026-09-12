@@ -10,7 +10,7 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 **Release status:** Complete, validated, tagged, published to production PyPI, and published as a GitHub Release on 2026-09-09
 
-**Next product milestone:** Not selected. S1-S4 are implemented, validated, and locally committed. None is pushed, merged, versioned, or released. Reassess the reliability release grouping versus Reliable First Integration, and gather external-use evidence alongside confirmed fixes.
+**Next product milestone:** v0.7.1 — Trustworthy Local Tracing is selected as the release candidate grouping for S1-S4. Local validation and release-facing metadata are prepared; clean-clone and protected PR checks remain. It is not pushed, merged, tagged, published, or released.
 
 Release references:
 
@@ -25,7 +25,7 @@ Release references:
 
 ## Proposed post-v0.7 sequence
 
-Status: **S1-S4 locally committed; remaining sequence is planning, not a release commitment**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
+Status: **S1-S4 locally committed and grouped into the selected v0.7.1 release candidate; later sequence remains planning**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
 
 The proposed product outcome is: a Python RAG developer can find verifiable evidence for a bad answer and confirm the effect of a subsequent change. Shipping milestones measures readiness; external use, confirmed diagnoses, and repeat usage measure product value.
 

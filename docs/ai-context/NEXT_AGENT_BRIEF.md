@@ -6,7 +6,7 @@
 
 ## 2026-09-11 接续状态
 
-GPT-5.6 已按本信接手。S1 在本地 commit `5b5d254`，S2 在 `ee0a812`，S3 在 `6562dc3`；S4 local network defaults 已在 `codex/s4-local-network-defaults` 完成实现、测试、实时 UI 验证和本地提交。不要重做 S1-S4；先读 CURRENT_TASK 并确认 Git 状态。它们均未 push、PR、merge、升版或发布，下一项产品任务仍未选择。
+GPT-5.6 已按本信接手。S1 在本地 commit `5b5d254`，S2 在 `ee0a812`，S3 在 `6562dc3`，S4 在 `fc85bda`。用户已选择把 S1-S4 组合为 **v0.7.1 — Trustworthy Local Tracing** 候选；`codex/v0.7.1-reliability` 已完成版本对齐、本地全栈验证和真实 Dashboard 截图刷新，clean-clone 与远端 PR 检查仍待完成。不要重做 S1-S4，也不要把候选写成已发布。
 
 ## 先知道你接手了什么
 
@@ -20,7 +20,7 @@ SledTrace 已完成 v0.7.0，并正式发布到 PyPI 和 GitHub。之前的发�
 2. [CURRENT_TASK.md](CURRENT_TASK.md)：下一项任务的明确细纲和完成标准。
 3. [ROADMAP.md](ROADMAP.md#proposed-post-v07-sequence)：后续候选顺序，不必把整段历史重新读一遍。
 
-已发布 `main` 基线是 906fd29；S1-S4 是其上的四个本地可靠性提交，其中前三个哈希见上，S4 是当前分支 HEAD。先用 git status 和 HEAD 确认现状，不要重写或清理这些工作。版本和发布引用以 AI_HANDOFF 为准。
+已发布 `main` 基线是 906fd29；S1-S4 是其上的四个本地可靠性提交，当前候选分支继续叠加 0.7.1 metadata、release notes 和截图。先用 git status 和 HEAD 确认现状，不要重写或清理这些工作。版本和发布引用以 AI_HANDOFF 为准。
 
 ## 我留给你的判断
 

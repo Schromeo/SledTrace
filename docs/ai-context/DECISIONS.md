@@ -1,5 +1,36 @@
 # Architecture Decisions
 
+## 2026-09-11 — Group S1-S4 as v0.7.1 Trustworthy Local Tracing
+
+### Decision
+
+- Select patch version `0.7.1` for the four completed post-v0.7 reliability
+  slices: timing, score semantics, trace delivery policy, and local network
+  defaults.
+- Prepare one protected pull request from `codex/v0.7.1-reliability` after local
+  cross-stack and clean-clone validation.
+- Keep v0.7.0 as the latest released version until merge, immutable tag,
+  protected PyPI publication, production-index installation, and GitHub Release
+  are all proven.
+
+### Reason
+
+The four slices correct released behavior and add only backward-compatible
+interfaces/configuration. A patch release communicates that scope better than
+silently accumulating local commits or starting v0.8 before reliable trace
+evidence reaches users. Combining them also permits one exact cross-stack CI and
+publication artifact while retaining their individual commits for review.
+
+### Scope and outcome
+
+The source candidate is versioned as 0.7.1 and titled **Trustworthy Local
+Tracing**. Package, CLI, runtime payload/User-Agent, examples, Dashboard metadata,
+tests, release notes, and real screenshots are aligned. Local validation passes;
+clean-clone and protected PR checks remain. No merge, tag, package upload,
+GitHub Release, or v0.8 work is authorized by this decision.
+
+---
+
 ## 2026-09-11 — Default local network boundaries to loopback and require explicit browser origins
 
 ### Decision
