@@ -25,9 +25,9 @@ publication artifact while retaining their individual commits for review.
 
 The source candidate is versioned as 0.7.1 and titled **Trustworthy Local
 Tracing**. Package, CLI, runtime payload/User-Agent, examples, Dashboard metadata,
-tests, release notes, and real screenshots are aligned. Local and clean-clone
-validation pass; protected PR checks remain. No merge, tag, package upload,
-GitHub Release, or v0.8 work is authorized by this decision.
+tests, release notes, and real screenshots are aligned. Local, clean-clone, and
+protected PR checks pass in PR #3. No merge, tag, package upload, GitHub Release,
+or v0.8 work is authorized by this decision.
 
 ---
 

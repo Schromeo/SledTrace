@@ -1,6 +1,6 @@
 # Current Task
 
-Updated: 2026-09-11. Status: **v0.7.1 release candidate prepared and clean-clone validated; protected PR checks remain**.
+Updated: 2026-09-11. Status: **v0.7.1 candidate PR #3 is open; local, clean-clone, visible UI, and all required remote checks pass**.
 
 ## Current focus and authority
 
@@ -12,11 +12,12 @@ candidate for the four completed post-v0.7 reliability slices:
 - S3 trace delivery policy: local commit `6562dc3`
 - S4 local network defaults: local commit `fc85bda`
 
-The active branch is `codex/v0.7.1-reliability`. The user authorized preparing,
-pushing, and opening the candidate pull request. This does not authorize merging,
-tagging, PyPI publication, a GitHub Release, or v0.8 implementation. v0.7.0
-remains the latest published release until the complete protected release path is
-proven.
+The active branch is `codex/v0.7.1-reliability`; PR
+[#3](https://github.com/Schromeo/SledTrace/pull/3) targets `main`. The user
+authorized preparing, pushing, and opening the candidate pull request. This does
+not authorize merging, tagging, PyPI publication, a GitHub Release, or v0.8
+implementation. v0.7.0 remains the latest published release until the complete
+protected release path is proven.
 
 ## Candidate decision card
 
@@ -62,6 +63,7 @@ proven.
 - [x] Installed clean-clone `sledtrace serve` started loopback Collector and
   Dashboard; health, HTTP, conflict trace round trip, UI detail, and clean Git
   status passed.
+- [x] PR #3 Python 3.9, Python 3.13, Go Collector, and Dashboard checks passed.
 - [x] `git diff --check`: passed with Windows line-ending warnings only.
 
 Environment notes:
@@ -77,7 +79,6 @@ Environment notes:
 
 ## Remaining gates
 
-1. Push `codex/v0.7.1-reliability`, open a pull request to `main`, and wait for
-   all required checks on the exact remote commit.
-2. Stop. Merge, tag, package publication, production-index validation, and
-   GitHub Release require a separate release-stage decision.
+Stop at the open, green candidate PR. Merge, tag, package publication,
+production-index validation, and GitHub Release require a separate release-stage
+decision.

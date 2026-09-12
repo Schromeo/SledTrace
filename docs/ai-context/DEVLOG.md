@@ -38,9 +38,8 @@
 
 ### Remaining candidate gates
 
-- Push the branch, open a pull request, and wait for all required checks on the
-  exact remote candidate commit.
-- Do not merge, tag, publish to PyPI, or create a GitHub Release in this stage.
+- Do not merge, tag, publish to PyPI, or create a GitHub Release without a
+  separate release-stage decision.
 
 ### Clean-clone validation
 
@@ -56,6 +55,16 @@
 - The clone's reference app stored a conflict trace; API readback returned two
   spans, one warning, null trace duration, and higher-is-better semantics for the
   first score. The same detail is open in the user's browser.
+
+### Pull request validation
+
+- Pushed `codex/v0.7.1-reliability` and opened protected pull request
+  [#3](https://github.com/Schromeo/SledTrace/pull/3) to `main`.
+- The PR head matches the locally prepared candidate history; `origin/main`
+  remained the direct ancestor with no rebase or conflict required.
+- Required checks passed: Python 3.9, Python 3.13, Go Collector, and Dashboard.
+- The PR remains open. No merge, tag, PyPI upload, production-index claim, or
+  GitHub Release was performed.
 
 ---
 

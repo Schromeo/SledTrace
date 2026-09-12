@@ -6,7 +6,7 @@
 
 ## 2026-09-11 接续状态
 
-GPT-5.6 已按本信接手。S1 在本地 commit `5b5d254`，S2 在 `ee0a812`，S3 在 `6562dc3`，S4 在 `fc85bda`。用户已选择把 S1-S4 组合为 **v0.7.1 — Trustworthy Local Tracing** 候选；`codex/v0.7.1-reliability` 的 release-prep commit `25521d4` 已完成版本对齐、本地全栈验证、clean-clone CLI/启动/trace 验证和真实 Dashboard 截图刷新。仅远端 PR 检查仍待完成。不要重做 S1-S4，也不要把候选写成已发布。
+GPT-5.6 已按本信接手。S1 在本地 commit `5b5d254`，S2 在 `ee0a812`，S3 在 `6562dc3`，S4 在 `fc85bda`。用户已选择把 S1-S4 组合为 **v0.7.1 — Trustworthy Local Tracing** 候选；`codex/v0.7.1-reliability` 的 release-prep commit `25521d4` 已完成版本对齐、本地全栈验证、clean-clone CLI/启动/trace 验证和真实 Dashboard 截图刷新。PR [#3](https://github.com/Schromeo/SledTrace/pull/3) 已打开且四项 required checks 全绿。不要重做 S1-S4，也不要把候选写成已合并或已发布。
 
 ## 先知道你接手了什么
 

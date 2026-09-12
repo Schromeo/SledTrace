@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current focus: **v0.7.1 — Trustworthy Local Tracing** release-candidate preparation on `codex/v0.7.1-reliability`. Local S1-S4 reliability commits are grouped, package/Dashboard metadata is aligned to 0.7.1, local cross-stack validation, clean-clone startup, and refreshed real Dashboard screenshots pass; remote PR checks remain. The candidate is not pushed, merged, tagged, published, or released.
+Current focus: **v0.7.1 — Trustworthy Local Tracing** candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) from `codex/v0.7.1-reliability`. S1-S4 are grouped, metadata is aligned to 0.7.1, local/clean-clone/live-browser validation passes, and all four required PR checks pass. The candidate is not merged, tagged, published, or released.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 

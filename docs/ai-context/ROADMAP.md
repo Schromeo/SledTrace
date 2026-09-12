@@ -10,7 +10,7 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 **Release status:** Complete, validated, tagged, published to production PyPI, and published as a GitHub Release on 2026-09-09
 
-**Next product milestone:** v0.7.1 — Trustworthy Local Tracing is selected as the release candidate grouping for S1-S4. Local validation, clean-clone startup, release-facing metadata, and screenshots pass; protected PR checks remain. It is not pushed, merged, tagged, published, or released.
+**Next product milestone:** v0.7.1 — Trustworthy Local Tracing is selected as the release candidate grouping for S1-S4. Local validation, clean-clone startup, release-facing metadata, screenshots, and all four required checks pass in PR #3. It is not merged, tagged, published, or released.
 
 Release references:
 
