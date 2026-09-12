@@ -1,6 +1,6 @@
 # System Architecture
 
-## Current v0.1 Architecture
+## Current Architecture
 
 SledTrace currently runs as local-first components:
 
@@ -37,6 +37,16 @@ The collector is a local HTTP service, running by default at:
 
 - `http://localhost:4319`
 
+The native process listens on `127.0.0.1:4319` by default. Docker keeps the
+container-internal listener on `:4319`, but publishes its host port on
+`127.0.0.1` by default. Intentional remote use must set
+`SLEDTRACE_COLLECTOR_ADDR` or the Compose `SLEDTRACE_BIND_HOST` explicitly.
+
+Browser CORS access defaults to the exact local Dashboard origins
+`http://localhost:5173` and `http://127.0.0.1:5173`. A comma-separated
+`SLEDTRACE_ALLOWED_ORIGINS` value replaces that list. Requests from the SDK or
+command-line tools without an `Origin` header are unaffected.
+
 Implemented endpoints:
 
 - `GET /health`
@@ -68,7 +78,9 @@ Note:
 
 ### React Dashboard
 
-The dashboard runs locally with Vite.
+The dashboard runs locally with Vite, whose development and preview listeners
+default to `127.0.0.1:5173`. Docker publishes the Nginx port to host loopback by
+default while leaving container-internal listening unchanged.
 
 It reads collector APIs and displays:
 

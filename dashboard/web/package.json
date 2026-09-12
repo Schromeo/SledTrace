@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5173",
+    "dev": "vite --host 127.0.0.1 --port 5173",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "build": "tsc && vite build",
-    "preview": "vite preview --port 5173"
+    "preview": "vite preview --host 127.0.0.1 --port 5173"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

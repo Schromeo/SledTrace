@@ -127,6 +127,37 @@ Open:
 http://localhost:5173
 ```
 
+Collector and Dashboard host ports are published on `127.0.0.1` by default.
+The source-based Collector and Vite development server also default to loopback,
+and browser access is allowed only from the two local Dashboard origins
+(`localhost:5173` and `127.0.0.1:5173`). SDK and command-line requests without an
+`Origin` header continue to work normally.
+
+For intentional access from another machine, configure all three boundaries
+explicitly and review your firewall before starting the services:
+
+```bash
+# Docker Compose (.env)
+SLEDTRACE_BIND_HOST=0.0.0.0
+SLEDTRACE_ALLOWED_ORIGINS=http://YOUR_HOST:5173
+VITE_SLEDTRACE_API_URL=http://YOUR_HOST:4319
+
+# Source-based Collector
+SLEDTRACE_COLLECTOR_ADDR=0.0.0.0:4319
+SLEDTRACE_ALLOWED_ORIGINS=http://YOUR_HOST:5173
+
+# Source-based Dashboard
+VITE_SLEDTRACE_API_URL=http://YOUR_HOST:4319
+npm run dev -- --host 0.0.0.0
+
+# SDK process on another machine
+SLEDTRACE_COLLECTOR_URL=http://YOUR_HOST:4319
+```
+
+If you change the Dashboard port, include the resulting exact origin in
+`SLEDTRACE_ALLOWED_ORIGINS`. These settings expose an unauthenticated local
+development service; SledTrace does not add TLS or firewall rules.
+
 ### Install and inspect the Python SDK
 
 ```bash

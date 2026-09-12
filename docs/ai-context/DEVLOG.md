@@ -1,5 +1,52 @@
 # Devlog
 
+## 2026-09-11 (S4 Local Network Defaults)
+
+### Completed
+
+- Changed the native Collector fallback and Vite development/preview scripts to
+  loopback while preserving explicit address/host overrides.
+- Bound both Docker-published host ports to `SLEDTRACE_BIND_HOST`, defaulting to
+  `127.0.0.1`, while keeping container-internal listeners unchanged.
+- Replaced wildcard CORS with the two exact local Dashboard origins plus a
+  comma-separated `SLEDTRACE_ALLOWED_ORIGINS` replacement list.
+- Added address precedence and CORS allow/deny/preflight tests.
+- Documented the full intentional-remote boundary, including binding, browser
+  origin, Dashboard API URL, SDK URL, and the unauthenticated-service warning.
+- Replaced the old S2 live services with the current S4 processes and left the
+  validated Dashboard available at `http://127.0.0.1:5173`.
+
+### Validation
+
+- Focused Collector address/API tests: passed.
+- `cd collector/go && go test ./... -count=1`: all packages passed.
+- `cd dashboard/web && npm.cmd test`: 10 tests passed.
+- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- Default `docker compose config`: both host ports expanded to `127.0.0.1`,
+  Collector stayed on container `:4319`, and local origins were explicit.
+- Explicit remote Compose expansion preserved `0.0.0.0`, the supplied origin,
+  and the supplied Dashboard API URL.
+- Live listeners were exactly `127.0.0.1:4319` and `127.0.0.1:5173`.
+- Live HTTP checks covered no Origin, both allowed local origins, and a denied
+  origin with `Vary: Origin`.
+- Python SDK trace `trace_abc2dc4e6b494b6687a2472903863998` stored and rendered
+  in the actual Dashboard with retrieval/LLM spans and a warning.
+- Restricted Go/npm runs initially hit local cache/path access denials; the same
+  tests passed with normal tool access. One assistant-written live probe used
+  unsupported `trace(input=..., output=...)` arguments and failed before network
+  I/O; it was corrected to the repository's real API and then passed.
+
+### Boundary
+
+- S4 is complete and committed only on the local branch; it is not pushed,
+  merged, versioned, or released.
+- Docker runtime was not retried because the known WSL2 host prerequisite is
+  unavailable; Compose structure was validated without the daemon.
+- No auth, TLS, firewall, proxy, API, storage, warning, span, SDK URL default,
+  Dashboard visual, version, or publication change entered the slice.
+
+---
+
 ## 2026-09-11 (S3 Trace Delivery Policy)
 
 ### Completed

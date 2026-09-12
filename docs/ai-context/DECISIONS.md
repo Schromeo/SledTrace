@@ -1,5 +1,37 @@
 # Architecture Decisions
 
+## 2026-09-11 — Default local network boundaries to loopback and require explicit browser origins
+
+### Decision
+
+- Change the native Collector fallback from `:4319` to `127.0.0.1:4319` while
+  preserving preferred and legacy address overrides.
+- Default Vite development/preview listeners and Docker host port publishing to
+  `127.0.0.1`; keep Collector and Nginx container listeners unchanged.
+- Replace wildcard CORS with exact local Dashboard origins. Let
+  `SLEDTRACE_ALLOWED_ORIGINS` replace the defaults with a comma-separated list.
+- Document remote binding, browser origin, Dashboard API URL, and SDK Collector
+  URL as separate explicit settings.
+
+### Reason
+
+SledTrace stores application prompts, responses, chunks, and metadata in an
+unauthenticated local service. Binding every host interface and allowing every
+browser origin exceeded the local-first default. Constraining the host boundary
+does not require pretending SledTrace has authentication or changing Docker's
+internal networking. Explicit overrides retain deliberate remote development.
+
+### Scope and outcome
+
+Implemented, locally validated, and committed on
+`codex/s4-local-network-defaults` after S3 commit `6562dc3`. Address precedence,
+CORS defaults/override/preflight, all Go tests, Dashboard tests/build, Compose
+expansion, live listeners, SDK ingestion, and browser rendering passed. Docker
+runtime was not exercised on this WSL2-disabled host. No auth, TLS, firewall,
+API, storage, diagnostic, SDK URL, UI, version, or publication change was added.
+
+---
+
 ## 2026-09-11 — Keep strict trace delivery and add an explicit observable best-effort path
 
 ### Decision

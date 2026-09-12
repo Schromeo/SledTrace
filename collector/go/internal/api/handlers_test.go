@@ -152,6 +152,97 @@ func TestGetTraceDetailReturnsNotFoundForMissingTrace(t *testing.T) {
 	}
 }
 
+func TestCORSAllowsDefaultLocalDashboardOrigins(t *testing.T) {
+	t.Setenv("SLEDTRACE_ALLOWED_ORIGINS", "")
+
+	for _, origin := range []string{
+		"http://localhost:5173",
+		"http://127.0.0.1:5173",
+	} {
+		t.Run(origin, func(t *testing.T) {
+			handler := newTestServer(t).Routes()
+			req := httptest.NewRequest(http.MethodGet, "/health", nil)
+			req.Header.Set("Origin", origin)
+			rec := httptest.NewRecorder()
+
+			handler.ServeHTTP(rec, req)
+
+			if rec.Code != http.StatusOK {
+				t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
+			}
+			if got := rec.Header().Get("Access-Control-Allow-Origin"); got != origin {
+				t.Fatalf("expected allowed origin %q, got %q", origin, got)
+			}
+		})
+	}
+}
+
+func TestCORSDoesNotAllowUnconfiguredOrigin(t *testing.T) {
+	t.Setenv("SLEDTRACE_ALLOWED_ORIGINS", "")
+	handler := newTestServer(t).Routes()
+	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	req.Header.Set("Origin", "https://example.invalid")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
+	}
+	if got := rec.Header().Get("Access-Control-Allow-Origin"); got != "" {
+		t.Fatalf("expected no allowed origin header, got %q", got)
+	}
+	if got := rec.Header().Values("Vary"); len(got) != 1 || got[0] != "Origin" {
+		t.Fatalf("expected Vary: Origin, got %#v", got)
+	}
+}
+
+func TestCORSUsesExplicitOriginsForPreflight(t *testing.T) {
+	t.Setenv(
+		"SLEDTRACE_ALLOWED_ORIGINS",
+		" https://dashboard.example.test , http://localhost:7777 ",
+	)
+	handler := newTestServer(t).Routes()
+	req := httptest.NewRequest(http.MethodOptions, "/api/traces", nil)
+	req.Header.Set("Origin", "https://dashboard.example.test")
+	rec := httptest.NewRecorder()
+
+	handler.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNoContent {
+		t.Fatalf("expected status %d, got %d", http.StatusNoContent, rec.Code)
+	}
+	if got := rec.Header().Get("Access-Control-Allow-Origin"); got != "https://dashboard.example.test" {
+		t.Fatalf("expected configured origin, got %q", got)
+	}
+	if got := rec.Header().Get("Access-Control-Allow-Methods"); got != "GET, POST, OPTIONS" {
+		t.Fatalf("unexpected allowed methods %q", got)
+	}
+	if got := rec.Header().Get("Access-Control-Allow-Headers"); got != "Content-Type" {
+		t.Fatalf("unexpected allowed headers %q", got)
+	}
+
+	defaultReq := httptest.NewRequest(http.MethodGet, "/health", nil)
+	defaultReq.Header.Set("Origin", "http://localhost:5173")
+	defaultRec := httptest.NewRecorder()
+	handler.ServeHTTP(defaultRec, defaultReq)
+	if got := defaultRec.Header().Get("Access-Control-Allow-Origin"); got != "" {
+		t.Fatalf("expected explicit origins to replace defaults, got %q", got)
+	}
+}
+
+func newTestServer(t *testing.T) *Server {
+	t.Helper()
+
+	store, err := storage.NewStore(":memory:")
+	if err != nil {
+		t.Fatalf("create in-memory store: %v", err)
+	}
+	t.Cleanup(func() { store.Close() })
+
+	return NewServer(store)
+}
+
 func TestPostAndGetTracePreservesUnknownAndZeroSpanDurations(t *testing.T) {
 	store, err := storage.NewStore(":memory:")
 	if err != nil {
