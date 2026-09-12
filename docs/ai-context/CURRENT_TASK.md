@@ -1,6 +1,6 @@
 # Current Task
 
-Updated: 2026-09-11. Status: **v0.7.1 release candidate prepared and locally validated; clean-clone and protected PR checks remain**.
+Updated: 2026-09-11. Status: **v0.7.1 release candidate prepared and clean-clone validated; protected PR checks remain**.
 
 ## Current focus and authority
 
@@ -57,6 +57,11 @@ proven.
 - [x] Default and explicit-remote `docker compose config` expansion passed.
 - [x] Live non-Docker loopback stack stored and displayed nine reference traces.
 - [x] Three 1440x950 Dashboard screenshots refreshed and visually inspected.
+- [x] Clean clone of release-prep commit `25521d4` installed Dashboard
+  dependencies and SDK 0.7.1 in a new venv.
+- [x] Installed clean-clone `sledtrace serve` started loopback Collector and
+  Dashboard; health, HTTP, conflict trace round trip, UI detail, and clean Git
+  status passed.
 - [x] `git diff --check`: passed with Windows line-ending warnings only.
 
 Environment notes:
@@ -72,11 +77,7 @@ Environment notes:
 
 ## Remaining gates
 
-1. Commit the release-facing metadata, docs, and screenshots.
-2. Create a clean clone of that commit and run the documented non-Docker startup
-   path, health check, reference trace, and Dashboard API smoke.
-3. Record the clean-clone evidence without changing product behavior.
-4. Push `codex/v0.7.1-reliability`, open a pull request to `main`, and wait for
+1. Push `codex/v0.7.1-reliability`, open a pull request to `main`, and wait for
    all required checks on the exact remote commit.
-5. Stop. Merge, tag, package publication, production-index validation, and
+2. Stop. Merge, tag, package publication, production-index validation, and
    GitHub Release require a separate release-stage decision.

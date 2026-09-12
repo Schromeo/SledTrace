@@ -38,10 +38,24 @@
 
 ### Remaining candidate gates
 
-- Commit the release candidate and complete a clean-clone startup smoke.
 - Push the branch, open a pull request, and wait for all required checks on the
   exact remote candidate commit.
 - Do not merge, tag, publish to PyPI, or create a GitHub Release in this stage.
+
+### Clean-clone validation
+
+- Committed release preparation as `25521d4508a924a96132b72147f69171e7a3af37`.
+- Cloned that exact branch commit to a new system temporary directory; initial
+  and post-smoke `git status --short` were clean.
+- `npm.cmd ci` installed the locked Dashboard dependencies in the clone.
+- A new venv installed the clone's SDK; installed `sledtrace version` returned
+  `0.7.1`.
+- The installed `sledtrace serve` entry point found the checkout and started the
+  current Collector/Dashboard on `127.0.0.1:4319` and `127.0.0.1:5173`.
+- Collector health and Dashboard HTML returned 200.
+- The clone's reference app stored a conflict trace; API readback returned two
+  spans, one warning, null trace duration, and higher-is-better semantics for the
+  first score. The same detail is open in the user's browser.
 
 ---
 

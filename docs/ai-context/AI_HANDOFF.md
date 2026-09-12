@@ -1,7 +1,7 @@
 # AI Handoff
 
 Last reviewed: 2026-09-11 on branch `codex/v0.7.1-reliability`, based on local S4 commit `fc85bda`, S3 commit `6562dc3`, S2 commit `ee0a812`, S1 commit `5b5d254`, and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
-This snapshot distinguishes released behavior from the v0.7.1 candidate. S1-S4 are locally committed; version/release metadata, local cross-stack validation, live Dashboard evidence, and refreshed screenshots are prepared for v0.7.1. Clean-clone and remote PR checks remain. Nothing is pushed, merged, tagged, published, or released.
+This snapshot distinguishes released behavior from the v0.7.1 candidate. S1-S4 and release-prep commit `25521d4` are local; version/release metadata, local cross-stack validation, clean-clone startup, live Dashboard evidence, and refreshed screenshots pass. Remote PR checks remain. Nothing is pushed, merged, tagged, published, or released.
 
 ## Read this first
 
@@ -85,7 +85,7 @@ S3 local validation on 2026-09-11: 62 Python tests, wheel/sdist build, clean-whe
 
 S4 local validation on 2026-09-11: all Go tests, ten Dashboard tests, Dashboard production build, default and explicit-remote Compose configuration expansion, live loopback listeners, SDK ingestion, CORS allow/deny checks, and browser-visible trace detail passed. Docker runtime was not started because this host's WSL2 backend is unavailable; Compose structure was validated without the daemon.
 
-v0.7.1 candidate validation on 2026-09-11: 62 Python tests, wheel/sdist build, Twine metadata check, clean-wheel install/API/CLI validation at version 0.7.1, all Go tests, ten Dashboard tests, Dashboard 0.7.1 production build, Compose default/remote expansion, nine live reference traces, and three refreshed 1440x950 Dashboard screenshots passed. The clean-clone smoke and exact remote PR checks are the remaining release-candidate gates.
+v0.7.1 candidate validation on 2026-09-11: 62 Python tests, wheel/sdist build, Twine metadata check, clean-wheel install/API/CLI validation at version 0.7.1, all Go tests, ten Dashboard tests, Dashboard 0.7.1 production build, Compose default/remote expansion, nine live reference traces, and three refreshed 1440x950 Dashboard screenshots passed. A clean clone of `25521d4` also passed npm install, editable SDK install, installed CLI version/startup, loopback listeners, health/Dashboard HTTP, reference trace round trip, and clean Git status. Exact remote PR checks are the remaining candidate gate.
 
 Environment facts last observed:
 
