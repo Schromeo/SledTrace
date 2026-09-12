@@ -106,6 +106,7 @@ t.measure()
 t.retrieval(query, chunks, name="retrieval", top_k=None, metadata=None, duration_ms=None, timing=None)
 t.llm(model, prompt=None, response=None, messages=None, name="llm", provider=None, input_tokens=None, output_tokens=None, latency_ms=None, metadata=None, timing=None)
 t.flush(collector_url=None, timeout=5.0)
+t.try_flush(collector_url=None, timeout=5.0)
 ```
 
 `trace(...)` returns a `SledTraceTrace` context manager.
@@ -364,11 +365,39 @@ with trace(name="my-trace", query=query) as t:
 t.flush()
 ```
 
+`flush()` is intentionally strict. JSON serialization failures, timeouts, HTTP
+errors, and connection failures raise. This preserves the historical contract
+for tests and applications that require confirmed trace delivery.
+
+For applications where observability must not replace business behavior, choose
+`try_flush()` explicitly:
+
+```python
+delivery = t.try_flush()
+
+if not delivery.ok:
+    app_logger.warning("SledTrace delivery failed: %r", delivery.error)
+```
+
+It returns a `TraceFlushResult`:
+
+- `ok=True`, `response=<collector response>`, `error=None` on success
+- `ok=False`, `response=None`, `error=<original exception>` on an ordinary failure
+
+The failure is not logged automatically; inspect or log `result.error` according
+to your application's policy. A timeout means success was not confirmed—it does
+not prove that the Collector failed to persist the request.
+
+`try_flush()` makes one synchronous attempt. It adds no retry, queue, disk
+buffer, background worker, or automatic flush. It deliberately does not catch
+`KeyboardInterrupt`, `SystemExit`, or other `BaseException` subclasses.
+
 Why this matters:
 
 - `ended_at` and `duration_ms` are finalized when the trace context exits
 - flushing inside the `with` block can send incomplete lifecycle fields
 - `flush()` accepts optional `collector_url` and `timeout` arguments
+- `try_flush()` accepts the same arguments and returns an observable result
 
 ## Error Trace Behavior
 
@@ -380,11 +409,29 @@ If an exception escapes the `with trace(...)` block:
 
 That means the SDK records the failure state, but your application still receives the exception unless you catch it yourself.
 
+If you also attempt trace delivery while an application exception is already
+propagating, use `try_flush()` in `finally`; strict `flush()` can replace that
+exception with a delivery error:
+
+```python
+delivery = None
+t = trace(name="my-trace", query=query)
+try:
+    with t:
+        answer = run_pipeline(query)
+finally:
+    delivery = t.try_flush()
+```
+
+The original application exception continues to propagate, and any delivery
+failure remains available in `delivery.error`.
+
 ## Common Mistakes
 
 ### Collector not running
 
-If the collector is not listening on `http://localhost:4319`, `flush()` will fail.
+If the collector is not listening on `http://localhost:4319`, strict `flush()`
+raises. `try_flush()` returns the same failure in `result.error`.
 
 ### Calling `flush()` inside the `with` block
 

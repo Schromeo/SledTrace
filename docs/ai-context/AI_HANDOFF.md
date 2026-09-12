@@ -1,7 +1,7 @@
 # AI Handoff
 
-Last reviewed: 2026-09-11 on branch `codex/s2-retrieval-score-semantics`, based on local S1 commit `5b5d254` and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
-This snapshot distinguishes released behavior from the locally completed reliability work. S1 and S2 are committed on the local branch; neither is merged, versioned, or released.
+Last reviewed: 2026-09-11 on branch `codex/s3-trace-delivery-policy`, based on local S2 commit `ee0a812`, local S1 commit `5b5d254`, and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
+This snapshot distinguishes released behavior from the locally completed reliability work. S1-S3 are implemented, validated, and locally committed. None is pushed, merged, versioned, or released.
 
 ## Read this first
 
@@ -48,21 +48,21 @@ Python trace() -> retrieval / llm records -> explicit flush()
 
 ## Evidence from the 2026-09-10 read-only review
 
-All findings below were unfixed at the released baseline. Timing is resolved in local S1 commit `5b5d254`; score semantics is resolved in the current S2 working tree. The others remain unfixed. Code locations are relative to the repository; use symbols because line numbers will change.
+All findings below were unfixed at the released baseline. Timing, score semantics, and trace delivery policy are resolved in local S1-S3 commits. The others remain unfixed. Code locations are relative to the repository; use symbols because line numbers will change.
 
 | Finding | Evidence and qualification | Code entry point |
 | --- | --- | --- |
 | Span duration measured logging overhead by default — **resolved locally in S1** | `t.measure()` captures actual UTC boundaries and monotonic duration; explicit retrieval duration and existing LLM latency remain supported. Unmeasured post-hoc records carry null duration/end rather than a false 0ms. | `sdk/python/raglens/trace.py`: `SpanTiming`, `retrieval`, `llm` |
 | UI reconstructed misleading duration — **resolved locally in S1** | Shared timing resolution treats canonical null as `Not measured`, preserves real zero and legacy fallbacks, and never substitutes a span-duration sum for trace duration. | `dashboard/web/src/utils/timing.ts`, `SpanTimeline.tsx`, `TraceDetailPage.tsx` |
 | Distance was treated as relevance score — **resolved locally in S2** | Normalization now preserves metric type/direction. Named distance is lower-is-better, ambiguous tuples are unknown, explicit mappings can declare semantics, and only higher-is-better/legacy scores enter the threshold and score ordering. Dashboard labels the distinction. | `sdk/python/raglens/chunks.py`; `engine.go`: `higherIsBetterScore`; `scoreSemantics.ts` |
-| Trace delivery can fail an otherwise successful business call | `flush` is synchronous, defaults to a 5s timeout, and raises on network failure; non-JSON metadata fails serialization before the request. Mocked failures were reproduced. This is currently documented strict behavior; changing the default requires a compatibility decision. | `sdk/python/raglens/trace.py`: `flush`; root README integration example |
+| Trace delivery could replace successful work or an application exception — **resolved locally in S3** | Strict `flush()` remains unchanged. Explicit `try_flush()` performs one synchronous attempt and returns `TraceFlushResult(ok, response, error)` for ordinary failures, without retry/queue/logging. `BaseException` still propagates. | `sdk/python/raglens/trace.py`: `TraceFlushResult`, `flush`, `try_flush` |
 | Rule generality is unproven | Tokenization uses `[^a-z0-9]+`, topics focus on English store policies, and numeric extraction handles limited integer/range/unit forms. The 13 warning tests reviewed focus on that domain; no measured multilingual or cross-domain accuracy is established. | `engine.go`: `nonWordRegex`, numeric/topic helpers; `engine_test.go` |
 | Percentage confidence is not calibrated | Some confidence values are constants such as 0.75, 0.88, and 0.9, rendered as percentage confidence. No calibration dataset was found. | `engine.go`: warning construction; `TraceDetailPage.tsx`: `formatConfidence` |
 | Local defaults expose more than loopback | Collector binds `:4319`; Compose host publishing is not loopback-specific; CORS allows all origins. Actual reachability depends on firewall/network/browser policy; no leak was demonstrated. | `cmd/sledtrace-collector/main.go`, `internal/api/handlers.go`, `docker-compose.yml` |
 | Persistence/retry boundary needs a separate reliability slice | Trace/spans commit before warnings in another transaction. A later write failure can leave partial state; resending hits existing primary keys. This follows from code; no fault-injection test ran in the review. | `handlers.go`: `handlePostTrace`; `sqlite.go`: `SaveTracePayload`, `SaveWarnings` |
 | Repeated debugging is limited | List is capped at latest 100 without pagination; no baseline comparison or trace deep link; evidence preview shows only two items without chunk navigation. | `sqlite.go`: `ListTraces`; `dashboard/web/src/App.tsx`, page components |
 
-S1 and S2 are locally complete, with the active validation in CURRENT_TASK. The remaining findings are a prioritized candidate backlog, not instructions to start S3 or fix everything in one pass.
+S1-S3 are locally complete, with the active validation in CURRENT_TASK. The remaining findings are a prioritized candidate backlog, not instructions to start S4 or fix everything in one pass.
 
 ## Validation already completed versus still needed
 
@@ -81,6 +81,8 @@ S1 local validation on 2026-09-11: 34 Python tests, wheel/sdist build, clean-whe
 
 S2 local validation on 2026-09-11: 52 Python tests, wheel/sdist build, clean-wheel validation including score semantics, all Go tests, ten Dashboard tests, Dashboard production build, and `git diff --check` passed. A live isolated run showed similarity 0.10 with one low-score warning and `Similarity 0.10 ↑`, while distance 0.10 showed zero warnings and `Distance 0.10 ↓`.
 
+S3 local validation on 2026-09-11: 62 Python tests, wheel/sdist build, clean-wheel validation of `TraceFlushResult`/`try_flush()` and existing package contracts, plus `git diff --check` passed. Deterministic failure injection covered success, HTTP/offline, timeout, serialization, strict compatibility, `BaseException`, and preservation of the original application exception. No Go/Dashboard validation was repeated because those components did not change.
+
 Environment facts last observed:
 
 - Local host is Windows/PowerShell. Use `npm.cmd` where needed.
@@ -95,7 +97,7 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user authorized and completed S1/S2 development on 2026-09-11. That does not authorize a new release or every later roadmap item. Use CURRENT_TASK for the completed evidence, then make a fresh bounded decision before integration/release preparation or selecting another slice. Candidate v0.7.1/v0.8 labels are not selected release commitments.
+The user authorized and completed S1-S3 development on 2026-09-11. That does not authorize a new release or every later roadmap item. Use CURRENT_TASK for the completed evidence, then make a fresh bounded decision before integration/release preparation or selecting another slice. Candidate v0.7.1/v0.8 labels are not selected release commitments.
 
 For scope that changes architecture or publication, inspect DECISIONS and the current user instruction. Preserve prior authorization where it actually applies, and never bypass protected branch or deployment rules.
 

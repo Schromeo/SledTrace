@@ -10,7 +10,7 @@ Each version includes clear scope boundaries so SledTrace stays local-first, lig
 
 **Release status:** Complete, validated, tagged, published to production PyPI, and published as a GitHub Release on 2026-09-09
 
-**Next product milestone:** Not selected. S1 timing correctness and S2 retrieval score semantics are implemented, validated, and committed on the local branch. Neither change is merged, versioned, or released. Reassess before selecting a release grouping or S3, and gather external-use evidence alongside confirmed fixes.
+**Next product milestone:** Not selected. S1-S3 are implemented, validated, and locally committed. None is pushed, merged, versioned, or released. Reassess before selecting a release grouping or S4, and gather external-use evidence alongside confirmed fixes.
 
 Release references:
 
@@ -25,7 +25,7 @@ Release references:
 
 ## Proposed post-v0.7 sequence
 
-Status: **S1 and S2 locally committed; remaining sequence is planning, not a release commitment**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
+Status: **S1-S3 locally committed; remaining sequence is planning, not a release commitment**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
 
 The proposed product outcome is: a Python RAG developer can find verifiable evidence for a bad answer and confirm the effect of a subsequent change. Shipping milestones measures readiness; external use, confirmed diagnoses, and repeat usage measure product value.
 
@@ -37,7 +37,7 @@ Planning budget: 3-5 focused development days, not a deadline. Release grouping/
 | --- | --- | --- |
 | S1 — locally complete | Trustworthy span timing | Actual operation measurements and unmeasured records are represented honestly; existing call forms work; timeline and detail agree. See CURRENT_TASK for validation. |
 | S2 — locally complete | Retrieval score semantics | Score type/direction is preserved; distance and unknown scores do not enter higher-is-better thresholds or ordering. Similarity, distance, unscored, tuple, and explicit mappings are covered without assuming `1 - distance`. See CURRENT_TASK for validation. |
-| S3 | Trace delivery policy | Preserve current strict behavior while designing an explicit business-safe path; test offline/timeout/serialization and original application exceptions. Failures remain observable. Do not add an unbounded queue or retry system incidentally. |
+| S3 — locally complete | Trace delivery policy | Strict `flush()` is preserved; explicit `try_flush()` returns an observable result without replacing business behavior. Offline/timeout/serialization and original exceptions are covered without adding retry or queue behavior. See CURRENT_TASK. |
 | S4 | Local network defaults | Host listener and Docker published ports default to loopback; allowed origins are explicit; normal SDK/UI flows pass. Container-internal listening remains compatible with Docker networking; intentional remote use has documented configuration. |
 
 Take one slice per focused PR where practical. A confirmed active exposure or data-loss issue can change the order. Do not wait indefinitely for external testers before fixing reproducible defects.

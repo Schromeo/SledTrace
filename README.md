@@ -260,6 +260,19 @@ def answer_question(user_query: str) -> str:
     return answer
 ```
 
+`t.flush()` remains strict: serialization, timeout, and Collector failures raise.
+When trace delivery must not replace a successful response or an existing
+application exception, choose the explicit observable best-effort path:
+
+```python
+delivery = t.try_flush()
+if not delivery.ok:
+    print(f"SledTrace delivery failed: {delivery.error!r}")
+```
+
+`try_flush()` returns a `TraceFlushResult`; it does not retry, queue, log, or hide
+the error from its result.
+
 `to_sledtrace_chunks(...)` represents your app-owned adapter from retriever-native results to SledTrace chunk dictionaries.
 
 `t.measure()` times the actual operation with a monotonic clock and records its real UTC boundaries. Existing post-hoc `t.retrieval(...)` and `t.llm(...)` calls remain valid, but without a completed measurement or explicit latency their span duration is reported as not measured rather than a misleading `0ms`.

@@ -1,92 +1,82 @@
 # Current Task
 
-Updated: 2026-09-11. Status: **S2 retrieval score semantics implemented, validated, and committed on the local branch; not merged, versioned, or released**.
+Updated: 2026-09-11. Status: **S3 trace delivery policy implemented, validated, and locally committed; not pushed, merged, versioned, or released**.
 
 ## Current focus and authority
 
-The user asked to continue the written post-v0.7 reliability plan. S1 trustworthy
-span timing was first committed locally as `5b5d254` on
-`codex/s1-trustworthy-span-timing`. S2 was then implemented, validated, and
-committed on `codex/s2-retrieval-score-semantics` under a fresh decision card.
+The user continued the bounded post-v0.7 reliability sequence. S1 timing is in
+local commit `5b5d254`; S2 score semantics is in local commit `ee0a812`; S3 is
+implemented, validated, and locally committed on
+`codex/s3-trace-delivery-policy`.
 
-Do not redo S1 or S2, publish a release, or start S3 automatically. First inspect
-the current branch and validation below. The next bounded action is to review the
-two local reliability commits and decide whether to prepare them for integration
-or select another roadmap item. v0.7.0 remains the released version.
+Do not redo S1-S3 or publish a release. First inspect the S3 evidence below. The
+next bounded action requires a fresh decision between integration/release
+grouping and another roadmap slice. v0.7.0 remains the released version.
 
-## S2 decision card
+## S3 decision card
 
 | Question | Current answer |
 | --- | --- |
-| User value | Retrieval metrics mean what their producer intended, so a good low distance is not reported as a weak higher-is-better score. |
-| Confirmed blocker | The SDK copied `distance` and ambiguous tuple values into bare `score`; the Collector and Dashboard then assumed every value was a higher-is-better score. |
-| Existing capability | Flexible chunk JSON maps, explicit normalization extractors, deterministic Collector thresholds, and a Dashboard ChunkCard already existed. |
-| Smallest deliverable | Preserve `score_type` and `score_direction`; gate higher-is-better comparisons; label the metric/direction in the Dashboard; keep legacy bare-score behavior. |
-| Non-goals | No `1 - distance` conversion, framework-specific metric guessing, threshold tuning, adapter, new warning/span, delivery policy, runtime packaging, version bump, or release. |
-| Validation | Five normalization input classes plus malformed values, legacy/new Collector behavior, Dashboard formatting/build, package checks, full Go tests, and live trace inspection. |
-| Visible evidence | Two otherwise equivalent 0.10 traces: similarity raises `low_retrieval_score`; distance does not, and both labels show their direction. |
+| User value | An application can explicitly keep telemetry delivery failure from replacing successful business work or an existing application exception, while retaining the delivery error for inspection. |
+| Confirmed blocker | Only strict `flush()` existed. Offline, timeout, and serialization failures raised; a strict flush in `finally` could replace the original application exception. |
+| Existing capability | Explicit synchronous `flush()`, dependency-free SDK, public compatibility exports, and dataclass-based models already existed. |
+| Smallest deliverable | Keep strict `flush()` unchanged; add public `TraceFlushResult` and explicit one-attempt `try_flush()` returning success/response or the original ordinary exception. |
+| Non-goals | No default change, auto-flush, retry, queue, disk buffer, background thread, logging policy, Collector/API/storage/UI change, version bump, or release. |
+| Validation | Success, HTTP/offline, timeout, serialization, strict compatibility, `BaseException`, original application exception, preferred/legacy imports, build, and clean wheel. |
+| Visible evidence | A deterministic console run contrasts strict raise with observable best-effort failure and proves the original `LookupError` still propagates. |
 
 ## Implemented contract
 
-- `normalize_chunk(...)` and `normalize_chunks(...)` now emit nullable
-  `score_type` and `score_direction` alongside the raw numeric `score`.
-- Named `score`, similarity, relevance, and rerank fields are higher-is-better.
-- Named distance fields are lower-is-better.
-- An unannotated `(document, value)` tuple is direction-unknown because different
-  retriever methods return incompatible metrics in that position.
-- Existing explicit `score=` mappings remain higher-is-better by default.
-  `score_type=` and `score_direction=` allow custom or distance mappings.
-- Valid directions are `higher_is_better`, `lower_is_better`, and `unknown`.
-  Non-finite values are treated as unscored.
-- Collector warning thresholds and score-based tie-breakers use only declared
-  higher-is-better values. Missing annotations preserve historical bare `score`
-  behavior. Lower/unknown/custom-without-direction/invalid-direction values fail
-  closed and remain available as raw evidence.
-- Dashboard ChunkCard labels include the metric and direction marker, such as
-  `Similarity 0.10 ↑`, `Distance 0.10 ↓`, or `Score 0.10 ?`.
-- `examples.score_semantics_demo` generates a deterministic visual comparison.
+- `flush(collector_url=None, timeout=5.0)` remains the historical strict path.
+  Serialization, request, timeout, HTTP, connection, and response-decoding
+  failures still raise.
+- `try_flush(collector_url=None, timeout=5.0)` performs one synchronous call to
+  `flush()` and returns a `TraceFlushResult`.
+- Success: `ok=True`, Collector response in `response`, `error=None`.
+- Ordinary failure: `ok=False`, `response=None`, and the exact exception raised
+  by `flush()` in `error`.
+- `Exception` is caught deliberately; `KeyboardInterrupt`, `SystemExit`, and
+  other `BaseException` subclasses continue to propagate.
+- The method does not retry, persist, queue, log, or run automatically.
+- A timeout means delivery was not confirmed; it does not prove the Collector
+  failed to persist the request.
+- `TraceFlushResult` is exported identically from preferred `sledtrace` and
+  temporary compatibility `raglens` imports.
 
 ## Acceptance criteria
 
-- [x] Preferred `sledtrace` and temporary `raglens` import/call compatibility remains.
-- [x] Similarity, distance, unscored, ambiguous tuple, and explicit mapping cases have tests.
-- [x] Custom explicit metrics can declare their type and direction.
-- [x] No universal distance transformation or retriever-specific scale is assumed.
-- [x] Legacy bare `score` still participates in the existing low-score rule.
-- [x] Distance and unknown scores do not participate in higher-is-better thresholds.
-- [x] Score-based diagnostic ordering follows the same eligibility rule.
-- [x] Dashboard shows the preserved metric semantics and legacy badge remains readable.
-- [x] A live similarity 0.10 trace shows one low-score warning.
-- [x] A live distance 0.10 trace shows zero warnings and `Distance 0.10 ↓`.
-- [x] Required SDK, package, Collector, Dashboard, and diff checks pass.
-- [x] No unrelated roadmap or publication work entered the slice.
+- [x] Existing strict `flush()` calls and return type remain unchanged.
+- [x] Successful best-effort delivery returns the Collector response.
+- [x] Offline/HTTP, timeout, serialization, and request failures remain observable.
+- [x] Strict offline, timeout, and serialization behavior still raises.
+- [x] `try_flush()` does not catch `BaseException`.
+- [x] A delivery failure in `finally` does not replace an original application exception.
+- [x] No silent logging policy, retry, queue, or automatic delivery was introduced.
+- [x] Preferred and legacy public imports expose the same result class.
+- [x] The built wheel contains and exercises the new public API outside the source tree.
+- [x] No Collector, storage, API, Dashboard, warning, span, or score behavior changed.
 
 ## Validation evidence
 
 Completed on 2026-09-11:
 
-- `cd sdk/python && pytest -q`: 52 passed.
+- `cd sdk/python && pytest -q`: 62 passed.
 - `cd sdk/python && python -m build`: passed; wheel and sdist produced.
-- `cd sdk/python && python scripts/validate-wheel.py`: passed.
-- Clean-wheel score-semantics probe passed outside the source tree.
-- `cd collector/go && go test ./... -count=1`: all packages passed.
-- `cd dashboard/web && npm.cmd test`: 10 passed.
-- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed, including
+  `TraceFlushResult`, `try_flush()`, score semantics, timing API, imports, and CLI.
 - `git diff --check`: passed with line-ending conversion warnings only.
-- Live isolated local run:
-  - `score-semantics-similarity-low`: similarity 0.10, one
-    `low_retrieval_score`, badge `Similarity 0.10 ↑`.
-  - `score-semantics-distance-near`: distance 0.10, zero warnings, badge
-    `Distance 0.10 ↓`.
+- Deterministic failure demo:
+  - strict path raised the expected `RuntimeError` for an offline Collector;
+  - `try_flush()` returned `ok=False` with the same observable `RuntimeError`;
+  - the application still raised its original `LookupError("business failure")`;
+  - the delivery failure remained available separately in the result.
 
-The first restricted Go/build attempts failed before compilation because the
-sandbox denied standard-library/cache or Vite-config access. Normal-permission
-reruns passed; these environment failures were not product failures.
+No Go or Dashboard check was repeated because S3 changed only the Python SDK,
+package validator, and documentation. S1/S2 cross-stack checks remain tied to
+their respective commits.
 
 ## Exit boundary
 
-S2 is complete and committed only on the local branch. No push, PR, merge,
-version bump, tag, package upload, or release exists yet. README screenshots were
-not replaced: the score badge is a localized correction, and live browser
-evidence covers this checkpoint. Refresh release-quality screenshots if a future
-selected release materially changes the public Dashboard presentation.
+S3 is complete and committed only on the local branch. No push, PR, merge,
+version bump, tag, package upload, or release exists yet. The running Dashboard
+still demonstrates S2; S3 has no Dashboard-facing behavior.

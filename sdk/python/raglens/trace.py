@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 import json
 import os
@@ -17,6 +18,15 @@ from .models import (
     now_ms,
     utc_now_iso,
 )
+
+
+@dataclass(frozen=True)
+class TraceFlushResult:
+    """Observable result from the explicit best-effort ``try_flush`` path."""
+
+    ok: bool
+    response: Optional[JsonDict] = None
+    error: Optional[Exception] = None
 
 
 class SpanTiming:
@@ -329,7 +339,9 @@ class RAGLensTrace:
             Collector JSON response.
 
         Raises:
-            RuntimeError: If the collector request fails.
+            Exception: Preserves the historical strict behavior. Serialization,
+                request construction, timeout, HTTP, connection, or response
+                decoding failures are raised to the caller.
         """
         base_url = (collector_url or self.collector_url).rstrip("/")
         url = f"{base_url}/api/traces"
@@ -364,6 +376,28 @@ class RAGLensTrace:
             raise RuntimeError(
                 f"Failed to connect to SledTrace collector at {url}: {exc.reason}"
             ) from exc
+
+    def try_flush(
+        self,
+        collector_url: Optional[str] = None,
+        timeout: float = 5.0,
+    ) -> TraceFlushResult:
+        """
+        Attempt to send the trace without raising ordinary delivery errors.
+
+        This is an explicit business-safe alternative to strict ``flush()``.
+        Failures remain observable through ``result.error``. No retry, queue,
+        background delivery, or automatic logging is performed.
+
+        ``BaseException`` subclasses such as KeyboardInterrupt and SystemExit
+        are deliberately not caught.
+        """
+        try:
+            response = self.flush(collector_url=collector_url, timeout=timeout)
+        except Exception as exc:
+            return TraceFlushResult(ok=False, error=exc)
+
+        return TraceFlushResult(ok=True, response=response)
 
     def _normalize_chunks(self, chunks: List[JsonDict]) -> List[JsonDict]:
         normalized: List[JsonDict] = []

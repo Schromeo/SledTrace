@@ -81,6 +81,13 @@ def validate_wheel() -> int:
             f"import sledtrace; assert sledtrace.__version__ == '{EXPECTED_VERSION}'; print(sledtrace.__version__)",
             "from sledtrace import SpanTiming, trace; assert isinstance(trace('timing').measure(), SpanTiming); print(trace)",
             (
+                "from sledtrace import TraceFlushResult, trace; "
+                "result=trace('delivery').try_flush(collector_url='not-a-url'); "
+                "assert isinstance(result, TraceFlushResult); "
+                "assert not result.ok and result.error is not None; "
+                "print('delivery policy ok')"
+            ),
+            (
                 "from sledtrace import normalize_chunk; "
                 "similarity=normalize_chunk({'text':'x','similarity':0.1}); "
                 "distance=normalize_chunk({'text':'x','distance':0.1}); "

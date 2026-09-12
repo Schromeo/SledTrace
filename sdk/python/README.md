@@ -93,6 +93,21 @@ with trace("example") as t:
 t.flush()
 ```
 
+`t.flush()` is the existing strict delivery path and still raises on
+serialization, timeout, HTTP, or connection failures. Applications that must
+keep telemetry failure separate from business behavior can opt into the
+observable best-effort path:
+
+```python
+delivery = t.try_flush()
+if not delivery.ok:
+    print(f"SledTrace delivery failed: {delivery.error!r}")
+```
+
+`try_flush()` returns `TraceFlushResult(ok, response, error)`. It performs one
+synchronous attempt with the same URL/timeout options as `flush()`; it does not
+retry, queue, log automatically, or catch `KeyboardInterrupt`/`SystemExit`.
+
 `t.measure()` captures actual operation timing. Calls recorded only after the work, without `timing`, `duration_ms` for retrieval, or `latency_ms` for LLM, remain compatible and are shown as not measured.
 
 For retriever-native results, use `normalize_chunk(...)` or `normalize_chunks(...)`.

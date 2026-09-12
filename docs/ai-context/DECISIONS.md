@@ -1,5 +1,38 @@
 # Architecture Decisions
 
+## 2026-09-11 — Keep strict trace delivery and add an explicit observable best-effort path
+
+### Decision
+
+- Preserve `flush()` with its existing synchronous, exception-raising behavior.
+- Add `try_flush()` as an explicit one-attempt alternative returning the public
+  frozen `TraceFlushResult(ok, response, error)` value.
+- Catch ordinary `Exception` values from the complete flush path, including
+  serialization, request, timeout, HTTP, connection, and response parsing.
+  Retain the exact raised exception in the result.
+- Do not catch `BaseException`; do not retry, queue, persist, log automatically,
+  or auto-flush.
+
+### Reason
+
+Changing `flush()` to silently suppress errors would break a released contract
+and hide missing telemetry. Yet strict telemetry delivery in a `finally` block
+can replace the application's real exception. A separate result-returning method
+makes the policy choice visible at the call site and keeps failure evidence
+available without introducing a delivery subsystem. A timeout remains ambiguous:
+it means confirmation failed, not necessarily that persistence did not occur.
+
+### Scope and outcome
+
+Implemented, locally validated, and committed on `codex/s3-trace-delivery-policy` after S2
+commit `ee0a812`. Success, offline/HTTP, timeout, serialization, strict behavior,
+`BaseException`, original application exceptions, preferred/legacy imports,
+wheel/sdist, and clean-wheel behavior passed. S3 is not pushed, merged,
+versioned, or released. Retries, queues, atomic persistence, automatic delivery,
+and application logging policy remain separate decisions.
+
+---
+
 ## 2026-09-11 — Preserve retrieval metric type and direction without inventing conversions
 
 ### Decision

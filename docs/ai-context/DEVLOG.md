@@ -1,5 +1,49 @@
 # Devlog
 
+## 2026-09-11 (S3 Trace Delivery Policy)
+
+### Completed
+
+- Reproduced strict delivery behavior for non-JSON metadata, offline Collector,
+  timeout, and delivery attempted while an application exception propagated.
+- Kept `flush()` strict and additive-only; added public frozen
+  `TraceFlushResult` plus explicit `try_flush()` for a single observable
+  best-effort attempt.
+- Preserved exact ordinary exceptions in `result.error`, left
+  `KeyboardInterrupt`/`SystemExit` behavior untouched, and verified that a
+  delivery failure no longer replaces an original business exception when the
+  caller chooses `try_flush()` in `finally`.
+- Exported the same result class through preferred `sledtrace` and temporary
+  `raglens` compatibility imports; extended clean-wheel validation.
+- Updated root/package integration guidance and the active context documents.
+
+### Validation
+
+- Focused delivery/package tests: 21 passed after correcting the test module
+  target; the first six failures occurred before product execution because the
+  package-level `raglens.trace` function shadowed the module in a string mock path.
+- `cd sdk/python && pytest -q`: 62 passed.
+- `cd sdk/python && python -m build`: passed; wheel and sdist produced.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed, including the new
+  delivery result, S1/S2 APIs, preferred/legacy imports, and CLI.
+- `git diff --check`: passed with line-ending conversion warnings only.
+- Deterministic demonstration: strict offline flush raised `RuntimeError`;
+  `try_flush()` returned `ok=False` with that error; the application still
+  propagated `LookupError("business failure")` while delivery failure remained
+  separately inspectable.
+
+### Boundary
+
+- S3 is complete and committed only on the local branch; it is not pushed,
+  merged, versioned, or released.
+- No Collector, API, SQLite, Dashboard, warning, span, retry, queue, disk buffer,
+  background worker, automatic logging, version, or publication change entered
+  the slice.
+- Go and Dashboard checks were not repeated because those components did not
+  change. Their S2 validation remains attached to local commit `ee0a812`.
+
+---
+
 ## 2026-09-11 (S2 Retrieval Score Semantics)
 
 ### Completed
