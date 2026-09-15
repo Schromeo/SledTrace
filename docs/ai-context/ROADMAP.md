@@ -26,6 +26,9 @@ Future scope is not implemented capability or blanket authorization.
 - H0 is locally validated in the working tree: heuristic guidance replaces
   probability badges, evidence/actions remain visible, and zero warnings is not
   described as a correctness verdict. See DEVLOG for tests and browser evidence.
+- D0 workflow harness is locally validated without changing the product sequence:
+  CURRENT_TASK metadata, repository skills and deterministic status/scope/check
+  commands now make one-slice delivery and review reusable. E1 remains next.
 - The H0 pass did not refresh remote release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence

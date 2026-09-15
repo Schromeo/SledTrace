@@ -34,6 +34,12 @@ historical milestones before every small change.
 Use the repository and these documents as the source of truth.
 Do not assume old milestone information from this file overrides the current AI context documents.
 
+For implementation, use `.agents/skills/sledtrace-slice/SKILL.md` and the active
+CURRENT_TASK metadata. Use `python scripts/dev/slice.py status`, `scope`, and
+`check` instead of rediscovering validation commands. For review, use
+`.agents/skills/sledtrace-review/SKILL.md`. The skills contain workflow detail;
+keep this standing file concise.
+
 CURRENT_TASK owns the next slice and its acceptance criteria. AI_HANDOFF owns the current snapshot and known findings. ROADMAP owns candidate sequencing; DECISIONS owns rationale; DEVLOG owns historical execution evidence. Avoid duplicating long release histories across active documents or rereading historical sections for every small change.
 
 ## Pre-Implementation Decision Gate
@@ -49,6 +55,11 @@ Before each implementation slice, state a compact decision card covering:
 7. user-visible evidence
 
 Do not start implementation until these points form a coherent shortest path to the requested outcome.
+
+Only one CURRENT_TASK slice may be active. Implementation agents stop at a
+validated, documented, review-ready state; they never automatically start the
+next slice. Public API/schema/span-family changes and external/release/security
+actions remain subject to CURRENT_TASK's human gates.
 
 Keep one primary outcome per slice. Record newly discovered non-blocking work instead of following it immediately. After validation and documentation, stop and reassess the next slice rather than continuing through an old plan by inertia.
 
