@@ -96,6 +96,41 @@ $env:SLEDTRACE_COLLECTOR_URL="http://localhost:4319"
 
 The current SDK API also lets you pass an explicit collector URL through `trace(...)` or `flush(...)`.
 
+## Validate an independent application
+
+The source checkout contains a one-file application that imports only the
+installed `sledtrace` package. It is intentionally separate from the built-in
+RAG demo and can be copied into another directory after installing the wheel.
+Repository examples track the SDK version declared in that checkout; if it is
+newer than production PyPI, use the editable install or current built wheel.
+
+With the Collector and Dashboard running, execute the success and business-error
+paths from `sdk/python`:
+
+```bash
+python -m examples.independent_app success
+python -m examples.independent_app application-error
+```
+
+The success path stores an `ok` trace containing one retrieval and one LLM span.
+The second path deliberately raises an application-owned exception, records an
+`error` trace containing the retrieval work completed before the failure, keeps
+that original exception visible, and returns exit code 2.
+
+To observe a telemetry failure without losing the completed application result,
+point the third path at a known closed local port:
+
+```bash
+python -m examples.independent_app collector-offline --collector-url http://127.0.0.1:1
+```
+
+That path uses `try_flush()`, reports the delivery error, and returns exit code
+1. It does not claim that a trace was stored. `scripts/validate-independent-app.py`
+build validation goes further: it installs the current wheel in a clean temporary
+environment, copies the example outside the repository, captures and checks the
+two delivered payloads, then closes the test Collector and verifies the offline
+outcome.
+
 ## API Summary
 
 Current implemented API:

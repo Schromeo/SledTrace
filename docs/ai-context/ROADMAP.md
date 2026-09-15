@@ -25,7 +25,7 @@ Release references:
 
 ## Proposed post-v0.7 sequence
 
-Status: **S1-S4 are in the open v0.7.1 candidate PR; B1 startup reliability is locally validated on a separate branch**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
+Status: **S1-S4 are in the open v0.7.1 candidate PR; B1 startup reliability and B2 independent-app integration are locally validated on subsequent separate branches**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
 
 The proposed product outcome is: a Python RAG developer can find verifiable evidence for a bad answer and confirm the effect of a subsequent change. Shipping milestones measures readiness; external use, confirmed diagnoses, and repeat usage measure product value.
 
@@ -47,17 +47,19 @@ Take one slice per focused PR where practical. A confirmed active exposure or da
 Planning budget: 1-2 development weeks, adjusted from evidence. The milestone name and final scope are still proposals.
 
 2026-09-14 phase decision: retain the integration outcome. B1 source startup
-reliability is locally complete; next prioritize an independent application
-environment and installation-aware guidance, followed by trustworthy diagnostic
-presentation and an SDK-to-browser acceptance flow. Keep v0.7.1 publication
-separate from this development branch.
+reliability and B2 independent-app integration are locally complete. B2 proves a
+copied file against the built wheel for success, application error, and Collector
+offline outcomes, and repairs installation-aware empty-state guidance. Next
+prioritize trustworthy diagnostic presentation, then a fully automated
+SDK-to-browser acceptance flow. Keep v0.7.1 publication separate from these
+development branches.
 
-- One complete path starts in the user's own application environment with the released SDK.
-- A minimal integration example covers success, application failure, and Collector unavailability with explicit behavior.
-- Startup checks explain dependencies, occupied ports, health failures, and the actual Dashboard address.
-- Empty-state instructions work for the selected installation method; wheel users are not sent to unavailable example modules without checkout guidance.
-- One automated end-to-end check sends a deterministic trace, opens its detail, and inspects evidence. Show the same flow in the user's browser.
-- Record at least two independent first-run attempts, including dependency setup time, time to first application trace, help requests, and blockers. A proposed goal is at most 10 minutes from satisfied prerequisites to the first application trace; report total setup time separately.
+- [x] One internally validated path starts in an independent application environment with the built SDK wheel.
+- [x] A minimal integration example covers success, application failure, and Collector unavailability with explicit behavior.
+- [x] Startup checks explain dependencies, occupied ports, health failures, and the actual Dashboard address.
+- [x] Empty-state instructions work for the selected installation method; wheel users are not sent to unavailable example modules without checkout guidance.
+- [ ] One automated end-to-end check sends a deterministic trace, opens its detail, and inspects evidence. B2 automates installed-wheel payload checks and adds manual real-browser proof, but does not mislabel that pair as browser automation.
+- [ ] Record at least two independent external first-run attempts, including dependency setup time, time to first application trace, help requests, and blockers. A proposed goal is at most 10 minutes from satisfied prerequisites to the first application trace; report total setup time separately.
 
 Two people are an initial usability sample, not proof of adoption. If they cannot be recruited promptly, internal independent-app checks can improve the product but must not be relabeled external validation.
 

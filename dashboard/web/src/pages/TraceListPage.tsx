@@ -60,8 +60,15 @@ export default function TraceListPage({
       {!loading && !error && traces.length === 0 && (
         <div className="empty-card">
           <h3>No traces yet</h3>
-          <p>Run the local RAG demo to send your first traces.</p>
-          <pre>python -m examples.local_rag_demo.run_demo trace-all</pre>
+          <p>Instrument your Python application with the installed SDK:</p>
+          <pre>python -m pip install sledtrace</pre>
+          <p>Or install this checkout's matching SDK and send a deterministic trace:</p>
+          <pre>{`python -m pip install -e sdk/python
+cd sdk/python
+python -m examples.independent_app success`}</pre>
+          <p className="muted">
+            The example is repo-local; the installed SDK works from any directory.
+          </p>
         </div>
       )}
 

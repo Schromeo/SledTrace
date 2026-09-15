@@ -54,6 +54,26 @@ sledtrace version
 
 `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
+## Copyable independent-app example
+
+The source repository includes a single-file example that depends only on the
+installed `sledtrace` package and Python's standard library:
+
+```bash
+cd sdk/python
+python -m examples.independent_app success
+python -m examples.independent_app application-error
+python -m examples.independent_app collector-offline --collector-url http://127.0.0.1:1
+```
+
+`application-error` intentionally returns 2 after the error trace is delivered.
+`collector-offline` intentionally returns 1 and prints both the completed
+business result and the observable SledTrace delivery failure. Copy
+`examples/independent_app.py` into another project or temporary directory to
+verify that it runs against an installed wheel without relying on the SledTrace
+checkout. When the checkout version is newer than production PyPI, install this
+checkout's editable package or built wheel before running its examples.
+
 ## Basic usage
 
 ```python
@@ -162,6 +182,8 @@ from sledtrace import trace
 - [v0.7.1 release notes](https://github.com/Schromeo/SledTrace/blob/main/docs/releases/V0_7_1.md)
 - [v0.7.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
-Repository examples such as `examples.custom_pipeline_demo` are local developer examples and not a separate public SDK surface.
+Repository examples are source-only aids and are not bundled as a separate
+public SDK surface. `examples.independent_app` is deliberately copyable and uses
+only the installed public API; the other examples remain local developer demos.
 
 

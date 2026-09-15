@@ -276,6 +276,27 @@ python -m pip install sledtrace
 
 Contributors working against local SDK changes can instead use `python -m pip install -e /path/to/sledtrace/sdk/python`.
 
+Repository examples are validated against the SDK version declared by that
+checkout. If the checkout is ahead of the production package, install its
+editable SDK or built wheel before running those examples.
+
+Before adapting the calls to your application, you can exercise the complete
+integration contract with the standalone, standard-library-only example in the
+source checkout:
+
+```bash
+cd sdk/python
+python -m examples.independent_app success
+python -m examples.independent_app application-error
+python -m examples.independent_app collector-offline --collector-url http://127.0.0.1:1
+```
+
+The last two commands intentionally exit non-zero: `application-error` returns
+2 after storing an error trace, while `collector-offline` returns 1 after
+preserving the business result and reporting the delivery failure. The example
+file can be copied outside this repository and run anywhere that the built
+`sledtrace` wheel is installed; it does not import repository-only helpers.
+
 4. Instrument your own request path with the Python SDK:
 
 ```python
@@ -358,6 +379,7 @@ For practical integration details, see:
 
 * `docs/product/USER_ONBOARDING.md`
 * `docs/integrations/PYTHON_SDK_GUIDE.md`
+* `sdk/python/examples/independent_app.py`
 * `sdk/python/examples/custom_pipeline_demo.py`
 
 ## Local RAG demo

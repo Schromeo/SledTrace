@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current development focus: **B1 source startup reliability**, locally validated on `codex/b1-startup-reliability`; see CURRENT_TASK for results and the next integration slice. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) remains open and validated, not merged or published.
+Current development focus: **B2 independent-app integration**, locally validated on `codex/b2-independent-app-integration` after B1; see CURRENT_TASK for results and the next bounded slice. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) remains open and validated, not merged or published.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
@@ -146,6 +146,7 @@ cd sdk/python
 pytest -q
 python -m build
 python scripts/validate-wheel.py
+python scripts/validate-independent-app.py
 ```
 
 For collector changes:
@@ -159,6 +160,7 @@ For dashboard changes:
 
 ```
 cd dashboard/web
+npm test
 npm run build
 ```
 

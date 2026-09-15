@@ -1,7 +1,7 @@
 # AI Handoff
 
-Last reviewed: 2026-09-14 on `codex/b1-startup-reliability`, based on v0.7.1 candidate head `1ab83ef`. B1 improves the source helper; its implementation, local validation and next slice are in CURRENT_TASK.
-This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1 is not part of that remote PR. Neither the candidate nor B1 is merged or published.
+Last reviewed: 2026-09-14 on `codex/b2-independent-app-integration`, based on B1 commit `b6848c1` and v0.7.1 candidate head `1ab83ef`. B1 improves source startup; B2 proves copied independent-app behavior from the built wheel. Their implementation, local validation and next slice are in CURRENT_TASK.
+This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1/B2 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1/B2 are not part of that remote PR. None of the candidate, B1, or B2 is merged or published.
 
 ## Read this first
 
@@ -62,7 +62,7 @@ All findings below were unfixed at the released baseline. Timing, score semantic
 | Persistence/retry boundary needs a separate reliability slice | Trace/spans commit before warnings in another transaction. A later write failure can leave partial state; resending hits existing primary keys. This follows from code; no fault-injection test ran in the review. | `handlers.go`: `handlePostTrace`; `sqlite.go`: `SaveTracePayload`, `SaveWarnings` |
 | Repeated debugging is limited | List is capped at latest 100 without pagination; no baseline comparison or trace deep link; evidence preview shows only two items without chunk navigation. | `sqlite.go`: `ListTraces`; `dashboard/web/src/App.tsx`, page components |
 
-S1-S4 candidate validation is recorded in DEVLOG (2026-09-11). B1 closes the reproduced partial-startup cleanup gap and adds dependency/port/readiness checks; CURRENT_TASK records its tests. The remaining findings are a prioritized candidate backlog, not instructions to fix everything in one pass.
+S1-S4 candidate validation is recorded in DEVLOG (2026-09-11). B1 closes the reproduced partial-startup cleanup gap and adds dependency/port/readiness checks. B2 adds a copied external application check for success, business exception, and Collector-offline behavior from the built wheel, plus installation-aware empty-state guidance. CURRENT_TASK records current tests. The remaining findings are a prioritized candidate backlog, not instructions to fix everything in one pass.
 
 ## Validation already completed versus still needed
 
@@ -87,6 +87,13 @@ S4 local validation on 2026-09-11: all Go tests, ten Dashboard tests, Dashboard 
 
 v0.7.1 candidate validation on 2026-09-11: 62 Python tests, wheel/sdist build, Twine metadata check, clean-wheel install/API/CLI validation at version 0.7.1, all Go tests, ten Dashboard tests, Dashboard 0.7.1 production build, Compose default/remote expansion, nine live reference traces, and three refreshed 1440x950 Dashboard screenshots passed. A clean clone of `25521d4` also passed npm install, editable SDK install, installed CLI version/startup, loopback listeners, health/Dashboard HTTP, reference trace round trip, and clean Git status. PR #3 passed Python 3.9, Python 3.13, Go Collector, and Dashboard checks.
 
+B1/B2 local validation on 2026-09-14: 18 startup tests, 62 SDK tests,
+wheel/sdist build, existing clean-wheel validation, copied independent-app
+validation, all Go packages, ten Dashboard tests, and Dashboard production build
+passed. A separate temporary venv installed the wheel and sent real ok/error
+traces from a copied file; API readback and the actual Dashboard confirmed them.
+No B1/B2 remote CI has run, and this internal evidence is not an external tester.
+
 Environment facts last observed:
 
 - Local host is Windows/PowerShell. Use `npm.cmd` where needed.
@@ -101,7 +108,7 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user resumed development after the 2026-09-14 phase review; the selected slice is B1 startup reliability. Candidate preparation/PR checks are already complete and should not be repeated. Publication remains separate; keep v0.7.0 as the released version until a newer publication is proven.
+The user resumed development after the 2026-09-14 phase review; B1 startup reliability and B2 independent-app integration are locally complete. Candidate preparation/PR checks are already complete and should not be repeated. Next prioritize honest confidence presentation, while keeping automated browser acceptance and genuine external first runs open. Publication remains separate; keep v0.7.0 as the released version until a newer publication is proven.
 
 For scope that changes architecture or publication, inspect DECISIONS and the current user instruction. Preserve prior authorization where it actually applies, and never bypass protected branch or deployment rules.
 

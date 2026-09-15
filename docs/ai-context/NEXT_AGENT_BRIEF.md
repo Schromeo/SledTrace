@@ -6,7 +6,7 @@
 
 ## 2026-09-11 接续状态
 
-2026-09-14 更新：阶段评估后用户继续开发，B1 启动可靠性已在独立分支 `codex/b1-startup-reliability` 实现并本地验证；详细结果与下一片以 CURRENT_TASK 为准。v0.7.1 的 PR #3 保留在 `1ab83ef`，仍未合并或发布。下文的 S1 原始指示仅是历史依据。
+2026-09-14 更新：阶段评估后用户继续开发，B1 启动可靠性已在本地提交 `b6848c1` 完成；B2 独立应用接入也已在 `codex/b2-independent-app-integration` 本地验证。B2 用构建出的 wheel 在仓库外运行复制的单文件应用，覆盖正常、业务异常和 Collector 离线，并已在真实 Dashboard 展示正常/异常 trace。详细结果与下一片以 CURRENT_TASK 为准。v0.7.1 的 PR #3 保留在 `1ab83ef`，仍未合并或发布。下文的 S1 原始指示仅是历史依据。
 
 GPT-5.6 已按本信接手。S1 在本地 commit `5b5d254`，S2 在 `ee0a812`，S3 在 `6562dc3`，S4 在 `fc85bda`。用户已选择把 S1-S4 组合为 **v0.7.1 — Trustworthy Local Tracing** 候选；`codex/v0.7.1-reliability` 的 release-prep commit `25521d4` 已完成版本对齐、本地全栈验证、clean-clone CLI/启动/trace 验证和真实 Dashboard 截图刷新。PR [#3](https://github.com/Schromeo/SledTrace/pull/3) 已打开且四项 required checks 全绿。不要重做 S1-S4，也不要把候选写成已合并或已发布。
 
@@ -52,7 +52,7 @@ SledTrace 已完成 v0.7.0，并正式发布到 PyPI 和 GitHub。之前的发�
 - 用户希望看到真实成果。与 Dashboard 有关的工作要打开实际页面、展示关键状态和截图，不能只报 build 通过或给代码 diff。
 - README 截图在产品展示内容变化时更新；SDK README 继续服务于包安装和 API 使用。
 - 使用已具备的授权和上下文推进常规工作，避免反复确认同一件事。新发布、架构扩大、外部沟通等按实际用户授权判断；不得把旧版发布许可解释成所有未来版本的许可。
-- 最初交接只授权文档；此后用户已多次授权继续开发。不要重做已完成的 S1-S4 或 B1，按 CURRENT_TASK 的下一片接续。
+- 最初交接只授权文档；此后用户已多次授权继续开发。不要重做已完成的 S1-S4、B1 或 B2，按 CURRENT_TASK 的下一片接续。
 
 ## 操作上的现实边界
 
