@@ -1,5 +1,29 @@
 # Architecture Decisions
 
+## 2026-09-14 — Prove independent application behavior from the built wheel
+
+B2 validates the public SDK contract from an application directory outside the
+repository rather than treating editable installs or repo-owned demos as proof.
+Keep one copyable, standard-library-only example with three explicit outcomes:
+strict success delivery, an application exception delivered in `finally` without
+replacement, and an observable Collector-offline failure that preserves the
+business result.
+
+The automated validator installs the built wheel into a fresh temporary venv,
+copies the example beside an external app, captures and asserts the success/error
+payloads, then closes its local test Collector and checks the offline exit path.
+CI runs it after the existing clean-wheel check. The Dashboard empty state names
+the installed SDK and labels the example as source-checkout-only.
+
+Do not bundle examples or runtime services into the pure-Python wheel as an
+incidental consequence. This evidence is internal and must not be described as
+external user validation. No framework adapter, new span, schema, warning rule,
+version, merge, or publication action belongs to B2. Next move misleading fixed
+confidence percentages to honest diagnostic presentation before broader user
+validation.
+
+---
+
 ## 2026-09-14 — Make source startup observable and clean up partial launches
 
 After the phase review, the user resumed development. B1 is a bounded source

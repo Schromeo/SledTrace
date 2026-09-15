@@ -1,5 +1,55 @@
 # Devlog
 
+## 2026-09-14 — B2 Independent-App Integration
+
+- Continued from B1 commit `b6848c1` on
+  `codex/b2-independent-app-integration`, without changing the open v0.7.1 PR.
+- Added a copyable pure-Python application covering successful delivery,
+  application-owned exception propagation/error tracing, and observable
+  Collector-offline behavior.
+- Added a clean-wheel validator that copies the artifact and example outside the
+  repository, installs into a fresh venv, asserts success/error payloads through
+  a local capture server, then verifies offline behavior after shutdown. Added it
+  to Python 3.9/3.13 CI after the existing clean-wheel validation.
+- Replaced the Dashboard's checkout-ambiguous empty state with installed-SDK and
+  explicitly repo-local commands. Updated root, package, and integration docs.
+
+Validation:
+
+- `cd sdk/python && pytest -q`: 62 passed.
+- `cd sdk/python && python -m build`: wheel and sdist passed after normal network
+  access supplied the isolated build environment. The first restricted attempt
+  exposed a Windows output-decoding issue; UTF-8 mode showed the actual denied
+  PyPI connection before the permitted rerun succeeded.
+- A one-use temporary Twine 7.0 environment reported both the wheel and sdist
+  `PASSED` and was removed; the host Python remains unmodified.
+- Existing `validate-wheel.py` passed. New `validate-independent-app.py` passed
+  from an installed 0.7.1 wheel in a temporary external directory for exit codes
+  0 (success), 2 (application error), and 1 (Collector offline).
+- Startup regressions: 18 passed with normal process permissions. The restricted
+  first run could not terminate its own wrapper/listener tree; exact test PIDs
+  13148 and 10232 were terminated before the passing rerun.
+- Collector: all Go packages passed. Dashboard: 10 tests and production build
+  passed; the restricted esbuild attempt failed before compilation on directory
+  access and the normal-permission rerun transformed 38 modules.
+- A separate fresh venv installed the wheel from a system temporary directory.
+  Its copied application stored `independent-app-success` (ok, retrieval + llm)
+  and `independent-app-application-error` (error, retrieval) in the real local
+  Collector. API readback preserved `ExampleBusinessError` and its message.
+  The actual Dashboard displayed both traces and was left open on the error
+  detail; the temporary app environment was removed.
+
+Boundary: this is internal independent-environment evidence, not an external
+first-run attempt. The example remains source-only; the wheel still does not
+bundle Collector/Dashboard assets or standalone serving. No version, remote PR,
+merge, tag, release, or publication action was performed.
+
+Next: honest confidence presentation, then a reserved cross-domain diagnostic
+baseline; retain automated browser acceptance and genuine external first runs as
+explicit open evidence rather than silently declaring them complete.
+
+---
+
 ## 2026-09-14 — B1 Source Startup Reliability
 
 - Phase review confirmed S1-S4 against implementation and PR #3; production

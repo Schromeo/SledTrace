@@ -60,6 +60,9 @@ jobs:
       - name: Validate clean wheel install and CLI
         run: python scripts/validate-wheel.py
 
+      - name: Validate copied independent app against installed wheel
+        run: python scripts/validate-independent-app.py
+
   collector:
     name: Go Collector
     runs-on: ubuntu-latest
