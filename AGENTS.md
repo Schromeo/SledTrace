@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current focus: **v0.7.1 — Trustworthy Local Tracing** candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) from `codex/v0.7.1-reliability`. S1-S4 are grouped, metadata is aligned to 0.7.1, local/clean-clone/live-browser validation passes, and all four required PR checks pass. The candidate is not merged, tagged, published, or released.
+Current development focus: **B1 source startup reliability**, locally validated on `codex/b1-startup-reliability`; see CURRENT_TASK for results and the next integration slice. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) remains open and validated, not merged or published.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
@@ -135,6 +135,10 @@ Do not remove legacy compatibility without checking the current milestone and co
 
 ## Validation
 
+For source startup helper changes, run `python -B -m unittest discover -s scripts/tests -v`.
+When Go, Node.js and Dashboard dependencies are available, also run the opt-in
+`python -B scripts/tests/smoke_startup.py` to check real startup, ingestion and cleanup.
+
 For Python SDK changes:
 
 ```
@@ -202,7 +206,7 @@ Keep documentation aligned with actual tested repository behavior.
 
 - Respond in Chinese unless the user explicitly requests English.
 - Inherit the user's already authorized scope across model changes; do not ask them to repeat context or reconfirm routine implementation choices.
-- Keep review findings, proposed milestones, authorized work, and completed/validated work distinct. This handover request authorizes documentation, not implementation of the entire candidate roadmap or a new publication.
+- Keep review findings, proposed milestones, authorized work, and completed/validated work distinct. The 2026-09-14 continuation authorizes the selected development slice; it is not a blanket instruction to execute every roadmap item or publish a version.
 - When the user continues development, use CURRENT_TASK as the default first slice and complete its decision card before editing.
 - Show real product/test evidence at relevant checkpoints. Known Docker/WSL environment failure is not a reason to block unrelated SDK work.
 - Use bounded investigations. Once the required checks and acceptance criteria pass, hand off the result and reassess the next slice instead of extending the scope.

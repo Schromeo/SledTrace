@@ -1,5 +1,47 @@
 # Devlog
 
+## 2026-09-14 — B1 Source Startup Reliability
+
+- Phase review confirmed S1-S4 against implementation and PR #3; production
+  PyPI remained 0.7.0. Continued development on `codex/b1-startup-reliability`
+  from `1ab83ef`, leaving the existing remote candidate unchanged.
+- Added preflight checks for Go/Node 22+/npm, installed Vite, source directories
+  and bind availability; missing dependencies now point to `npm ci`.
+- Added strict-port Vite startup, configurable helper Dashboard port/startup
+  timeout, configured Collector health URL, and consistent default API/CORS.
+- Ready output waits for both services. Partial launches, health timeout,
+  interruption and unexpected service exit all enter owned-process cleanup.
+- Added 18 standard-library startup tests to Python CI and an opt-in real-stack
+  smoke script. No SDK/package, Collector or Dashboard source changed.
+
+Validation:
+
+- `python -B -m unittest discover -s scripts/tests -v`: 18 passed on Windows,
+  including a real wrapper/listening-child cleanup test. The first sandboxed
+  run could not terminate its own test tree; a normal-permission rerun passed
+  and the original test PIDs were verified and cleaned up.
+- `cd sdk/python && python -B -m pytest -q -p no:cacheprovider`: 62 passed;
+  expected legacy-import deprecation warning only.
+- `python -B scripts/tests/smoke_startup.py`: real Go/Vite startup, health,
+  Dashboard HTTP, SDK ingestion/readback (two spans, two warnings), custom-port
+  CORS, SIGINT and both ports released passed. Temporary smoke DB was removed
+  by the test after shutdown.
+- A second helper invocation against occupied default ports exited 1 with
+  guidance and did not disturb the existing preview.
+- Browser inspection displayed `b1-startup-verified` with two spans and
+  45-day answer versus 30-day retrieved evidence. Conversation screenshots
+  captured the actual page; README showcase images were not changed because
+  Dashboard presentation did not change.
+- The weak-overlap warning on this short fixture remains diagnostic-quality
+  backlog evidence, not a rule fix or accuracy claim in B1.
+- No package/build repeat or Docker runtime attempt was needed. New-branch
+  remote CI, including POSIX process-tree execution, has not run.
+
+Next: review B1, then independent-app integration and installation-aware guidance.
+The v0.7.1 merge/publication remains a separate release-stage action.
+
+---
+
 ## 2026-09-11 (v0.7.1 Release Candidate Preparation)
 
 ### Completed

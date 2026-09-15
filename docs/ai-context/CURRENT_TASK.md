@@ -1,84 +1,62 @@
 # Current Task
 
-Updated: 2026-09-11. Status: **v0.7.1 candidate PR #3 is open; local, clean-clone, visible UI, and all required remote checks pass**.
+Updated: 2026-09-14. Status: **B1 source startup reliability implemented and locally validated**.
 
-## Current focus and authority
+## Current focus
 
-The user selected **v0.7.1 — Trustworthy Local Tracing** as the patch release
-candidate for the four completed post-v0.7 reliability slices:
+Branch: `codex/b1-startup-reliability`, based on candidate commit `1ab83ef`.
+The user resumed development after the phase review. This slice improves source
+startup; it is separate from the existing v0.7.1 candidate PR #3. Version metadata
+is unchanged. Latest confirmed published version remains v0.7.0.
 
-- S1 timing: local commit `5b5d254`
-- S2 score semantics: local commit `ee0a812`
-- S3 trace delivery policy: local commit `6562dc3`
-- S4 local network defaults: local commit `fc85bda`
+## Decision card
 
-The active branch is `codex/v0.7.1-reliability`; PR
-[#3](https://github.com/Schromeo/SledTrace/pull/3) targets `main`. The user
-authorized preparing, pushing, and opening the candidate pull request. This does
-not authorize merging, tagging, PyPI publication, a GitHub Release, or v0.8
-implementation. v0.7.0 remains the latest published release until the complete
-protected release path is proven.
-
-## Candidate decision card
-
-| Question | Current answer |
+| Question | Answer |
 | --- | --- |
-| User value | Deliver four evidence/reliability fixes to existing users as one reviewable patch without mixing in speculative product expansion. |
-| Confirmed blocker | S1-S4 existed only as local commits with 0.7.0 metadata and no combined artifact, release notes, clean-clone result, or remote CI evidence. |
-| Existing capability | Protected main, cross-stack CI, tag-gated Trusted Publishing, clean-wheel validation, reference traces, and a repeatable release checklist already exist. |
-| Smallest deliverable | Align source metadata to 0.7.1, add release notes, refresh materially changed screenshots, complete local/clean-clone validation, then push and open one PR. |
-| Non-goals | No merge, tag, package upload, GitHub Release, v0.8 feature, auth/cloud, new span, adapter, retry queue, or unrelated dependency fix. |
-| Validation | Python tests/build/Twine/clean wheel; all Go tests; npm clean install/tests/build; Compose expansion; clean-clone source startup; live browser inspection; required PR checks. |
-| Visible evidence | Nine deterministic 0.7.1 traces and refreshed real Dashboard images show `Not measured` and explicit score direction. |
+| User value | Reach a working local Dashboard or receive an actionable failure without leaving services from a partial startup. |
+| Confirmed blocker | Dashboard launch could fail after Collector launch but before cleanup was registered; no health gate or complete dependency/port checks existed. |
+| Existing capability | Source-installed CLI delegates to the helper; Go health endpoint, Vite, SDK and local process tools already exist. |
+| Smallest deliverable | Preflight tools/dependencies/listeners, strict Dashboard port, real readiness probes, and owned-process cleanup across startup/exit paths. |
+| Non-goals | No package/runtime redistribution, version bump, diagnostic/UI redesign, automatic dependency installation, or publication action. |
+| Validation | Standard-library startup regressions, SDK regressions, real startup/trace/CORS/interrupt/port-release smoke, existing-browser inspection. |
+| Visible evidence | Actual startup output plus Dashboard trace `b1-startup-verified`, with two spans and numeric evidence. |
 
-## Prepared candidate
+## Completed behavior
 
-- Python package, preferred and legacy import versions, CLI, payload metadata,
-  User-Agent, examples, test expectations, and wheel validator use `0.7.1`.
-- Dashboard `package.json` and lockfile use `0.7.1`.
-- Root README distinguishes the v0.7.1 source candidate from latest published
-  v0.7.0. Package README contains intended 0.7.1 artifact content.
-- `docs/releases/V0_7_1.md` records the four changes, compatibility constraints,
-  remote-network upgrade note, validation, and explicit non-goals.
-- All three README screenshots were recaptured from a clean temporary database
-  populated with nine deterministic reference traces from current source.
+- Check Go, Node.js 22+, npm, installed Vite, source directories and both bind
+  addresses before launching services. Never terminate an existing port owner.
+- Keep Collector address precedence, including legacy fallback; derive health
+  and default Dashboard API URLs from the selected address.
+- Keep explicit browser API/origin settings; otherwise align origins with the
+  chosen local Dashboard port.
+- Support helper options `--dashboard-port` and `--startup-timeout`; use
+  Vite strict-port mode. Installed `sledtrace serve` still uses helper defaults.
+- Print ready only after Collector identity/health and Dashboard HTTP checks.
+- Register interruption handling before launches and clean up after partial
+  startup, timeout, interrupt, or a service exit (including unexpected exit 0).
+- Test Windows child-tree cleanup with a real wrapper/listening child; POSIX
+  process-group cleanup is wired into the existing Linux Python CI jobs.
 
-## Local validation completed
+## Validation
 
-- [x] `cd sdk/python && pytest -q`: 62 passed.
-- [x] `cd sdk/python && python -m build`: 0.7.1 wheel/sdist built.
-- [x] `cd sdk/python && python -m twine check dist/*`: 0.7.1 artifacts passed.
-- [x] `cd sdk/python && python scripts/validate-wheel.py`: passed in a clean
-  temporary venv, including imports, version, CLI, timing, scores, delivery, and
-  out-of-checkout `serve` behavior.
-- [x] `cd collector/go && go test ./... -count=1`: all packages passed.
-- [x] `cd dashboard/web && npm.cmd ci`: passed.
-- [x] `cd dashboard/web && npm.cmd test`: 10 passed.
-- [x] `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
-- [x] Default and explicit-remote `docker compose config` expansion passed.
-- [x] Live non-Docker loopback stack stored and displayed nine reference traces.
-- [x] Three 1440x950 Dashboard screenshots refreshed and visually inspected.
-- [x] Clean clone of release-prep commit `25521d4` installed Dashboard
-  dependencies and SDK 0.7.1 in a new venv.
-- [x] Installed clean-clone `sledtrace serve` started loopback Collector and
-  Dashboard; health, HTTP, conflict trace round trip, UI detail, and clean Git
-  status passed.
-- [x] PR #3 Python 3.9, Python 3.13, Go Collector, and Dashboard checks passed.
-- [x] `git diff --check`: passed with Windows line-ending warnings only.
+- `python -B -m unittest discover -s scripts/tests -v`: 18 passed on Windows.
+- `cd sdk/python && python -B -m pytest -q -p no:cacheprovider`: 62 passed.
+- `python -B scripts/tests/smoke_startup.py`: passed real Go/Vite startup,
+  SDK POST/detail GET, custom-port CORS, SIGINT handling and both ports released.
+- Second real startup while default ports were occupied: expected exit 1;
+  the original services remained available.
+- Browser displayed the newly ingested `b1-startup-verified` trace and evidence.
+- SDK/package, Collector and Dashboard source did not change; their builds were
+  not repeated. Remote CI for this new branch has not run.
 
-Environment notes:
+## Next slice and remaining release work
 
-- The restricted build initially could not bootstrap its isolated environment;
-  the same build passed with normal temporary-directory/package-index access.
-- Host Python lacked Twine, so Twine 7.0.0 was installed only into a system
-  temporary directory for validation.
-- `npm ci` re-reported four known development-dependency advisories: one
-  moderate and three high. No automatic audit fix entered this candidate.
-- Docker runtime remains untested on this WSL2-disabled host. Static Compose
-  expansion is not being represented as a container startup smoke.
+B1 is ready for review. The next proposed implementation slice is independent-app
+integration: use the SDK outside the repository, document success/business-error/
+Collector-offline paths, and repair installation-aware empty-state guidance.
+Move uncalibrated confidence presentation ahead of broader external validation;
+start diagnostic evaluation with a small cross-domain baseline before tuning.
 
-## Remaining gates
-
-Stop at the open, green candidate PR. Merge, tag, package publication,
-production-index validation, and GitHub Release require a separate release-stage
-decision.
+The v0.7.1 PR remains a separate release decision. Its completed candidate
+validation is in DEVLOG (2026-09-11) and V0_7_1.md; do not repeat it because B1
+started or describe the unpublished candidate as released.
