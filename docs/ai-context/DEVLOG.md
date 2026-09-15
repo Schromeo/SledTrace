@@ -1,5 +1,98 @@
 # Devlog
 
+## 2026-09-15 — H0 Honest Diagnostic Presentation
+
+The user authorized starting incremental development and required a repeatable
+self-review/log/current-task/roadmap closeout workflow. H0 is locally complete
+in the existing working tree; the preceding planning changes are preserved.
+
+Implementation:
+
+- Removed numerical confidence badges from TraceDetailPage. Display heuristic
+  labeling and explicit English-pattern/domain applicability instead; zero
+  warnings is not presented as a correctness verdict.
+- Kept the API and raw confidence untouched, including legacy enhanced-layout
+  selection. Extracted the existing warning normalization helpers into
+  src/utils/warnings.ts and added six compatibility/guidance tests without a new
+  dependency or testing framework. Evidence, severity, comparisons and actions
+  remain unchanged.
+- Saved a real warning/evidence screenshot as
+  docs/assets/screenshots/heuristic-warning-detail.png and updated README's
+  conflict image. The retained older grounding image is explicitly labeled as
+  pre-H0, including its uncalibrated badge limitation.
+- Made the user-required closeout workflow explicit in AGENTS; updated the
+  current task, roadmap progress and handoff. E1 is next; no sequence expansion.
+
+Validation (repository-relative working directories):
+
+- dashboard/web: `npm.cmd test` — exit 0, 16 passed, including six new cases;
+  Node emitted the existing experimental type-stripping warning.
+- dashboard/web: `npm.cmd run build` — first exit 1 after TypeScript checking,
+  because esbuild could not read a parent directory under sandbox restrictions.
+  The identical command with normal permissions exited 0: Vite 6.4.3,
+  39 modules transformed. No code workaround or dependency update was used.
+- Root: `python -B scripts/start-sledtrace.py --dashboard-port 5174
+  --startup-timeout 60` with SLEDTRACE_COLLECTOR_ADDR=127.0.0.1:4320 and a fresh
+  SLEDTRACE_DB_PATH — both real services reached readiness. Persistent exec
+  session 46901 was intentionally left running for user inspection, not reported
+  as an exited command. No Docker/WSL changes.
+- sdk/python, with SLEDTRACE_COLLECTOR_URL=http://127.0.0.1:4320:
+  `python -B -m examples.reference_rag_app.run conflict`, `refund` and
+  `wrong-window` — each exit 0, deterministic/no paid LLM calls.
+- Readback showed conflict trace trace_84f843bba759461caf34e362a9d3a560 retained
+  confidence 0.88 and three evidence items. Refund also exercised a null-confidence
+  low-score warning. Actual browser inspection confirmed heuristic wording,
+  evidence/action retention and zero percentage badges.
+- An initial no-retrieval fixture generated the existing no_retrieved_chunks
+  warning, so it was not treated as zero-warning evidence. A retrieved greeting
+  fixture (trace_19c300e5785b40e68875172468adcb67) then returned zero warnings;
+  its real page explicitly said this does not confirm answer correctness.
+  Defer non-RAG rule applicability to E2; do not expand H0 to change the engine.
+- Self-review: inspected the functional diff and new tests; only presentation
+  and helper extraction changed. Malformed/legacy confidence is tested at the
+  unit boundary; this is not a new automated SDK-to-browser CI suite.
+
+Closeout: diff/whitespace and local-document-link checks passed. SDK/Go builds
+and package release validation were not repeated because their implementations
+did not change. Preview uses a temporary database, preserving existing user data.
+No commit, push, merge, tag, version bump or publication was performed.
+
+---
+
+## 2026-09-15 — Draft a gated product roadmap through v1.0
+
+- The user requested detailed product, competitive-positioning, usability and
+  milestone planning to avoid overengineering. This turn changed documentation
+  only, based on local HEAD `1e77338` and a clean initial worktree.
+- Added `docs/product/ROAD_TO_V1_0.md`: current assets versus gaps, target users,
+  defensible hypotheses, honest usage/cost/quality semantics, M0–M5 slices and a
+  v1.0 go/no-go checklist. Competitive references were checked against official
+  Langfuse documentation and the ClawTrace research abstract; product prospects
+  remain hypotheses, not proven demand.
+- Recommended preserving RAG evidence while testing a bounded Python execution
+  efficiency loop: H0 honest wording, existing-token visibility, one agent/tool
+  path, conservative signals, then outcome-aware comparison. Defer broad RAG-rule
+  tuning and gate runtime/UX investment on real actionable value.
+- Updated the active ROADMAP and CURRENT_TASK, aligned AGENTS/AI_HANDOFF, added
+  the planning rationale to DECISIONS, and shortened NEXT_AGENT_BRIEF. Marked the
+  original product/schema designs as historical instead of changing their old
+  proposals into claims of current support.
+- Added one-slice work limits, bounded investigations, visible acceptance,
+  proportional test cadence, documentation ownership and explicit shrink/stop
+  conditions. Checkout-free runtime, privacy, storage semantics, independent
+  onboarding and repeat use remain later gates, not completed capabilities.
+
+Validation: Markdown-only scope and local-link/whitespace checks passed;
+`git diff --check` passed (Git reports expected LF-to-CRLF checkout warnings).
+No SDK/Go/Dashboard tests, package builds, service startup, paid model calls or
+remote publication checks were rerun for this documentation-only task.
+
+Boundary: the plan is submitted for user review. No functional code, version,
+commit, merge, tag, publication or external-user outreach was changed. H0 is the
+next recommended slice when the user resumes implementation under this plan.
+
+---
+
 ## 2026-09-14 — B2 Independent-App Integration
 
 - Continued from B1 commit `b6848c1` on

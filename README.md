@@ -53,11 +53,19 @@ SledTrace shows local RAG traces with warning counts and demo case labels.
 
 SledTrace can surface conflicting retrieved chunks, such as legacy and current refund policies that disagree.
 
-![Conflicting retrieved context](docs/assets/screenshots/conflict-trace-detail.png)
+Current source labels these as heuristic checks, not calibrated probabilities.
+The warning explains its applicability while retaining evidence and recommended
+actions. No warnings does not establish that an answer is correct.
+
+![Heuristic conflict warning with evidence and recommended action](docs/assets/screenshots/heuristic-warning-detail.png)
 
 ### Answer not grounded in retrieved context
 
 SledTrace can flag answers that introduce unsupported claims even when retrieval found relevant context.
+
+The full-layout image below is from the earlier v0.7.1 candidate. Its numerical
+confidence badge was uncalibrated; current source uses the heuristic presentation
+shown above instead.
 
 ![Answer not grounded](docs/assets/screenshots/answer-not-grounded.png)
 

@@ -1,83 +1,77 @@
 # Current Task
 
-Updated: 2026-09-14. Status: **B2 independent-app integration implemented and locally validated**.
+Updated: 2026-09-15. Status: **H0 locally implemented and validated; E1 is next**.
 
-## Current focus
+## Baseline and authority
 
-Branch: `codex/b2-independent-app-integration`, based on B1 commit `b6848c1`
-and ultimately on candidate commit `1ab83ef`. This slice proves an application
-can use the built wheel outside the repository; it remains separate from the
-existing v0.7.1 candidate PR #3. Version metadata is unchanged. Latest confirmed
-published version remains v0.7.0.
+HEAD remains 1e77338 on codex/b2-independent-app-integration.
+The worktree contains the previous roadmap documentation and this H0 slice;
+neither was committed or published in this turn. Latest confirmed release is
+v0.7.0; remote PR/publication state was not refreshed.
 
-## Decision card
+The user adopted incremental development under ROAD_TO_V1_0 and explicitly
+requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout after each slice.
+This authorizes bounded implementation, not every future feature or release.
 
-| Question | Answer |
+## H0 outcome and self-check
+
+- Replaced confidence percentages with heuristic labeling and language/domain
+  applicability guidance. Zero warnings explicitly does not confirm correctness.
+- Preserved raw API confidence, legacy enhanced-layout selection, evidence,
+  severity, numeric comparisons and recommended actions.
+- Added six focused warning normalization/compatibility/guidance tests.
+  Dashboard now passes 16 tests; production build passed after a sandbox-only
+  esbuild directory denial was resolved by a normal-permission rerun.
+- Real Collector/SDK/browser checks covered confidence 0.88, null confidence,
+  evidence/actions, and a genuine zero-warning fixture. No percentage badges
+  appeared. Malformed/legacy payload behavior is covered by unit tests, not
+  claimed as a separate full browser automation suite.
+- Refreshed the README conflict screenshot and explicitly labeled the retained
+  older grounding screenshot. Exact commands/evidence are in DEVLOG.
+- No SDK, Go, schema, warning-rule, dependency or version changes.
+  No blocker remains for H0; do not reopen it for cosmetic work.
+
+Preview was left at http://127.0.0.1:5174/ with Collector 4320, using a temporary
+database. Verify it is still running before reuse; the original database was
+not touched.
+
+## Next implementation slice: E1 — existing LLM usage visibility
+
+| Decision-card question | Answer |
 | --- | --- |
-| User value | Copy one Python file into an application environment and observe normal work, an application exception, and Collector unavailability without repository-only imports. |
-| Confirmed blocker | Existing examples and Dashboard empty-state guidance assumed a source checkout and did not prove use of the built wheel from another directory. |
-| Existing capability | The dependency-free wheel exposes tracing, measured retrieval/LLM spans, strict `flush()`, and observable `try_flush()`. |
-| Smallest deliverable | One copyable example, clean-wheel/out-of-checkout validation for three explicit outcomes, and installation-aware empty-state/docs guidance. |
-| Non-goals | No framework adapter, bundled runtime, new span type, diagnostic rule/UI redesign, version bump, publication, or claimed external tester. |
-| Validation | SDK/build/wheel, copied-app payload assertions, startup/Collector/Dashboard regressions, real wheel-installed local ingestion, API readback, and browser inspection. |
-| Visible evidence | Dashboard traces `independent-app-success` and `independent-app-application-error`; the latter is open with `ERROR` status and its completed retrieval span. |
+| User value | Identify which recorded LLM call accounts for known tokens/time and see measurement gaps. |
+| Confirmed blocker | Current llm metadata stores input/output/total tokens, but the Dashboard has no per-call ledger or known subtotal. |
+| Existing capability | LLM span metadata, prompt/response viewer, measured/unknown timing and trace detail API. |
+| Smallest deliverable | Add a compact per-call usage view and known subtotal/coverage in the existing detail page; navigate to the selected call using existing span selection. |
+| Non-goals | No tool/agent spans, automatic provider capture, pricing service, A/B comparison, new runtime, full graph, version or release. |
+| Validation | Focused usage aggregation/presentation tests; Dashboard tests/build; one real multi-LLM trace and one partial-data trace in the browser; diff and documentation checks. |
+| Visible evidence | Hand-checkable per-call counts/subtotal, unknown data shown explicitly, selected call prompt/response visible. |
+| Budget and stopping | About 1–2 focused development days. Stop when the existing-data ledger is useful and verified; defer additional charts and provider integrations. |
 
-## Completed behavior
+Acceptance:
 
-- Added `examples/independent_app.py`, a single standard-library-only application
-  with deterministic `success`, `application-error`, and `collector-offline`
-  cases. It imports only the installed public `sledtrace` API.
-- Normal success uses strict `flush()` and records measured retrieval/LLM spans.
-  The application-error case preserves the original exception, stores an error
-  trace with completed work, and returns 2. The offline case preserves the
-  business result, exposes `try_flush()` failure, and returns 1.
-- Added `scripts/validate-independent-app.py`: copy the wheel and example into a
-  system temporary directory, install into a fresh venv, capture/assert two
-  payloads, close the test Collector, and assert the offline outcome.
-- Added that validator to both Python CI matrix jobs after the ordinary clean-wheel
-  check. The example remains source-only rather than silently expanding the wheel.
-- Replaced the Dashboard empty-state command with installed-SDK guidance plus an
-  explicit source-checkout example command. The header now reports the configured
-  API URL instead of a hard-coded default. Updated root/package/integration docs.
+1. Show input/output/total values per recorded LLM call, model and measured/unknown
+   duration. If usage provenance is absent, label it unknown instead of claiming
+   provider-verified counts.
+2. Preserve zero versus missing/invalid values. Total-only records do not invent
+   input/output splits; conflicting totals must not silently create a confident
+   aggregate.
+3. Label aggregates as known subtotals with coverage for observed calls, not all
+   calls the uninstrumented application may have made. Do not double-count a
+   supplied total and its components.
+4. Old traces with no usage remain readable. Unknown data cannot look like a
+   free/fast operation, and span durations are not summed as task wall time.
+5. Selecting a call reveals its existing prompt/response or honest missing state.
+6. Complete self-review, relevant tests, visible evidence and DEVLOG/CURRENT_TASK/
+   ROADMAP updates before handing off. No automatic continuation into E2.
 
-## Validation
+## Deferred findings and guardrails
 
-- `cd sdk/python && pytest -q`: 62 passed; expected legacy warning plus the
-  host's known pytest-cache permission warning.
-- `cd sdk/python && python -m build`: built wheel and sdist after normal network
-  access supplied isolated setuptools/wheel dependencies.
-- A temporary Twine 7.0 environment reported both current artifacts `PASSED`;
-  it was removed afterward because Twine is not installed in the host Python.
-- `python scripts/validate-wheel.py`: existing 0.7.1 clean-wheel/API/CLI checks passed.
-- `python scripts/validate-independent-app.py`: clean venv, installed wheel,
-  external copied file, ok/error payload assertions, and offline behavior passed.
-- `python -m unittest discover -s ../../scripts/tests -v`: 18 passed with normal
-  process-tree permissions. The restricted first run was cleaned by exact PID.
-- `cd collector/go && go test ./... -count=1`: all packages passed.
-- `cd dashboard/web && npm.cmd test`: 10 passed; `npm.cmd run build`: passed,
-  38 modules transformed. Restricted esbuild access failed before compilation;
-  normal-permission rerun passed.
-- A second fresh temp venv installed the current wheel, then a copied external
-  app stored `trace_c1608d93e05d4fedad57b4c58d54ebb0` (ok, retrieval + llm) and
-  `trace_d10a66eb1dd743fbbdda98a3ea5b790b` (error, retrieval, original error).
-  API readback and the actual Dashboard confirmed both; the temp app was removed.
-- An isolated empty database on Collector 4320/Dashboard 5174 rendered zero traces,
-  the new executable instructions, and the configured `http://127.0.0.1:4320`
-  header rather than a false default endpoint; it was stopped after inspection.
-- Remote CI for B1/B2 has not run. This is internal independent-environment
-  evidence, not either of the still-missing external first-run attempts.
+Only retrieval/llm spans exist. Parent storage fields are already present, but
+Python writes None; automatic usage capture and pricing are future work.
 
-## Next slice and remaining release work
+During H0, a no-retrieval fixture triggered the current no_retrieved_chunks rule.
+E2 must review RAG-rule applicability before claiming general agent support.
+Do not change warning rules as an incidental E1 fix.
 
-B1 and B2 are locally complete on separate commits/branches. The next recommended
-slice is honest diagnostic presentation: stop rendering fixed rule constants as
-calibrated probability percentages, preserve evidence and applicability, and add
-focused UI tests plus visible browser proof. After that, build a small reserved
-cross-domain diagnostic baseline before tuning rules. A fully automated
-SDK-to-browser acceptance flow and two genuine external first-run attempts remain
-open B-milestone evidence; internal clean environments must not be relabeled as
-external validation.
-
-The v0.7.1 PR remains a separate release decision. Its completed candidate
-validation is in DEVLOG (2026-09-11) and V0_7_1.md; do not repeat it because B1
-started or describe the unpublished candidate as released.
+Full plan and later gates: [ROAD_TO_V1_0](../product/ROAD_TO_V1_0.md).
