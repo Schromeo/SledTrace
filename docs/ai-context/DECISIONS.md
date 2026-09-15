@@ -1,5 +1,27 @@
 # Architecture Decisions
 
+## 2026-09-14 — Make source startup observable and clean up partial launches
+
+After the phase review, the user resumed development. B1 is a bounded source
+startup slice on a branch based on candidate `1ab83ef`; the existing v0.7.1
+PR and publication decision remain separate.
+
+Preflight executables, installed Vite and bind addresses before launching.
+Require Collector identity/health and Dashboard HTTP readiness, use a strict
+Dashboard port, and manage only the processes started by this invocation.
+POSIX uses process groups; Windows uses owned PID trees. Register interruption
+handling before either launch so a second-launch failure cleans up the first.
+Preserve explicit Collector/API/origin configuration and legacy address fallback.
+
+The helper retains source-checkout serving and adds only helper-level port and
+timeout options. Do not auto-install dependencies, stop unrelated port owners,
+change package versions, or bundle runtime assets in this slice. Next prioritize
+independent-app integration; move honest confidence presentation before wider
+external validation and begin diagnostic evaluation with a small cross-domain
+baseline before tuning. Detailed validation belongs in DEVLOG/CURRENT_TASK.
+
+---
+
 ## 2026-09-11 — Group S1-S4 as v0.7.1 Trustworthy Local Tracing
 
 ### Decision

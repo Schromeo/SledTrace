@@ -1,7 +1,7 @@
 # AI Handoff
 
-Last reviewed: 2026-09-11 on branch `codex/v0.7.1-reliability`, based on local S4 commit `fc85bda`, S3 commit `6562dc3`, S2 commit `ee0a812`, S1 commit `5b5d254`, and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
-This snapshot distinguishes released behavior from the v0.7.1 candidate. S1-S4 and release-prep commit `25521d4` are pushed in PR [#3](https://github.com/Schromeo/SledTrace/pull/3); version/release metadata, local cross-stack validation, clean-clone startup, live Dashboard evidence, refreshed screenshots, and all four required PR checks pass. Nothing is merged, tagged, published, or released.
+Last reviewed: 2026-09-14 on `codex/b1-startup-reliability`, based on v0.7.1 candidate head `1ab83ef`. B1 improves the source helper; its implementation, local validation and next slice are in CURRENT_TASK.
+This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1 is not part of that remote PR. Neither the candidate nor B1 is merged or published.
 
 ## Read this first
 
@@ -62,7 +62,7 @@ All findings below were unfixed at the released baseline. Timing, score semantic
 | Persistence/retry boundary needs a separate reliability slice | Trace/spans commit before warnings in another transaction. A later write failure can leave partial state; resending hits existing primary keys. This follows from code; no fault-injection test ran in the review. | `handlers.go`: `handlePostTrace`; `sqlite.go`: `SaveTracePayload`, `SaveWarnings` |
 | Repeated debugging is limited | List is capped at latest 100 without pagination; no baseline comparison or trace deep link; evidence preview shows only two items without chunk navigation. | `sqlite.go`: `ListTraces`; `dashboard/web/src/App.tsx`, page components |
 
-S1-S4 are locally complete, with the active validation in CURRENT_TASK. The remaining findings are a prioritized candidate backlog, not instructions to fix everything in one pass.
+S1-S4 candidate validation is recorded in DEVLOG (2026-09-11). B1 closes the reproduced partial-startup cleanup gap and adds dependency/port/readiness checks; CURRENT_TASK records its tests. The remaining findings are a prioritized candidate backlog, not instructions to fix everything in one pass.
 
 ## Validation already completed versus still needed
 
@@ -101,7 +101,7 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user authorized v0.7.1 candidate preparation and PR creation on 2026-09-11. This does not authorize merging, tagging, package publication, a GitHub Release, or v0.8 implementation. Use CURRENT_TASK for the remaining clean-clone and PR checks, and keep v0.7.0 as the released version until publication is proven.
+The user resumed development after the 2026-09-14 phase review; the selected slice is B1 startup reliability. Candidate preparation/PR checks are already complete and should not be repeated. Publication remains separate; keep v0.7.0 as the released version until a newer publication is proven.
 
 For scope that changes architecture or publication, inspect DECISIONS and the current user instruction. Preserve prior authorization where it actually applies, and never bypass protected branch or deployment rules.
 

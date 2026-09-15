@@ -218,6 +218,25 @@ Then start local services:
 python scripts/start-sledtrace.py
 ```
 
+The helper checks Go, Node.js 22+, npm, installed Dashboard dependencies, and
+available ports before launching anything. It reports **SledTrace ready** only
+after Collector health and Dashboard HTTP checks pass. Vite uses a strict port:
+an occupied port produces guidance instead of silently moving the Dashboard.
+Ctrl+C or a startup/service failure cleans up the services started by the helper.
+
+For an alternative local port or a slow first Go build, invoke the helper
+directly (these options are not flags of the installed `sledtrace serve` CLI):
+
+```bash
+python scripts/start-sledtrace.py --dashboard-port 5174 --startup-timeout 120
+```
+
+The helper respects `SLEDTRACE_COLLECTOR_ADDR` (then
+`RAGLENS_COLLECTOR_ADDR`), derives the local health/API URL, and defaults CORS
+origins to the selected Dashboard port. Explicit `VITE_SLEDTRACE_API_URL`,
+`VITE_RAGLENS_API_URL`, and `SLEDTRACE_ALLOWED_ORIGINS` values remain overrides.
+It does not install dependencies or stop an existing service that owns a port.
+
 Then run traces in another terminal:
 
 ```bash

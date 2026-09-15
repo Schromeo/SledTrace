@@ -25,7 +25,7 @@ Release references:
 
 ## Proposed post-v0.7 sequence
 
-Status: **S1-S4 locally committed and grouped into the selected v0.7.1 release candidate; later sequence remains planning**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
+Status: **S1-S4 are in the open v0.7.1 candidate PR; B1 startup reliability is locally validated on a separate branch**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
 
 The proposed product outcome is: a Python RAG developer can find verifiable evidence for a bad answer and confirm the effect of a subsequent change. Shipping milestones measures readiness; external use, confirmed diagnoses, and repeat usage measure product value.
 
@@ -45,6 +45,12 @@ Take one slice per focused PR where practical. A confirmed active exposure or da
 ### B — Reliable First Integration (candidate v0.8)
 
 Planning budget: 1-2 development weeks, adjusted from evidence. The milestone name and final scope are still proposals.
+
+2026-09-14 phase decision: retain the integration outcome. B1 source startup
+reliability is locally complete; next prioritize an independent application
+environment and installation-aware guidance, followed by trustworthy diagnostic
+presentation and an SDK-to-browser acceptance flow. Keep v0.7.1 publication
+separate from this development branch.
 
 - One complete path starts in the user's own application environment with the released SDK.
 - A minimal integration example covers success, application failure, and Collector unavailability with explicit behavior.
@@ -67,10 +73,10 @@ If runtime distribution exceeds the budget or obscures the first-integration goa
 
 Planning budget: about one development week; data collection may overlap onboarding.
 
-- Build roughly 60-100 labeled positive/negative cases covering current store policies, technical documents, and another real domain. Include unsupported-language behavior.
+- Begin with roughly 20-30 positive/negative cross-domain cases to expose boundaries, including unsupported-language behavior. Expand toward 60-100 cases based on findings; the initial sample is not a general accuracy claim.
 - Reserve evaluation cases before tuning; report per-rule false positives, false negatives, and unassessed cases with sample counts.
 - Preserve deterministic execution. Current rules are not a semantic factuality evaluator, and fixed confidence values are not calibrated probabilities.
-- Display rule evidence and applicability clearly; an unassessed case must not imply a correct answer.
+- Move honest diagnostic presentation before broader external validation: do not present uncalibrated constants as accuracy percentages. Display rule evidence and applicability clearly; an unassessed case must not imply a correct answer.
 - Treat external confirmation that a warning helped fix an actual problem as stronger product evidence than more curated demo warnings.
 
 ### D — Confirming an improvement (later candidate, no version selected)
