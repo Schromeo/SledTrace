@@ -1,5 +1,10 @@
 # SledTrace Product Spec
 
+Historical v0.1 product specification and implementation snapshot. Its old
+next-step recommendations are not the active roadmap. See
+[Road to v1.0](ROAD_TO_V1_0.md) for the 2026-09-15 proposed direction and
+[AI_HANDOFF](../ai-context/AI_HANDOFF.md) for currently implemented behavior.
+
 ## Product Name
 
 SledTrace

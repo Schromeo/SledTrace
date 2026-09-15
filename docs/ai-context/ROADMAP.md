@@ -1,102 +1,73 @@
 # Roadmap
 
-This roadmap is ordered by delivery sequence.
+## Active planning baseline — 2026-09-15
 
-Each version includes clear scope boundaries so SledTrace stays local-first, lightweight, and useful as a developer tool.
+The detailed, reviewable plan is [Road to v1.0](../product/ROAD_TO_V1_0.md).
+It defines target users, defensible product hypotheses, per-slice acceptance,
+non-goals, evidence gates, budgets, and stopping rules. Read its overview and the
+selected slice, not every historical milestone before each change.
 
-## Current Snapshot
+Recommended direction: a local Python execution-efficiency debugger for bounded
+AI workflows. Preserve RAG evidence; add trustworthy usage attribution, one agent
+integration, conservative waste signals, and outcome-aware before/after comparison.
+The user adopted this direction for incremental development on 2026-09-15.
+Future scope is not implemented capability or blanket authorization.
 
-**Current released version:** v0.7.0 - External Developer Readiness
+### Current facts
 
-**Release status:** Complete, validated, tagged, published to production PyPI, and published as a GitHub Release on 2026-09-09
+- Latest confirmed published release: v0.7.0, published 2026-09-09.
+- S1–S4: locally complete; selected v0.7.1 candidate PR #3 was open with required
+  checks passing when last verified on 2026-09-14. Publication is not established.
+- B1 source startup and B2 independent-app integration: locally complete; HEAD
+  1e77338 on codex/b2-independent-app-integration, verified 2026-09-15.
+- Only retrieval and llm spans are implemented. Existing token metadata is not a
+  complete usage ledger; the wheel still does not contain a standalone runtime.
+- No independent external first-run or repeat-use evidence is recorded.
+- H0 is locally validated in the working tree: heuristic guidance replaces
+  probability badges, evidence/actions remain visible, and zero warnings is not
+  described as a correctness verdict. See DEVLOG for tests and browser evidence.
+- The H0 pass did not refresh remote release state. Sequence remains unchanged.
 
-**Next product milestone:** v0.7.1 — Trustworthy Local Tracing is selected as the release candidate grouping for S1-S4. Local validation, clean-clone startup, release-facing metadata, screenshots, and all four required checks pass in PR #3. It is not merged, tagged, published, or released.
+### Proposed post-v0.7 sequence
 
-Release references:
+This sequence supersedes the 2026-09-10/14 active A–D ordering, not its completed
+work or historical evidence. Keep H0 honest diagnostic presentation first, but
+defer broad RAG-rule expansion and bring the efficiency/comparison loop forward.
 
-* v0.5.0 tag targets `b3cad60a10636dbf7a5d371f51bac0c04a4af936`
-* v0.5.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0
-* v0.6.0 tag targets `392edd1233a99e20f2cf7ffdfa166cdbb689bb6e`
-* v0.6.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0
-* v0.7.0 tag targets `58887907973aff3948d2cf3667681832f4305ec6`
-* v0.7.0 release: https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0
-* production package: https://pypi.org/project/sledtrace/0.7.0/
-* production publication workflow: https://github.com/Schromeo/SledTrace/actions/runs/34410674101
+| Stage | Bounded deliverables | Exit gate | Suggested release grouping |
+| --- | --- | --- | --- |
+| M0 — H0 locally complete | Honest warning presentation; existing release cleanup remains separate | UI, compatibility tests, build and real-browser checks passed | v0.7.1 remains a separate release decision |
+| M1 — next | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | v0.8 development |
+| M2 | E2: one Python agent/tool path; E3: one usage source and explicit pricing basis | Real workflow, failures and measurement gaps are inspectable | v0.8 development |
+| M3 | E4: two conservative waste signals; E5: outcome-aware A/B comparison | One real, reviewable improvement or useful regression finding; no fabricated savings | v0.8 candidate, subject to product gate |
+| M4 | U1: checkout-free runtime; U2: find/detail/compare; U3: content/data controls; U4: external onboarding | Supported install path and two genuine first uses | v0.9 candidate |
+| M5 | R1: storage/delivery contract; R2: compatibility; R3: supported-platform verification | Frozen, reliable supported scope | v1.0.0rc candidate |
+| G1 | Quality-preserving efficiency evidence, repeat use, RC observation, authorized publication | All checklist evidence in the detailed plan | v1.0.0 |
 
-## Proposed post-v0.7 sequence
+Atomic persistence must precede retries/repeated-import semantics; sensitive-data
+controls must precede relevant external trials. These dependencies may advance a
+bounded slice, not authorize parallel feature expansion.
 
-Status: **S1-S4 are in the open v0.7.1 candidate PR; B1 startup reliability and B2 independent-app integration are locally validated on subsequent separate branches**. Exact active-slice results belong in [CURRENT_TASK.md](CURRENT_TASK.md), and reviewed code evidence belongs in [AI_HANDOFF.md](AI_HANDOFF.md).
+### Next action and scope
 
-The proposed product outcome is: a Python RAG developer can find verifiable evidence for a bad answer and confirm the effect of a subsequent change. Shipping milestones measures readiness; external use, confirmed diagnoses, and repeat usage measure product value.
+[CURRENT_TASK](CURRENT_TASK.md) owns E1 and its stop point. H0 has been handed off;
+do not reopen it for cosmetic optimization. No agent runtime, automatic
+optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
+of the proposed 1.0.
 
-### A — Reliability candidates before broader onboarding (possible v0.7.1)
+Work-in-progress limit: one slice, generally 0.5–3 focused development days.
+Demonstrate the affected real flow early. Run proportional checks; full candidate
+validation remains a release gate, not a ritual for every documentation change.
+After two slices without a visible user outcome, reassess before adding features.
 
-Planning budget: 3-5 focused development days, not a deadline. Release grouping/version is selected after the fixes and compatibility impact are understood.
+The full plan guides incremental development, not automatic execution. Do not bump versions,
+merge, tag, publish, contact external users, or incur model costs based on this
+document alone. Keep candidate, locally validated, and released states distinct.
 
-| Order | Bounded slice | Acceptance outcome |
-| --- | --- | --- |
-| S1 — locally complete | Trustworthy span timing | Actual operation measurements and unmeasured records are represented honestly; existing call forms work; timeline and detail agree. See CURRENT_TASK for validation. |
-| S2 — locally complete | Retrieval score semantics | Score type/direction is preserved; distance and unknown scores do not enter higher-is-better thresholds or ordering. Similarity, distance, unscored, tuple, and explicit mappings are covered without assuming `1 - distance`. See CURRENT_TASK for validation. |
-| S3 — locally complete | Trace delivery policy | Strict `flush()` is preserved; explicit `try_flush()` returns an observable result without replacing business behavior. Offline/timeout/serialization and original exceptions are covered without adding retry or queue behavior. See CURRENT_TASK. |
-| S4 — locally complete | Local network defaults | Host listener and Docker published ports default to loopback; allowed origins are explicit; normal SDK/UI flows pass. Container-internal listening remains compatible with Docker networking; intentional remote use has documented configuration. See CURRENT_TASK. |
+## Historical milestone record
 
-Take one slice per focused PR where practical. A confirmed active exposure or data-loss issue can change the order. Do not wait indefinitely for external testers before fixing reproducible defects.
-
-### B — Reliable First Integration (candidate v0.8)
-
-Planning budget: 1-2 development weeks, adjusted from evidence. The milestone name and final scope are still proposals.
-
-2026-09-14 phase decision: retain the integration outcome. B1 source startup
-reliability and B2 independent-app integration are locally complete. B2 proves a
-copied file against the built wheel for success, application error, and Collector
-offline outcomes, and repairs installation-aware empty-state guidance. Next
-prioritize trustworthy diagnostic presentation, then a fully automated
-SDK-to-browser acceptance flow. Keep v0.7.1 publication separate from these
-development branches.
-
-- [x] One internally validated path starts in an independent application environment with the built SDK wheel.
-- [x] A minimal integration example covers success, application failure, and Collector unavailability with explicit behavior.
-- [x] Startup checks explain dependencies, occupied ports, health failures, and the actual Dashboard address.
-- [x] Empty-state instructions work for the selected installation method; wheel users are not sent to unavailable example modules without checkout guidance.
-- [ ] One automated end-to-end check sends a deterministic trace, opens its detail, and inspects evidence. B2 automates installed-wheel payload checks and adds manual real-browser proof, but does not mislabel that pair as browser automation.
-- [ ] Record at least two independent external first-run attempts, including dependency setup time, time to first application trace, help requests, and blockers. A proposed goal is at most 10 minutes from satisfied prerequisites to the first application trace; report total setup time separately.
-
-Two people are an initial usability sample, not proof of adoption. If they cannot be recruited promptly, internal independent-app checks can improve the product but must not be relabeled external validation.
-
-### Optional bounded investigation — installed local runtime
-
-The user values installing the Python package and directly seeing the product. Allow a 1-2 day feasibility budget when this is the next selected slice. Prefer investigating the existing Go Collector with embedded built Dashboard assets and a prebuilt runtime launched by the CLI; a Python backend rewrite is not assumed.
-
-Before selecting delivery, compare platform support, artifact version/checksum verification, installation size, offline startup after installation, runtime cleanup/upgrade behavior, and maintenance cost. The exact distribution channel and CLI interface are not chosen. Changing the source-checkout-only boundary requires an explicit architecture decision and aligned package/docs/tests.
-
-If runtime distribution exceeds the budget or obscures the first-integration goal, report the prototype/tradeoffs and split it from v0.8. Do not silently download executables or promise universal platform support through the existing pure-Python wheel.
-
-### C — Diagnostic quality evidence
-
-Planning budget: about one development week; data collection may overlap onboarding.
-
-- Begin with roughly 20-30 positive/negative cross-domain cases to expose boundaries, including unsupported-language behavior. Expand toward 60-100 cases based on findings; the initial sample is not a general accuracy claim.
-- Reserve evaluation cases before tuning; report per-rule false positives, false negatives, and unassessed cases with sample counts.
-- Preserve deterministic execution. Current rules are not a semantic factuality evaluator, and fixed confidence values are not calibrated probabilities.
-- Move honest diagnostic presentation before broader external validation: do not present uncalibrated constants as accuracy percentages. Display rule evidence and applicability clearly; an unassessed case must not imply a correct answer.
-- Treat external confirmation that a warning helped fix an actual problem as stronger product evidence than more curated demo warnings.
-
-### D — Confirming an improvement (later candidate, no version selected)
-
-Prioritize evidence-to-chunk/span navigation, comparison of two runs for the same question, and search/pagination if users need them. Display source/answer changes alongside warnings; fewer warnings alone is not proof of a better answer. Retention/export and a full evaluation system require their own scope.
-
-### Separate maintenance backlog
-
-- Review and remeasure the four Dashboard dependency advisories recorded during v0.7; do not blindly run an automatic audit fix.
-- Rerun Docker smoke on a virtualization-capable host; review the existing fixed amd64 build and Node-version difference before claiming broader support.
-- Investigate atomic trace/span/warning persistence and duplicate submission semantics before adding delivery retries.
-- Keep secrets out of shared trace evidence; any redaction/export capability needs explicit behavior and tests.
-
-### Decision and stopping rules
-
-After each slice, record the observed user benefit, validation, known limits, and whether the next priority changed. Do not broaden testing after required checks pass without a new change or unresolved concern. Budgets are estimates, not automatic permission to execute every slice.
-
-Before selecting later adapters, cloud/auth, new spans, or LLM-as-judge, require a concrete user case and compare it with improving current diagnosis/installation. No v0.9 or v1.0 date is committed. A future v1.0 should be defined by reliable repeated real use and a stable supported contract, not feature count.
+The sections below retain historical goals, release evidence, and then-open work.
+Their old “next” statements do not override the active sequence above.
 
 ## v0.7.0 - External Developer Readiness
 

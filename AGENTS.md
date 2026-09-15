@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current development focus: **B2 independent-app integration**, locally validated on `codex/b2-independent-app-integration` after B1; see CURRENT_TASK for results and the next bounded slice. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) remains open and validated, not merged or published.
+Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. B1/B2 are locally complete at HEAD `1e77338`; H0 honest diagnostic presentation is locally validated in the working tree. CURRENT_TASK selects E1 existing-token visibility next. New agent/tool/compare/runtime capabilities are planned, not implemented or authorized en masse. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) was open with passing checks when last verified on 2026-09-14; no newer publication is established here.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
@@ -25,6 +25,11 @@ Always read these files first:
 4. `docs/ai-context/ROADMAP.md` current snapshot and proposed sequence
 
 Read `docs/ai-context/DECISIONS.md` before making architecture decisions.
+
+For roadmap selection, read the overview and relevant slice of
+`docs/product/ROAD_TO_V1_0.md`. Its detailed future plan does not override the
+current implementation facts or authorize the entire plan. Do not reread all
+historical milestones before every small change.
 
 Use the repository and these documents as the source of truth.
 Do not assume old milestone information from this file overrides the current AI context documents.
@@ -46,6 +51,12 @@ Before each implementation slice, state a compact decision card covering:
 Do not start implementation until these points form a coherent shortest path to the requested outcome.
 
 Keep one primary outcome per slice. Record newly discovered non-blocking work instead of following it immediately. After validation and documentation, stop and reassess the next slice rather than continuing through an old plan by inertia.
+
+Use one active slice, normally 0.5–3 focused development days. If work approaches
+twice its initial budget, or two slices produce no visible user outcome, stop
+expanding scope and reassess. Two unsuccessful investigations without new evidence
+require a bounded findings report, not another speculative rewrite. These limits
+do not excuse skipping necessary safety checks or claiming unfinished work passed.
 
 ## Current Architecture
 
@@ -135,11 +146,24 @@ Do not remove legacy compatibility without checking the current milestone and co
 
 ## Validation
 
+Use proportional validation. During development, run targeted tests; at slice
+completion, run the affected component's required checks below and inspect the
+real affected flow. At integration/release, validate the exact candidate across
+components and distribution boundaries. Do not repeat unchanged full release
+checks after a planning-only edit or call old results a fresh pass.
+
+For documentation-only changes, check links, factual/authorization consistency,
+file scope, and `git diff --check`; no product build is needed. Package README or
+metadata changes that affect distributions require their package checks.
+
 For source startup helper changes, run `python -B -m unittest discover -s scripts/tests -v`.
 When Go, Node.js and Dashboard dependencies are available, also run the opt-in
 `python -B scripts/tests/smoke_startup.py` to check real startup, ingestion and cleanup.
 
-For Python SDK changes:
+For Python SDK behavior changes, run the SDK test suite. Also run build and both
+installed-package validators below when public API, packaging, imports, CLI,
+serialization/integration contracts, or dependency boundaries change; they all
+remain mandatory at Python release-candidate validation:
 
 ```
 cd sdk/python
@@ -193,13 +217,25 @@ Do not claim a milestone is complete unless its required validation has actually
 
 ## Documentation Discipline
 
-After meaningful completed work:
+After a meaningful completed slice, record execution evidence once. Document
+ownership determines which files need updating; do not copy the same test log
+into every context file:
+
+User-required closeout workflow (2026-09-15): every development slice ends with
+code-diff self-review, proportional tests, visible evidence when applicable,
+a DEVLOG entry, CURRENT_TASK updated with outcome and the next bounded decision
+card, and ROADMAP progress checked/updated (including a no-sequence-change note
+when appropriate). Incomplete or failed validation must be recorded as such;
+never advance a milestone just to complete the checklist. Do not hand off a
+completed slice without these records. Commits and publication are separate.
 
 - update `docs/ai-context/DEVLOG.md`
-- update `docs/ai-context/AI_HANDOFF.md`
-- update `docs/ai-context/CURRENT_TASK.md` when milestone state changes
-- update `docs/ai-context/ROADMAP.md` when roadmap state changes
+- update `docs/ai-context/AI_HANDOFF.md` when the current snapshot, contracts, or known risks change
+- update `docs/ai-context/CURRENT_TASK.md` at every development-slice closeout
+- update `docs/ai-context/ROADMAP.md` progress at every development-slice closeout; change sequencing only when evidence warrants it
 - update `docs/ai-context/DECISIONS.md` when making a meaningful architecture decision
+- update `docs/product/ROAD_TO_V1_0.md` only when product assumptions, gates, or detailed sequencing change
+- keep `docs/ai-context/NEXT_AGENT_BRIEF.md` a stable navigation/working-agreement entry, not a second execution log
 - update release notes, root README status, and package README status when publication state changes
 
 Keep documentation aligned with actual tested repository behavior.
