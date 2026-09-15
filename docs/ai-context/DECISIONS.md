@@ -13,7 +13,9 @@ The automated validator installs the built wheel into a fresh temporary venv,
 copies the example beside an external app, captures and asserts the success/error
 payloads, then closes its local test Collector and checks the offline exit path.
 CI runs it after the existing clean-wheel check. The Dashboard empty state names
-the installed SDK and labels the example as source-checkout-only.
+the installed SDK and labels the example as source-checkout-only. Its Collector
+label uses the same configured API base URL as requests rather than claiming the
+default endpoint when custom ports are active.
 
 Do not bundle examples or runtime services into the pure-Python wheel as an
 incidental consequence. This evidence is internal and must not be described as

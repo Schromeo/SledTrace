@@ -37,7 +37,8 @@ published version remains v0.7.0.
 - Added that validator to both Python CI matrix jobs after the ordinary clean-wheel
   check. The example remains source-only rather than silently expanding the wheel.
 - Replaced the Dashboard empty-state command with installed-SDK guidance plus an
-  explicit source-checkout example command. Updated root/package/integration docs.
+  explicit source-checkout example command. The header now reports the configured
+  API URL instead of a hard-coded default. Updated root/package/integration docs.
 
 ## Validation
 
@@ -60,6 +61,9 @@ published version remains v0.7.0.
   app stored `trace_c1608d93e05d4fedad57b4c58d54ebb0` (ok, retrieval + llm) and
   `trace_d10a66eb1dd743fbbdda98a3ea5b790b` (error, retrieval, original error).
   API readback and the actual Dashboard confirmed both; the temp app was removed.
+- An isolated empty database on Collector 4320/Dashboard 5174 rendered zero traces,
+  the new executable instructions, and the configured `http://127.0.0.1:4320`
+  header rather than a false default endpoint; it was stopped after inspection.
 - Remote CI for B1/B2 has not run. This is internal independent-environment
   evidence, not either of the still-missing external first-run attempts.
 

@@ -12,7 +12,9 @@
   a local capture server, then verifies offline behavior after shutdown. Added it
   to Python 3.9/3.13 CI after the existing clean-wheel validation.
 - Replaced the Dashboard's checkout-ambiguous empty state with installed-SDK and
-  explicitly repo-local commands. Updated root, package, and integration docs.
+  explicitly repo-local commands. The header now displays the configured API
+  base URL rather than a hard-coded default. Updated root, package, and
+  integration docs.
 
 Validation:
 
@@ -38,6 +40,10 @@ Validation:
   Collector. API readback preserved `ExampleBusinessError` and its message.
   The actual Dashboard displayed both traces and was left open on the error
   detail; the temporary app environment was removed.
+- A second isolated preview with an empty database, Collector 4320, and Dashboard
+  5174 visibly rendered zero traces and the new instructions. That check exposed
+  and then verified removal of the old static `localhost:4319` header label; the
+  page displayed its actual `http://127.0.0.1:4320` API endpoint.
 
 Boundary: this is internal independent-environment evidence, not an external
 first-run attempt. The example remains source-only; the wheel still does not
