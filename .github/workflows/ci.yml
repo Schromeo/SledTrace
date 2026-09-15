@@ -15,6 +15,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  slice-contract:
+    name: Slice Contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Show active slice contract
+        run: python scripts/dev/slice.py status
+
+      - name: Test slice harness and repository instructions
+        run: python scripts/dev/test_slice.py -v
+
   python:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest

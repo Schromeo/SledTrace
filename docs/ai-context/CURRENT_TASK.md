@@ -1,13 +1,57 @@
+---
+slice_id: E1
+slice_status: active
+components:
+  - dashboard
+validation_profile: dashboard
+scope_base: HEAD
+allowed_paths:
+  - dashboard/web/src/**
+  - dashboard/web/tests/**
+  - docs/assets/screenshots/**
+  - README.md
+  - docs/ai-context/AI_HANDOFF.md
+  - docs/ai-context/CURRENT_TASK.md
+  - docs/ai-context/DEVLOG.md
+  - docs/ai-context/ROADMAP.md
+  - docs/product/ROAD_TO_V1_0.md
+human_gates:
+  - public_api_change
+  - persisted_schema_or_data_contract_change
+  - new_span_family
+  - version_tag_release_or_publication
+  - paid_external_api_or_model_call
+  - cloud_auth_or_security_boundary_expansion
+  - external_user_outreach
+auto_continue: false
+---
+
 # Current Task
 
 Updated: 2026-09-15. Status: **H0 locally implemented and validated; E1 is next**.
 
+## D0 workflow overlay
+
+D0 adds repository-native delivery mechanics while leaving E1 active and its
+acceptance contract below unchanged. Locally validated components include the
+machine-readable frontmatter, shared implementation/review skills, deterministic
+`status`/`scope`/`check` commands, declarative validation profiles, a lightweight
+CI contract job, and Copilot review instructions. D0 does not implement E1.
+
+The review stack is explicit because `main` does not yet contain these
+prerequisites: v0.7.1 reliability candidate PR #3, B1/B2/H0 integration PR #5,
+then D0-only PR #6. Cumulative PR #4 was closed as superseded and its branch was
+retained for provenance. Do not describe any layer as an isolated diff.
+Automatic Copilot review still requires the maintainer's one-time GitHub setting
+described in `docs/development/AGENT_WORKFLOW.md`.
+
 ## Baseline and authority
 
-HEAD remains 1e77338 on codex/b2-independent-app-integration.
-The worktree contains the previous roadmap documentation and this H0 slice;
-neither was committed or published in this turn. Latest confirmed release is
-v0.7.0; remote PR/publication state was not refreshed.
+The active delivery branch is `codex/d0-agent-development-harness-clean`.
+Planning and H0 are preserved through integration tip `0fc1e00`; D0 adds workflow
+infrastructure on top. Remote PR state was refreshed on 2026-09-15, but no PR was
+merged. Latest confirmed release is v0.7.0 and none of these prerequisites is
+presented as released.
 
 The user adopted incremental development under ROAD_TO_V1_0 and explicitly
 requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout after each slice.
