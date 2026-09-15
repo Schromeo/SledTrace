@@ -50,12 +50,14 @@ Validation:
 - One diff-versus-D0-acceptance self-review found and fixed dot-directory path
   normalization. Final `git diff --check` and local Markdown-link checks passed.
 
-Boundaries and delivery state at local closeout:
+Boundaries and delivery state after the repository-only closeout:
 
 - harness locally validated: yes
-- D0 committed: pending the following delivery step
-- pushed: not yet
-- draft PR opened: not yet
+- D0 implementation committed: yes, `459d762`
+- pushed: yes, `origin/codex/d0-agent-development-harness`
+- draft PR opened: yes, [#4](https://github.com/Schromeo/SledTrace/pull/4)
+- remote CI: five of five checks passed on 2026-09-15, including the new Slice
+  Contract job plus Python 3.9/3.13, Go Collector and Dashboard
 - merged: no; merging is explicitly out of scope
 - E1 implementation/product schema/version/release: unchanged
 - automatic Copilot review setting: not changed because local `gh` authentication

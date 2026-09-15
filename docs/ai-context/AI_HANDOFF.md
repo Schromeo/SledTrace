@@ -2,9 +2,10 @@
 
 Last local review: 2026-09-15 on `codex/d0-agent-development-harness`.
 The planning/H0 work was preserved in prerequisite commit `0fc1e00`; D0 workflow
-changes are locally validated and awaiting delivery-state confirmation. B1/B2
-remain earlier prerequisites. CURRENT_TASK still owns E1 next; D0 did not
-implement it. Remote release state was not refreshed.
+implementation commit `459d762` is pushed in draft PR
+[#4](https://github.com/Schromeo/SledTrace/pull/4), where all five CI checks
+passed on 2026-09-15. B1/B2 remain earlier prerequisites. CURRENT_TASK still
+owns E1 next; D0 did not implement it. Remote release state was not refreshed.
 This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1/B2 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1/B2 are not part of that remote PR. None of the candidate, B1, or B2 is merged or published.
 
 ## Read this first
