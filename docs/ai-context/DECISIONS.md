@@ -1,5 +1,39 @@
 # Architecture Decisions
 
+## 2026-09-15 — Keep bounded-slice workflow repository-native and deterministic
+
+### Decision
+
+- Keep the human contract and small YAML frontmatter together in CURRENT_TASK.
+  A standard-library Python script parses only the deliberately simple metadata.
+- Store reusable Agent Skills under `.agents/skills`, a project location usable
+  by Codex and supported by GitHub Copilot. Keep always-on Copilot guidance short
+  and point it at the same review skill.
+- Centralize executable commands in one JSON profile registry. Skills describe
+  judgment and stopping behavior; they do not duplicate test command lists.
+- Let agents run `status`, pre-commit `scope`, and the selected `check` profile.
+  The lightweight CI job validates this contract but does not replace existing
+  Python, Go, Dashboard, branch-protection, or release checks.
+- Keep commit, push and draft-PR delivery conditional on authorization/access.
+  Merge, public contracts, releases, paid calls, security expansion and external
+  outreach remain explicit human gates. Never auto-continue to the next slice.
+
+### Reason
+
+The existing process was clear in prose but forced each agent to rediscover scope
+and commands. A small repository contract makes mechanical checks repeatable
+without introducing an agent orchestration service or making documentation a
+second generated system. Current E1 acceptance remains readable by humans.
+
+### Boundary
+
+D0 changes development workflow only. The current branch is necessarily stacked
+on unmerged product prerequisites, so its draft PR must disclose that dependency.
+Automatic Copilot review remains a maintainer setting rather than an attempted
+repository API mutation while local GitHub CLI authentication is invalid.
+
+---
+
 ## 2026-09-15 — Propose a bounded execution-efficiency path to v1.0
 
 ### Status and authority

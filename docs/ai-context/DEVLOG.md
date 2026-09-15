@@ -1,5 +1,68 @@
 # Devlog
 
+## 2026-09-15 — D0 Repository-Native Agent Development Harness
+
+Outcome: implemented a small workflow harness without starting E1 or changing
+runtime product behavior. Created branch `codex/d0-agent-development-harness`.
+Because the incoming worktree contained validated but uncommitted planning/H0
+work, preserved it first as separate prerequisite commit `0fc1e00` rather than
+mixing it into the D0 commit or discarding it. Relative to `main`, the resulting
+draft PR is necessarily stacked on v0.7.1/B1/B2/H0 prerequisites.
+
+Implementation:
+
+- Added simple CURRENT_TASK frontmatter for active E1: component, validation
+  profile, HEAD scope base, allowed code/doc paths, seven human gates and
+  `auto_continue: false`. The existing E1 prose and acceptance remain intact.
+- Added shared `.agents/skills/sledtrace-slice` and `sledtrace-review` workflows.
+  The implementation skill ends after one review-ready slice; review prioritizes
+  acceptance, data semantics, missing/unknown, compatibility, failure, privacy,
+  claims and high-value tests rather than cosmetic requests.
+- Added standard-library `scripts/dev/slice.py` with `status`, `scope` and
+  `check`; named commands and docs/Dashboard/SDK/Collector/cross-stack/release
+  profiles live once in `validation_profiles.json`.
+- Added seven deterministic harness tests, including status JSON, E1 metadata,
+  allowed scope, a deliberate scope violation, dot-prefixed paths, profile reuse,
+  skill/Copilot structure, and preservation of all CI jobs.
+- Added repository-wide Copilot instructions and one additive `Slice Contract`
+  CI job. Existing Python, Go Collector and Dashboard jobs were not changed.
+- Added `docs/development/AGENT_WORKFLOW.md` with local use and the maintainer's
+  one-time automatic Copilot review setting. AGENTS now points to the shared
+  skills/script without copying E1 details.
+
+Validation:
+
+- `python scripts/dev/slice.py status` — exit 0; reported E1 active, Dashboard
+  profile, allowed paths, all human gates and auto-continue false.
+- `python scripts/dev/test_slice.py -v` — exit 0; 7 tests passed. The deliberate
+  temp-repository violation exited 1 and was asserted; an allowed Dashboard path
+  exited 0 and was asserted.
+- `python scripts/dev/slice.py check` — first exit 1 at dashboard-build because
+  the Windows sandbox denied esbuild access above the workspace. It correctly
+  stopped. The identical normal-permission command exited 0: 16 Dashboard tests,
+  Vite 6.4.3 build with 39 modules, and diff check passed.
+- PyYAML 6.0.2 `safe_load` parsed `.github/workflows/ci.yml`; assertions confirmed
+  `slice-contract`, `python`, `collector`, and `dashboard` jobs. `actionlint` was
+  unavailable. The new CI job provides the remote parser/execution check.
+- `python scripts/dev/slice.py scope` against active E1 intentionally exited 1
+  for nine D0 workflow paths and accepted CURRENT_TASK. D0 did not weaken E1's
+  scope to make its own bootstrap pass; the unit tests prove both scope outcomes.
+- One diff-versus-D0-acceptance self-review found and fixed dot-directory path
+  normalization. Final `git diff --check` and local Markdown-link checks passed.
+
+Boundaries and delivery state at local closeout:
+
+- harness locally validated: yes
+- D0 committed: pending the following delivery step
+- pushed: not yet
+- draft PR opened: not yet
+- merged: no; merging is explicitly out of scope
+- E1 implementation/product schema/version/release: unchanged
+- automatic Copilot review setting: not changed because local `gh` authentication
+  is invalid; exact one-time maintainer action is documented
+
+---
+
 ## 2026-09-15 — H0 Honest Diagnostic Presentation
 
 The user authorized starting incremental development and required a repeatable

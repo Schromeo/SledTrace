@@ -1,6 +1,10 @@
 # AI Handoff
 
-Last local review: 2026-09-15 at HEAD `1e77338` on `codex/b2-independent-app-integration`, plus uncommitted planning and H0 changes. B1 improves source startup; B2 proves copied independent-app behavior from the built wheel. H0 is locally validated: Dashboard no longer presents raw confidence as a calibrated probability. Execution evidence is in DEVLOG; CURRENT_TASK owns E1 next. Remote release state was not refreshed.
+Last local review: 2026-09-15 on `codex/d0-agent-development-harness`.
+The planning/H0 work was preserved in prerequisite commit `0fc1e00`; D0 workflow
+changes are locally validated and awaiting delivery-state confirmation. B1/B2
+remain earlier prerequisites. CURRENT_TASK still owns E1 next; D0 did not
+implement it. Remote release state was not refreshed.
 This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1/B2 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1/B2 are not part of that remote PR. None of the candidate, B1, or B2 is merged or published.
 
 ## Read this first
@@ -11,6 +15,7 @@ This snapshot distinguishes released behavior from the v0.7.1 candidate and subs
 - [ROAD_TO_V1_0.md](../product/ROAD_TO_V1_0.md): detailed product hypotheses, slices, acceptance gates, and stopping rules; a proposed plan, not implemented scope.
 - [DECISIONS.md](DECISIONS.md): rationale and historical decisions.
 - [DEVLOG.md](DEVLOG.md): chronological work and validation evidence.
+- [AGENT_WORKFLOW.md](../development/AGENT_WORKFLOW.md): repository-native slice commands, skills and one-time Copilot setting.
 
 Do not repeat the release setup, handover audit, or S1 implementation just because the model changes. Refresh Git state and the files relevant to the next selected slice. Read historical sections only when needed.
 
@@ -112,6 +117,18 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
 The user adopted incremental development under the roadmap on 2026-09-15 and requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0 is locally complete; E1 usage visibility from existing data is next, followed by one agent path, conservative signals and outcome-aware comparison. Broad RAG tuning stays behind that value experiment. Later runtime, privacy/data controls and release reliability remain gated. Publication is separate; keep v0.7.0 as the latest confirmed release until newer publication is proven.
+
+D0 makes that workflow executable without changing product behavior:
+CURRENT_TASK has simple YAML metadata; `.agents/skills` contains implementation
+and review workflows; `scripts/dev/slice.py` owns status, scope and validation
+profiles; CI has an additive Slice Contract job; Copilot instructions point to
+the same review policy. Use `python scripts/dev/slice.py status`, then the active
+skill. `scope` defaults to HEAD and therefore must run before commit.
+
+Automatic Copilot review was not configured remotely: GitHub CLI authentication
+for `Schromeo` was invalid during D0. Do not retry repeatedly. The maintainer's
+one-time Settings path is documented in AGENT_WORKFLOW. The D0 PR is stacked on
+unmerged prerequisites relative to main and must not be described as isolated.
 
 H0 browser evidence used an isolated loopback Collector 4320/Dashboard 5174 and
 temporary database, not the user's existing data. The preview was left available
