@@ -1,12 +1,18 @@
 # AI Handoff
 
-Last local review: 2026-09-15 on `codex/d0-agent-development-harness`.
-The planning/H0 work was preserved in prerequisite commit `0fc1e00`; D0 workflow
-implementation commit `459d762` is pushed in draft PR
-[#4](https://github.com/Schromeo/SledTrace/pull/4), where all five CI checks
-passed on 2026-09-15. B1/B2 remain earlier prerequisites. CURRENT_TASK still
-owns E1 next; D0 did not implement it. Remote release state was not refreshed.
-This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1/B2 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1/B2 are not part of that remote PR. None of the candidate, B1, or B2 is merged or published.
+Last repository-history normalization: 2026-09-15 on
+`codex/d0-agent-development-harness-clean`. The review stack is now explicit:
+PR [#3](https://github.com/Schromeo/SledTrace/pull/3) remains the unchanged
+v0.7.1 reliability candidate at `1ab83ef`; draft PR
+[#5](https://github.com/Schromeo/SledTrace/pull/5) contains exactly the four
+B1/B2/H0 prerequisite commits through `0fc1e00`; draft PR
+[#6](https://github.com/Schromeo/SledTrace/pull/6) contains the D0 harness above
+#5. The initial replacement runs passed all four checks on #5 and all five checks
+on #6. Cumulative PR [#4](https://github.com/Schromeo/SledTrace/pull/4) was
+closed as superseded after both replacements existed and passed; its branch was
+retained for provenance. No history was rewritten and nothing was merged,
+tagged, published, released, or advanced into E1. CURRENT_TASK still owns E1
+next. The latest confirmed release remains v0.7.0.
 
 ## Read this first
 
@@ -128,8 +134,10 @@ skill. `scope` defaults to HEAD and therefore must run before commit.
 
 Automatic Copilot review was not configured remotely: GitHub CLI authentication
 for `Schromeo` was invalid during D0. Do not retry repeatedly. The maintainer's
-one-time Settings path is documented in AGENT_WORKFLOW. The D0 PR is stacked on
-unmerged prerequisites relative to main and must not be described as isolated.
+one-time Settings path is documented in AGENT_WORKFLOW. D0 replacement PR #6 is
+stacked on B1/B2/H0 integration PR #5, which is stacked on reliability candidate
+PR #3; none may be described as an isolated diff or merged without the relevant
+human authorization.
 
 H0 browser evidence used an isolated loopback Collector 4320/Dashboard 5174 and
 temporary database, not the user's existing data. The preview was left available

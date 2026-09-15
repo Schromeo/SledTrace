@@ -29,6 +29,9 @@ Future scope is not implemented capability or blanket authorization.
 - D0 workflow harness is locally validated without changing the product sequence:
   CURRENT_TASK metadata, repository skills and deterministic status/scope/check
   commands now make one-slice delivery and review reusable. E1 remains next.
+- Review history was normalized on 2026-09-15 as PR #3 (v0.7.1 reliability) ->
+  PR #5 (B1+B2+H0 integration) -> PR #6 (D0 only). Cumulative PR #4 was closed
+  as superseded; this changes review topology, not milestone sequence.
 - The H0 pass did not refresh remote release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
