@@ -1,5 +1,52 @@
 # Devlog
 
+## 2026-09-15 — Normalize Stacked PR History
+
+Outcome: replaced the cumulative D0 review surface with an explicit three-layer
+stack without changing product functionality, starting E1, publishing, merging,
+or rewriting public history.
+
+Topology:
+
+- Preserved PR [#3](https://github.com/Schromeo/SledTrace/pull/3) unchanged as
+  the v0.7.1 reliability candidate: `main` <-
+  `codex/v0.7.1-reliability` at `1ab83ef`.
+- Created draft PR [#5](https://github.com/Schromeo/SledTrace/pull/5) for the
+  reviewable B1+B2+H0 integration layer: base
+  `codex/v0.7.1-reliability`, head `codex/b1-b2-h0-integration` at `0fc1e00`.
+  Its diff contains exactly four existing commits: `b6848c1`, `00619cf`,
+  `1e77338`, and `0fc1e00`.
+- Created draft PR [#6](https://github.com/Schromeo/SledTrace/pull/6) for the
+  D0-only layer: base `codex/b1-b2-h0-integration`, head
+  `codex/d0-agent-development-harness-clean`. It preserves D0 implementation
+  commit `459d762` and delivery record `b09803a`; this normalization record is a
+  documentation-only follow-up on the same D0 review layer.
+- Commented on cumulative PR [#4](https://github.com/Schromeo/SledTrace/pull/4)
+  with both replacements and closed it as superseded. The original
+  `codex/d0-agent-development-harness` branch remains available for provenance.
+- No force-push, rebase, cherry-pick, commit replacement, branch deletion, main
+  rewrite, merge, version/tag/release action, or E1 implementation occurred.
+
+Validation:
+
+- Refreshed remote refs and verified strict ancestry with `git merge-base
+  --is-ancestor`: `origin/main` -> PR #3 -> `0fc1e00` -> `b09803a`; all three
+  checks exited 0.
+- PR #5 initial GitHub Actions run
+  [35023978893](https://github.com/Schromeo/SledTrace/actions/runs/35023978893)
+  succeeded in 45 seconds: Python 3.9, Python 3.13, Go Collector, and Dashboard.
+- PR #6 initial GitHub Actions run
+  [35024010553](https://github.com/Schromeo/SledTrace/actions/runs/35024010553)
+  succeeded in 53 seconds: Slice Contract, Python 3.9, Python 3.13, Go Collector,
+  and Dashboard.
+- Documentation-only closeout before commit: `git diff --check` exited 0;
+  `python scripts/dev/slice.py status` exited 0 without changing the active E1
+  contract; `python scripts/dev/slice.py scope` exited 0 and accepted exactly
+  the four ai-context documentation paths. The post-push #6 run is the final
+  remote gate for this documentation follow-up.
+
+---
+
 ## 2026-09-15 — D0 Repository-Native Agent Development Harness
 
 Outcome: implemented a small workflow harness without starting E1 or changing

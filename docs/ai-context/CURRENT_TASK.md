@@ -38,18 +38,20 @@ machine-readable frontmatter, shared implementation/review skills, deterministic
 `status`/`scope`/`check` commands, declarative validation profiles, a lightweight
 CI contract job, and Copilot review instructions. D0 does not implement E1.
 
-The D0 branch is stacked because `main` does not yet contain the v0.7.1/B1/B2/H0
-prerequisites represented by this task state. A draft PR must disclose that fact;
-do not describe a branch name as an isolated diff. Automatic Copilot review still
-requires the maintainer's one-time GitHub setting described in
-`docs/development/AGENT_WORKFLOW.md`.
+The review stack is explicit because `main` does not yet contain these
+prerequisites: v0.7.1 reliability candidate PR #3, B1/B2/H0 integration PR #5,
+then D0-only PR #6. Cumulative PR #4 was closed as superseded and its branch was
+retained for provenance. Do not describe any layer as an isolated diff.
+Automatic Copilot review still requires the maintainer's one-time GitHub setting
+described in `docs/development/AGENT_WORKFLOW.md`.
 
 ## Baseline and authority
 
-The active branch is `codex/d0-agent-development-harness`. Planning and H0 are
-preserved in prerequisite commit `0fc1e00`; D0 adds workflow infrastructure on
-top. Latest confirmed release is v0.7.0; remote PR/publication state was not
-refreshed, and none of these local prerequisites is presented as released.
+The active delivery branch is `codex/d0-agent-development-harness-clean`.
+Planning and H0 are preserved through integration tip `0fc1e00`; D0 adds workflow
+infrastructure on top. Remote PR state was refreshed on 2026-09-15, but no PR was
+merged. Latest confirmed release is v0.7.0 and none of these prerequisites is
+presented as released.
 
 The user adopted incremental development under ROAD_TO_V1_0 and explicitly
 requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout after each slice.
