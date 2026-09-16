@@ -1,5 +1,100 @@
 # Architecture Decisions
 
+## 2026-09-15 — Propose a bounded execution-efficiency path to v1.0
+
+### Status and authority
+
+The user requested a detailed roadmap, milestones, competitive reasoning and
+anti-overengineering constraints after discussing agent/harness efficiency.
+This entry records the recommended planning baseline submitted for review.
+It does not mean the user approved every proposed architecture choice, authorize
+all future implementation, or permit a release. Actual scope remains CURRENT_TASK
+plus the latest user instruction.
+
+### Recommendation
+
+- Preserve the existing Python/Go/SQLite/React chain and RAG evidence module.
+  Target short, repeatable Python AI workflows and quality-constrained efficiency
+  diagnosis, not a general agent runtime or hosted observability platform.
+- Keep H0 honest diagnostic wording first. Then expose existing usage metadata,
+  instrument one real agent/tool path and one usage source, add two conservative
+  signals, and compare task outcomes before/after a developer-owned change.
+- Move broad cross-domain RAG rule expansion behind this value experiment.
+  Fix demonstrated misleading behavior without first building a large eval system.
+- Gate later runtime/UX investment on actionable value. A supported checkout-free
+  full-runtime path and genuine repeat use remain recommended full-product v1.0
+  gates, not reasons to rewrite the backend immediately.
+- Distinguish recorded consumption, suspected waste, and experimentally observed
+  savings. Unknown usage is not zero; parent/child and cached/reasoning tokens must
+  not be double counted. Prices need provenance; no private chain-of-thought.
+- Keep one slice active, time-bound investigations, and stop at written acceptance.
+  Validate changed contracts proportionally; preserve full candidate release gates.
+  Store long execution evidence once rather than duplicating every context file.
+
+### Reason and alternatives
+
+Token charts and agent graphs already exist in mature alternatives; local/open
+source alone is not a moat. A smaller actionable evidence-to-comparison workflow
+is a hypothesis worth testing, not established demand. Rebuilding a harness,
+adding many adapters, or calibrating every RAG rule first would postpone that test.
+If two suitable real scenarios produce no actionable benefit, narrow or pause the
+diagnostic direction rather than expanding infrastructure.
+
+Detailed scope, source links, budgets, per-slice gates, privacy/reliability
+dependencies and the v1.0 go/no-go checklist live in
+[ROAD_TO_V1_0](../product/ROAD_TO_V1_0.md). Old chronological decisions below remain
+historical; their former next-step ordering is superseded by this recommendation.
+
+---
+
+## 2026-09-14 — Prove independent application behavior from the built wheel
+
+B2 validates the public SDK contract from an application directory outside the
+repository rather than treating editable installs or repo-owned demos as proof.
+Keep one copyable, standard-library-only example with three explicit outcomes:
+strict success delivery, an application exception delivered in `finally` without
+replacement, and an observable Collector-offline failure that preserves the
+business result.
+
+The automated validator installs the built wheel into a fresh temporary venv,
+copies the example beside an external app, captures and asserts the success/error
+payloads, then closes its local test Collector and checks the offline exit path.
+CI runs it after the existing clean-wheel check. The Dashboard empty state names
+the installed SDK and labels the example as source-checkout-only. Its Collector
+label uses the same configured API base URL as requests rather than claiming the
+default endpoint when custom ports are active.
+
+Do not bundle examples or runtime services into the pure-Python wheel as an
+incidental consequence. This evidence is internal and must not be described as
+external user validation. No framework adapter, new span, schema, warning rule,
+version, merge, or publication action belongs to B2. Next move misleading fixed
+confidence percentages to honest diagnostic presentation before broader user
+validation.
+
+---
+
+## 2026-09-14 — Make source startup observable and clean up partial launches
+
+After the phase review, the user resumed development. B1 is a bounded source
+startup slice on a branch based on candidate `1ab83ef`; the existing v0.7.1
+PR and publication decision remain separate.
+
+Preflight executables, installed Vite and bind addresses before launching.
+Require Collector identity/health and Dashboard HTTP readiness, use a strict
+Dashboard port, and manage only the processes started by this invocation.
+POSIX uses process groups; Windows uses owned PID trees. Register interruption
+handling before either launch so a second-launch failure cleans up the first.
+Preserve explicit Collector/API/origin configuration and legacy address fallback.
+
+The helper retains source-checkout serving and adds only helper-level port and
+timeout options. Do not auto-install dependencies, stop unrelated port owners,
+change package versions, or bundle runtime assets in this slice. Next prioritize
+independent-app integration; move honest confidence presentation before wider
+external validation and begin diagnostic evaluation with a small cross-domain
+baseline before tuning. Detailed validation belongs in DEVLOG/CURRENT_TASK.
+
+---
+
 ## 2026-09-11 — Group S1-S4 as v0.7.1 Trustworthy Local Tracing
 
 ### Decision

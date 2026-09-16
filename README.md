@@ -53,11 +53,19 @@ SledTrace shows local RAG traces with warning counts and demo case labels.
 
 SledTrace can surface conflicting retrieved chunks, such as legacy and current refund policies that disagree.
 
-![Conflicting retrieved context](docs/assets/screenshots/conflict-trace-detail.png)
+Current source labels these as heuristic checks, not calibrated probabilities.
+The warning explains its applicability while retaining evidence and recommended
+actions. No warnings does not establish that an answer is correct.
+
+![Heuristic conflict warning with evidence and recommended action](docs/assets/screenshots/heuristic-warning-detail.png)
 
 ### Answer not grounded in retrieved context
 
 SledTrace can flag answers that introduce unsupported claims even when retrieval found relevant context.
+
+The full-layout image below is from the earlier v0.7.1 candidate. Its numerical
+confidence badge was uncalibrated; current source uses the heuristic presentation
+shown above instead.
 
 ![Answer not grounded](docs/assets/screenshots/answer-not-grounded.png)
 
@@ -218,6 +226,25 @@ Then start local services:
 python scripts/start-sledtrace.py
 ```
 
+The helper checks Go, Node.js 22+, npm, installed Dashboard dependencies, and
+available ports before launching anything. It reports **SledTrace ready** only
+after Collector health and Dashboard HTTP checks pass. Vite uses a strict port:
+an occupied port produces guidance instead of silently moving the Dashboard.
+Ctrl+C or a startup/service failure cleans up the services started by the helper.
+
+For an alternative local port or a slow first Go build, invoke the helper
+directly (these options are not flags of the installed `sledtrace serve` CLI):
+
+```bash
+python scripts/start-sledtrace.py --dashboard-port 5174 --startup-timeout 120
+```
+
+The helper respects `SLEDTRACE_COLLECTOR_ADDR` (then
+`RAGLENS_COLLECTOR_ADDR`), derives the local health/API URL, and defaults CORS
+origins to the selected Dashboard port. Explicit `VITE_SLEDTRACE_API_URL`,
+`VITE_RAGLENS_API_URL`, and `SLEDTRACE_ALLOWED_ORIGINS` values remain overrides.
+It does not install dependencies or stop an existing service that owns a port.
+
 Then run traces in another terminal:
 
 ```bash
@@ -256,6 +283,27 @@ python -m pip install sledtrace
 ```
 
 Contributors working against local SDK changes can instead use `python -m pip install -e /path/to/sledtrace/sdk/python`.
+
+Repository examples are validated against the SDK version declared by that
+checkout. If the checkout is ahead of the production package, install its
+editable SDK or built wheel before running those examples.
+
+Before adapting the calls to your application, you can exercise the complete
+integration contract with the standalone, standard-library-only example in the
+source checkout:
+
+```bash
+cd sdk/python
+python -m examples.independent_app success
+python -m examples.independent_app application-error
+python -m examples.independent_app collector-offline --collector-url http://127.0.0.1:1
+```
+
+The last two commands intentionally exit non-zero: `application-error` returns
+2 after storing an error trace, while `collector-offline` returns 1 after
+preserving the business result and reporting the delivery failure. The example
+file can be copied outside this repository and run anywhere that the built
+`sledtrace` wheel is installed; it does not import repository-only helpers.
 
 4. Instrument your own request path with the Python SDK:
 
@@ -346,6 +394,7 @@ For practical integration details, see:
 
 * `docs/product/USER_ONBOARDING.md`
 * `docs/integrations/PYTHON_SDK_GUIDE.md`
+* `sdk/python/examples/independent_app.py`
 * `sdk/python/examples/custom_pipeline_demo.py`
 
 ## Local RAG demo

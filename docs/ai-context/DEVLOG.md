@@ -1,5 +1,196 @@
 # Devlog
 
+## 2026-09-15 — H0 Honest Diagnostic Presentation
+
+The user authorized starting incremental development and required a repeatable
+self-review/log/current-task/roadmap closeout workflow. H0 is locally complete
+in the existing working tree; the preceding planning changes are preserved.
+
+Implementation:
+
+- Removed numerical confidence badges from TraceDetailPage. Display heuristic
+  labeling and explicit English-pattern/domain applicability instead; zero
+  warnings is not presented as a correctness verdict.
+- Kept the API and raw confidence untouched, including legacy enhanced-layout
+  selection. Extracted the existing warning normalization helpers into
+  src/utils/warnings.ts and added six compatibility/guidance tests without a new
+  dependency or testing framework. Evidence, severity, comparisons and actions
+  remain unchanged.
+- Saved a real warning/evidence screenshot as
+  docs/assets/screenshots/heuristic-warning-detail.png and updated README's
+  conflict image. The retained older grounding image is explicitly labeled as
+  pre-H0, including its uncalibrated badge limitation.
+- Made the user-required closeout workflow explicit in AGENTS; updated the
+  current task, roadmap progress and handoff. E1 is next; no sequence expansion.
+
+Validation (repository-relative working directories):
+
+- dashboard/web: `npm.cmd test` — exit 0, 16 passed, including six new cases;
+  Node emitted the existing experimental type-stripping warning.
+- dashboard/web: `npm.cmd run build` — first exit 1 after TypeScript checking,
+  because esbuild could not read a parent directory under sandbox restrictions.
+  The identical command with normal permissions exited 0: Vite 6.4.3,
+  39 modules transformed. No code workaround or dependency update was used.
+- Root: `python -B scripts/start-sledtrace.py --dashboard-port 5174
+  --startup-timeout 60` with SLEDTRACE_COLLECTOR_ADDR=127.0.0.1:4320 and a fresh
+  SLEDTRACE_DB_PATH — both real services reached readiness. Persistent exec
+  session 46901 was intentionally left running for user inspection, not reported
+  as an exited command. No Docker/WSL changes.
+- sdk/python, with SLEDTRACE_COLLECTOR_URL=http://127.0.0.1:4320:
+  `python -B -m examples.reference_rag_app.run conflict`, `refund` and
+  `wrong-window` — each exit 0, deterministic/no paid LLM calls.
+- Readback showed conflict trace trace_84f843bba759461caf34e362a9d3a560 retained
+  confidence 0.88 and three evidence items. Refund also exercised a null-confidence
+  low-score warning. Actual browser inspection confirmed heuristic wording,
+  evidence/action retention and zero percentage badges.
+- An initial no-retrieval fixture generated the existing no_retrieved_chunks
+  warning, so it was not treated as zero-warning evidence. A retrieved greeting
+  fixture (trace_19c300e5785b40e68875172468adcb67) then returned zero warnings;
+  its real page explicitly said this does not confirm answer correctness.
+  Defer non-RAG rule applicability to E2; do not expand H0 to change the engine.
+- Self-review: inspected the functional diff and new tests; only presentation
+  and helper extraction changed. Malformed/legacy confidence is tested at the
+  unit boundary; this is not a new automated SDK-to-browser CI suite.
+
+Closeout: diff/whitespace and local-document-link checks passed. SDK/Go builds
+and package release validation were not repeated because their implementations
+did not change. Preview uses a temporary database, preserving existing user data.
+No commit, push, merge, tag, version bump or publication was performed.
+
+---
+
+## 2026-09-15 — Draft a gated product roadmap through v1.0
+
+- The user requested detailed product, competitive-positioning, usability and
+  milestone planning to avoid overengineering. This turn changed documentation
+  only, based on local HEAD `1e77338` and a clean initial worktree.
+- Added `docs/product/ROAD_TO_V1_0.md`: current assets versus gaps, target users,
+  defensible hypotheses, honest usage/cost/quality semantics, M0–M5 slices and a
+  v1.0 go/no-go checklist. Competitive references were checked against official
+  Langfuse documentation and the ClawTrace research abstract; product prospects
+  remain hypotheses, not proven demand.
+- Recommended preserving RAG evidence while testing a bounded Python execution
+  efficiency loop: H0 honest wording, existing-token visibility, one agent/tool
+  path, conservative signals, then outcome-aware comparison. Defer broad RAG-rule
+  tuning and gate runtime/UX investment on real actionable value.
+- Updated the active ROADMAP and CURRENT_TASK, aligned AGENTS/AI_HANDOFF, added
+  the planning rationale to DECISIONS, and shortened NEXT_AGENT_BRIEF. Marked the
+  original product/schema designs as historical instead of changing their old
+  proposals into claims of current support.
+- Added one-slice work limits, bounded investigations, visible acceptance,
+  proportional test cadence, documentation ownership and explicit shrink/stop
+  conditions. Checkout-free runtime, privacy, storage semantics, independent
+  onboarding and repeat use remain later gates, not completed capabilities.
+
+Validation: Markdown-only scope and local-link/whitespace checks passed;
+`git diff --check` passed (Git reports expected LF-to-CRLF checkout warnings).
+No SDK/Go/Dashboard tests, package builds, service startup, paid model calls or
+remote publication checks were rerun for this documentation-only task.
+
+Boundary: the plan is submitted for user review. No functional code, version,
+commit, merge, tag, publication or external-user outreach was changed. H0 is the
+next recommended slice when the user resumes implementation under this plan.
+
+---
+
+## 2026-09-14 — B2 Independent-App Integration
+
+- Continued from B1 commit `b6848c1` on
+  `codex/b2-independent-app-integration`, without changing the open v0.7.1 PR.
+- Added a copyable pure-Python application covering successful delivery,
+  application-owned exception propagation/error tracing, and observable
+  Collector-offline behavior.
+- Added a clean-wheel validator that copies the artifact and example outside the
+  repository, installs into a fresh venv, asserts success/error payloads through
+  a local capture server, then verifies offline behavior after shutdown. Added it
+  to Python 3.9/3.13 CI after the existing clean-wheel validation.
+- Replaced the Dashboard's checkout-ambiguous empty state with installed-SDK and
+  explicitly repo-local commands. The header now displays the configured API
+  base URL rather than a hard-coded default. Updated root, package, and
+  integration docs.
+
+Validation:
+
+- `cd sdk/python && pytest -q`: 62 passed.
+- `cd sdk/python && python -m build`: wheel and sdist passed after normal network
+  access supplied the isolated build environment. The first restricted attempt
+  exposed a Windows output-decoding issue; UTF-8 mode showed the actual denied
+  PyPI connection before the permitted rerun succeeded.
+- A one-use temporary Twine 7.0 environment reported both the wheel and sdist
+  `PASSED` and was removed; the host Python remains unmodified.
+- Existing `validate-wheel.py` passed. New `validate-independent-app.py` passed
+  from an installed 0.7.1 wheel in a temporary external directory for exit codes
+  0 (success), 2 (application error), and 1 (Collector offline).
+- Startup regressions: 18 passed with normal process permissions. The restricted
+  first run could not terminate its own wrapper/listener tree; exact test PIDs
+  13148 and 10232 were terminated before the passing rerun.
+- Collector: all Go packages passed. Dashboard: 10 tests and production build
+  passed; the restricted esbuild attempt failed before compilation on directory
+  access and the normal-permission rerun transformed 38 modules.
+- A separate fresh venv installed the wheel from a system temporary directory.
+  Its copied application stored `independent-app-success` (ok, retrieval + llm)
+  and `independent-app-application-error` (error, retrieval) in the real local
+  Collector. API readback preserved `ExampleBusinessError` and its message.
+  The actual Dashboard displayed both traces and was left open on the error
+  detail; the temporary app environment was removed.
+- A second isolated preview with an empty database, Collector 4320, and Dashboard
+  5174 visibly rendered zero traces and the new instructions. That check exposed
+  and then verified removal of the old static `localhost:4319` header label; the
+  page displayed its actual `http://127.0.0.1:4320` API endpoint.
+
+Boundary: this is internal independent-environment evidence, not an external
+first-run attempt. The example remains source-only; the wheel still does not
+bundle Collector/Dashboard assets or standalone serving. No version, remote PR,
+merge, tag, release, or publication action was performed.
+
+Next: honest confidence presentation, then a reserved cross-domain diagnostic
+baseline; retain automated browser acceptance and genuine external first runs as
+explicit open evidence rather than silently declaring them complete.
+
+---
+
+## 2026-09-14 — B1 Source Startup Reliability
+
+- Phase review confirmed S1-S4 against implementation and PR #3; production
+  PyPI remained 0.7.0. Continued development on `codex/b1-startup-reliability`
+  from `1ab83ef`, leaving the existing remote candidate unchanged.
+- Added preflight checks for Go/Node 22+/npm, installed Vite, source directories
+  and bind availability; missing dependencies now point to `npm ci`.
+- Added strict-port Vite startup, configurable helper Dashboard port/startup
+  timeout, configured Collector health URL, and consistent default API/CORS.
+- Ready output waits for both services. Partial launches, health timeout,
+  interruption and unexpected service exit all enter owned-process cleanup.
+- Added 18 standard-library startup tests to Python CI and an opt-in real-stack
+  smoke script. No SDK/package, Collector or Dashboard source changed.
+
+Validation:
+
+- `python -B -m unittest discover -s scripts/tests -v`: 18 passed on Windows,
+  including a real wrapper/listening-child cleanup test. The first sandboxed
+  run could not terminate its own test tree; a normal-permission rerun passed
+  and the original test PIDs were verified and cleaned up.
+- `cd sdk/python && python -B -m pytest -q -p no:cacheprovider`: 62 passed;
+  expected legacy-import deprecation warning only.
+- `python -B scripts/tests/smoke_startup.py`: real Go/Vite startup, health,
+  Dashboard HTTP, SDK ingestion/readback (two spans, two warnings), custom-port
+  CORS, SIGINT and both ports released passed. Temporary smoke DB was removed
+  by the test after shutdown.
+- A second helper invocation against occupied default ports exited 1 with
+  guidance and did not disturb the existing preview.
+- Browser inspection displayed `b1-startup-verified` with two spans and
+  45-day answer versus 30-day retrieved evidence. Conversation screenshots
+  captured the actual page; README showcase images were not changed because
+  Dashboard presentation did not change.
+- The weak-overlap warning on this short fixture remains diagnostic-quality
+  backlog evidence, not a rule fix or accuracy claim in B1.
+- No package/build repeat or Docker runtime attempt was needed. New-branch
+  remote CI, including POSIX process-tree execution, has not run.
+
+Next: review B1, then independent-app integration and installation-aware guidance.
+The v0.7.1 merge/publication remains a separate release-stage action.
+
+---
+
 ## 2026-09-11 (v0.7.1 Release Candidate Preparation)
 
 ### Completed
