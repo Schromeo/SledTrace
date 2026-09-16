@@ -2,17 +2,28 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-Package version: **0.7.1 — Trustworthy Local Tracing**
+This checkout's source and package metadata are the **0.7.1 — Trustworthy Local
+Tracing** release candidate, which is not yet merged, tagged, or published.
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
 ## Distribution status
 
-Install the released SDK and CLI from production PyPI:
+Production PyPI currently publishes **sledtrace 0.7.0**:
+
+```bash
+python -m pip install sledtrace==0.7.0
+```
+
+After the 0.7.1 candidate described in this README is published, install it with:
 
 ```bash
 python -m pip install sledtrace==0.7.1
 ```
+
+Until then, use "Install from source for development" below to run the 0.7.1
+candidate APIs (such as `t.measure()` and `try_flush()`) documented further down
+in this README.
 
 The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
 
@@ -50,11 +61,16 @@ sledtrace serve --help
 sledtrace version
 ```
 
-`sledtrace version` reports `0.7.1` for this release.
+`sledtrace version` reports `0.7.1` when installed from this source checkout's candidate; production PyPI currently reports `0.7.0`.
 
 `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
 ## Basic usage
+
+This example uses the 0.7.1 candidate's `t.measure()` and `t.try_flush()`,
+available from source or after 0.7.1 publication (see "Distribution status"
+above). Against the published `sledtrace==0.7.0` package, omit `t.measure()`
+and pass explicit `duration_ms`/`latency_ms` (or leave timing unset).
 
 ```python
 from sledtrace import trace

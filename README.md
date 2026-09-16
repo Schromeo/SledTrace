@@ -259,6 +259,13 @@ Contributors working against local SDK changes can instead use `python -m pip in
 
 4. Instrument your own request path with the Python SDK:
 
+`t.measure()` and `t.try_flush()` below are part of the **v0.7.1** release
+candidate and are not in the published `sledtrace==0.7.0` package. To use them
+now, install from source (`pip install -e sdk/python`) or a locally built
+0.7.1 wheel instead of the published `pip install sledtrace` above. Against
+published 0.7.0, drop `t.measure()`, pass explicit `duration_ms`/`latency_ms`
+if known, and use the existing strict `t.flush()` instead of `t.try_flush()`.
+
 ```python
 from sledtrace import trace
 
