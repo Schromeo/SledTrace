@@ -439,20 +439,20 @@ func (e *Engine) detectLowRetrievalScore(payload models.TracePayload) []models.W
 		threshold := getLowScoreThreshold(span)
 
 		scoredChunks := make([]models.JSONMap, 0)
-		maxScore := -1.0
+		maxScore := 0.0
 		scoredCount := 0
 
 		for _, chunk := range chunks {
-			if chunk.Score == nil {
+			scoreValue := higherIsBetterScore(chunk)
+			if scoreValue == nil {
 				continue
 			}
 
-			score := *chunk.Score
-			scoredCount++
-
-			if score > maxScore {
+			score := *scoreValue
+			if scoredCount == 0 || score > maxScore {
 				maxScore = score
 			}
+			scoredCount++
 
 			scoredChunks = append(scoredChunks, models.JSONMap{
 				"chunk_id": chunk.ChunkID,
@@ -1192,8 +1192,14 @@ func isBetterChunkConflictCandidate(candidate chunkConflictCandidate, current ch
 		return len(candidate.SharedTerms) > len(current.SharedTerms)
 	}
 
-	candidateScore := combinedChunkScore(candidate.Left.Chunk.Score, candidate.Right.Chunk.Score)
-	currentScore := combinedChunkScore(current.Left.Chunk.Score, current.Right.Chunk.Score)
+	candidateScore := combinedChunkScore(
+		higherIsBetterScore(candidate.Left.Chunk),
+		higherIsBetterScore(candidate.Right.Chunk),
+	)
+	currentScore := combinedChunkScore(
+		higherIsBetterScore(current.Left.Chunk),
+		higherIsBetterScore(current.Right.Chunk),
+	)
 
 	if candidateScore != currentScore {
 		return candidateScore > currentScore
@@ -1574,13 +1580,13 @@ func isBetterNumericMismatchCandidate(candidate numericMismatchCandidate, curren
 	}
 
 	candidateScore := -1.0
-	if candidate.Chunk.Score != nil {
-		candidateScore = *candidate.Chunk.Score
+	if score := higherIsBetterScore(candidate.Chunk); score != nil {
+		candidateScore = *score
 	}
 
 	currentScore := -1.0
-	if current.Chunk.Score != nil {
-		currentScore = *current.Chunk.Score
+	if score := higherIsBetterScore(current.Chunk); score != nil {
+		currentScore = *score
 	}
 
 	if candidateScore != currentScore {
@@ -2436,13 +2442,13 @@ func isBetterClaimSupport(candidate answerClaimSupportCandidate, current answerC
 	}
 
 	candidateScore := -1.0
-	if candidate.BestChunk.Score != nil {
-		candidateScore = *candidate.BestChunk.Score
+	if score := higherIsBetterScore(candidate.BestChunk); score != nil {
+		candidateScore = *score
 	}
 
 	currentScore := -1.0
-	if current.BestChunk.Score != nil {
-		currentScore = *current.BestChunk.Score
+	if score := higherIsBetterScore(current.BestChunk); score != nil {
+		currentScore = *score
 	}
 
 	if candidateScore != currentScore {
@@ -2453,15 +2459,47 @@ func isBetterClaimSupport(candidate answerClaimSupportCandidate, current answerC
 }
 
 type retrievedChunk struct {
-	ChunkID  string         `json:"chunk_id"`
-	ID       string         `json:"id"`
-	Text     string         `json:"text"`
-	Content  string         `json:"content"`
-	Score    *float64       `json:"score"`
-	Metadata models.JSONMap `json:"metadata"`
+	ChunkID        string         `json:"chunk_id"`
+	ID             string         `json:"id"`
+	Text           string         `json:"text"`
+	Content        string         `json:"content"`
+	Score          *float64       `json:"score"`
+	ScoreType      string         `json:"score_type"`
+	ScoreDirection string         `json:"score_direction"`
+	Metadata       models.JSONMap `json:"metadata"`
 
 	SpanID   string
 	SpanName string
+}
+
+func higherIsBetterScore(chunk retrievedChunk) *float64 {
+	if chunk.Score == nil {
+		return nil
+	}
+
+	direction := strings.ToLower(strings.TrimSpace(chunk.ScoreDirection))
+	scoreType := strings.ToLower(strings.TrimSpace(chunk.ScoreType))
+
+	switch direction {
+	case "higher_is_better":
+		return chunk.Score
+	case "lower_is_better", "unknown":
+		return nil
+	case "":
+		// Preserve unannotated historical score payloads as higher-is-better.
+		switch scoreType {
+		case "", "score", "similarity", "relevance", "rerank":
+			return chunk.Score
+		case "distance", "unknown":
+			return nil
+		default:
+			// A new metric without direction is not safe to compare.
+			return nil
+		}
+	default:
+		// Invalid direction annotations fail closed instead of guessing.
+		return nil
+	}
 }
 
 func extractRetrievedChunks(spans []models.Span) []retrievedChunk {

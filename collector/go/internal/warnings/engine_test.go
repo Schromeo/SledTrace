@@ -6,6 +6,124 @@ import (
 	"sledtrace-collector/internal/models"
 )
 
+func TestLowRetrievalScorePreservesLegacyHigherIsBetterBehavior(t *testing.T) {
+	payload := basePayload(
+		"trace_legacy_low_score",
+		"What is the refund policy?",
+		[]models.JSONMap{
+			chunk("legacy", "The refund policy allows returns.", 0.1, "policy.md"),
+		},
+		"The refund policy allows returns.",
+	)
+
+	requireWarningType(t, NewEngine().Generate(payload), TypeLowRetrievalScore)
+}
+
+func TestLowRetrievalScoreUsesDeclaredHigherIsBetterSimilarity(t *testing.T) {
+	payload := basePayload(
+		"trace_similarity_low_score",
+		"What is the refund policy?",
+		[]models.JSONMap{
+			semanticChunk(
+				"similarity",
+				"The refund policy allows returns.",
+				0.1,
+				"similarity",
+				"higher_is_better",
+			),
+		},
+		"The refund policy allows returns.",
+	)
+
+	requireWarningType(t, NewEngine().Generate(payload), TypeLowRetrievalScore)
+}
+
+func TestLowRetrievalScoreSkipsDistanceAndUnknownScores(t *testing.T) {
+	testCases := []struct {
+		name      string
+		scoreType string
+		direction string
+	}{
+		{name: "distance", scoreType: "distance", direction: "lower_is_better"},
+		{name: "unknown tuple score", scoreType: "unknown", direction: "unknown"},
+		{name: "distance type without direction", scoreType: "distance", direction: ""},
+		{name: "custom type without direction", scoreType: "custom_metric", direction: ""},
+		{name: "invalid direction", scoreType: "similarity", direction: "sideways"},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			payload := basePayload(
+				"trace_non_comparable_score",
+				"What is the refund policy?",
+				[]models.JSONMap{
+					semanticChunk(
+						"semantic",
+						"The refund policy allows returns.",
+						0.1,
+						testCase.scoreType,
+						testCase.direction,
+					),
+				},
+				"The refund policy allows returns.",
+			)
+
+			requireNoWarningType(t, NewEngine().Generate(payload), TypeLowRetrievalScore)
+		})
+	}
+}
+
+func TestLowRetrievalScoreIgnoresDistanceInMixedScores(t *testing.T) {
+	payload := basePayload(
+		"trace_mixed_score_semantics",
+		"What is the refund policy?",
+		[]models.JSONMap{
+			semanticChunk(
+				"distance",
+				"The refund policy allows returns.",
+				0.99,
+				"distance",
+				"lower_is_better",
+			),
+			semanticChunk(
+				"similarity",
+				"The refund policy allows returns.",
+				0.1,
+				"similarity",
+				"higher_is_better",
+			),
+		},
+		"The refund policy allows returns.",
+	)
+
+	warning := requireWarningType(t, NewEngine().Generate(payload), TypeLowRetrievalScore)
+	if warning.Details["max_score"] != 0.1 {
+		t.Fatalf("expected only comparable similarity score, got %#v", warning.Details)
+	}
+}
+
+func TestLowRetrievalScoreSupportsHigherIsBetterScoresBelowNegativeOne(t *testing.T) {
+	payload := basePayload(
+		"trace_negative_dot_product",
+		"What is the refund policy?",
+		[]models.JSONMap{
+			semanticChunk(
+				"negative-score",
+				"The refund policy allows returns.",
+				-2.5,
+				"dot_product",
+				"higher_is_better",
+			),
+		},
+		"The refund policy allows returns.",
+	)
+
+	warning := requireWarningType(t, NewEngine().Generate(payload), TypeLowRetrievalScore)
+	if warning.Details["max_score"] != -2.5 {
+		t.Fatalf("expected max_score=-2.5, got %#v", warning.Details["max_score"])
+	}
+}
+
 func TestGenerateNumericMismatchWarning(t *testing.T) {
 	payload := basePayload(
 		"trace_numeric_mismatch",
@@ -540,6 +658,19 @@ func chunk(id string, text string, score float64, source string) models.JSONMap 
 			"source": source,
 		},
 	}
+}
+
+func semanticChunk(
+	id string,
+	text string,
+	score float64,
+	scoreType string,
+	scoreDirection string,
+) models.JSONMap {
+	result := chunk(id, text, score, "policy.md")
+	result["score_type"] = scoreType
+	result["score_direction"] = scoreDirection
+	return result
 }
 
 func requireWarningType(t *testing.T, warnings []models.Warning, warningType string) models.Warning {

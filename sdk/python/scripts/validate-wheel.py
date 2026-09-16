@@ -13,7 +13,7 @@ from typing import Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST_DIR = ROOT / "dist"
-EXPECTED_VERSION = "0.7.0"
+EXPECTED_VERSION = "0.7.1"
 EXPECTED_SERVE_ERROR = (
     "sledtrace serve currently requires a SledTrace source checkout. "
     "Run it from the repository, or use Docker Compose from the repository root. "
@@ -79,7 +79,23 @@ def validate_wheel() -> int:
 
         import_checks = [
             f"import sledtrace; assert sledtrace.__version__ == '{EXPECTED_VERSION}'; print(sledtrace.__version__)",
-            "from sledtrace import trace; print(trace)",
+            "from sledtrace import SpanTiming, trace; assert isinstance(trace('timing').measure(), SpanTiming); print(trace)",
+            (
+                "from sledtrace import TraceFlushResult, trace; "
+                "result=trace('delivery').try_flush(collector_url='not-a-url'); "
+                "assert isinstance(result, TraceFlushResult); "
+                "assert not result.ok and result.error is not None; "
+                "print('delivery policy ok')"
+            ),
+            (
+                "from sledtrace import normalize_chunk; "
+                "similarity=normalize_chunk({'text':'x','similarity':0.1}); "
+                "distance=normalize_chunk({'text':'x','distance':0.1}); "
+                "assert similarity['score_direction']=='higher_is_better'; "
+                "assert distance['score_type']=='distance'; "
+                "assert distance['score_direction']=='lower_is_better'; "
+                "print('score semantics ok')"
+            ),
             "import raglens; print('legacy raglens import ok')",
         ]
 

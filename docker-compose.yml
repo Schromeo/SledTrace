@@ -8,9 +8,10 @@ services:
     container_name: sledtrace-collector
     environment:
       SLEDTRACE_COLLECTOR_ADDR: ":4319"
+      SLEDTRACE_ALLOWED_ORIGINS: "${SLEDTRACE_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}"
       SLEDTRACE_DB_PATH: /data/raglens.db
     ports:
-      - "${SLEDTRACE_COLLECTOR_PORT:-${RAGLENS_COLLECTOR_PORT:-4319}}:4319"
+      - "${SLEDTRACE_BIND_HOST:-127.0.0.1}:${SLEDTRACE_COLLECTOR_PORT:-${RAGLENS_COLLECTOR_PORT:-4319}}:4319"
     volumes:
       - sledtrace_data:/data
 
@@ -24,7 +25,7 @@ services:
     depends_on:
       - collector
     ports:
-      - "${SLEDTRACE_DASHBOARD_PORT:-${RAGLENS_DASHBOARD_PORT:-5173}}:5173"
+      - "${SLEDTRACE_BIND_HOST:-127.0.0.1}:${SLEDTRACE_DASHBOARD_PORT:-${RAGLENS_DASHBOARD_PORT:-5173}}:5173"
 
 volumes:
   sledtrace_data:

@@ -418,15 +418,22 @@ A retrieval span records the result of searching a knowledge source.
 
 ## Chunk schema
 
-| Field         | Type         | Required | Description               |
-| ------------- | ------------ | -------: | ------------------------- |
-| `id`          | string       |      yes | Chunk ID                  |
-| `text`        | string       |      yes | Chunk text                |
-| `score`       | number/null  |       no | Retrieval score           |
-| `rank`        | integer/null |       no | Retrieval rank            |
-| `source`      | string/null  |       no | Source file or document   |
-| `document_id` | string/null  |       no | Parent document ID        |
-| `metadata`    | object       |       no | Additional chunk metadata |
+| Field             | Type         | Required | Description                                      |
+| ----------------- | ------------ | -------: | ------------------------------------------------ |
+| `id`              | string       |      yes | Chunk ID                                         |
+| `text`            | string       |      yes | Chunk text                                       |
+| `score`           | number/null  |       no | Raw retrieval metric value                       |
+| `score_type`      | string/null  |       no | Metric kind such as `similarity` or `distance`   |
+| `score_direction` | string/null  |       no | `higher_is_better`, `lower_is_better`, `unknown` |
+| `rank`            | integer/null |       no | Retrieval rank                                   |
+| `source`          | string/null  |       no | Source file or document                          |
+| `document_id`     | string/null  |       no | Parent document ID                               |
+| `metadata`        | object       |       no | Additional chunk metadata                        |
+
+Unannotated legacy `score` values remain higher-is-better. New lower-is-better,
+unknown, custom-without-direction, or invalid-direction values are preserved but
+excluded from higher-is-better threshold and score-ordering logic. No universal
+distance-to-similarity conversion is defined.
 
 ---
 

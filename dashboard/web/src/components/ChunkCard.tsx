@@ -1,4 +1,8 @@
 import type { Chunk } from "../types";
+import {
+  describeChunkScoreDirection,
+  formatChunkScore,
+} from "../utils/scoreSemantics";
 import JsonViewer from "./JsonViewer";
 
 type Props = {
@@ -6,13 +10,18 @@ type Props = {
 };
 
 export default function ChunkCard({ chunk }: Props) {
+  const formattedScore = formatChunkScore(chunk);
+  const scoreDirection = describeChunkScoreDirection(chunk);
+
   return (
     <article className="chunk-card">
       <div className="chunk-card-top">
         <strong>Rank #{chunk.rank ?? "?"}</strong>
 
-        {typeof chunk.score === "number" && (
-          <span className="score-pill">Score {chunk.score.toFixed(2)}</span>
+        {formattedScore && (
+          <span className="score-pill" title={scoreDirection ?? undefined}>
+            {formattedScore}
+          </span>
         )}
       </div>
 

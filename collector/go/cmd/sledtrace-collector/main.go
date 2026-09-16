@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	addr := getEnvWithLegacy("SLEDTRACE_COLLECTOR_ADDR", "RAGLENS_COLLECTOR_ADDR", ":4319")
+	addr := collectorAddr()
 	// Keep the legacy default DB filename so existing local trace data remains visible.
 	dbPath := getEnvWithLegacy("SLEDTRACE_DB_PATH", "RAGLENS_DB_PATH", "raglens.db")
 
@@ -28,6 +28,14 @@ func main() {
 	if err := http.ListenAndServe(addr, server.Routes()); err != nil {
 		log.Fatalf("collector stopped: %v", err)
 	}
+}
+
+func collectorAddr() string {
+	return getEnvWithLegacy(
+		"SLEDTRACE_COLLECTOR_ADDR",
+		"RAGLENS_COLLECTOR_ADDR",
+		"127.0.0.1:4319",
+	)
 }
 
 func getEnvWithLegacy(key string, legacyKey string, fallback string) string {

@@ -124,7 +124,7 @@ class LlamaIndexLikeNodeWithScore:
 
 
 def now_ms() -> int:
-    return int(time.time() * 1000)
+    return int(time.perf_counter() * 1000)
 
 
 def tokenize(text: str) -> List[str]:
@@ -649,6 +649,7 @@ def record_retrieval_span(
         "query": query,
         "chunks": list(chunks),
         "top_k": len(chunks),
+        "duration_ms": elapsed_ms,
         "metadata": {
             "retriever": "reference_rag_lexical_retriever",
             "demo": "reference_rag_app",
@@ -688,6 +689,7 @@ def record_llm_span(
         "model": model,
         "prompt": prompt,
         "response": response,
+        "latency_ms": elapsed_ms,
         "metadata": {
             "provider": provider,
             "demo": "reference_rag_app",

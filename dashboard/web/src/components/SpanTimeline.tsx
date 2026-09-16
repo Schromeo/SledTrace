@@ -1,4 +1,5 @@
 import type { Span } from "../types";
+import { formatDurationMs, getDurationMs } from "../utils/timing";
 
 type Props = {
   spans: Span[];
@@ -30,7 +31,7 @@ export default function SpanTimeline({
           <div className="span-type">{span.type}</div>
           <div className="span-name">{span.name}</div>
           <div className="span-meta">
-            {span.duration_ms ?? "?"}ms · {span.status}
+            {formatDurationMs(getDurationMs(span))} · {span.status}
           </div>
         </button>
       ))}

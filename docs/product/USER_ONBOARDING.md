@@ -312,6 +312,8 @@ Example:
     "id": "chunk_42",
     "text": "Customers may request a refund within 30 days.",
     "score": 0.91,
+    "score_type": "similarity",
+    "score_direction": "higher_is_better",
     "rank": 1,
     "source": "refund_policy_new.md",
     "document_id": "refund_policy_new",
@@ -329,7 +331,7 @@ Technically, chunks can be sparse, but useful analysis depends on fields:
 - Minimum useful chunk:
     - `text`
 - Recommended chunk:
-    - `id`, `text`, `score`, `rank`, `source`, `document_id`, `metadata`
+    - `id`, `text`, `score`, `score_type`, `score_direction`, `rank`, `source`, `document_id`, `metadata`
 
 Notes:
 
@@ -338,7 +340,10 @@ Notes:
 - If `metadata` is missing or `None`, SDK auto-fills it as `{}`.
 - The SDK does not currently hard-validate fields like `text`, `score`, or `source`.
 - Missing optional fields usually do not block ingestion, but they reduce dashboard clarity and warning quality.
-- In particular, missing `score` weakens `low_retrieval_score` diagnostics.
+- In particular, missing `score` or an unknown/lower-is-better direction makes
+  the higher-is-better `low_retrieval_score` rule inapplicable. Use
+  `normalize_chunks(...)` for native retriever results; SledTrace preserves
+  distance rather than guessing `1 - distance`.
 
 ## What SledTrace Analyzes Today
 

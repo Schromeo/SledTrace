@@ -81,7 +81,8 @@ def answer_question(user_query: str) -> str:
             "demo": "developer_integration",
         },
     ) as t:
-        chunks = my_retriever(user_query)
+        with t.measure() as retrieval_timing:
+            chunks = my_retriever(user_query)
 
         t.retrieval(
             query=user_query,
@@ -91,9 +92,11 @@ def answer_question(user_query: str) -> str:
             metadata={
                 "retriever": "deterministic_local_retriever",
             },
+            timing=retrieval_timing,
         )
 
-        prompt, answer = my_answerer(user_query, chunks)
+        with t.measure() as llm_timing:
+            prompt, answer = my_answerer(user_query, chunks)
 
         t.llm(
             model="local-template-answerer-v1",
@@ -101,6 +104,7 @@ def answer_question(user_query: str) -> str:
             response=answer,
             name="custom_answer_generation",
             provider="local-demo",
+            timing=llm_timing,
         )
 
     t.flush()

@@ -1,5 +1,177 @@
 # Architecture Decisions
 
+## 2026-09-11 — Group S1-S4 as v0.7.1 Trustworthy Local Tracing
+
+### Decision
+
+- Select patch version `0.7.1` for the four completed post-v0.7 reliability
+  slices: timing, score semantics, trace delivery policy, and local network
+  defaults.
+- Prepare one protected pull request from `codex/v0.7.1-reliability` after local
+  cross-stack and clean-clone validation.
+- Keep v0.7.0 as the latest released version until merge, immutable tag,
+  protected PyPI publication, production-index installation, and GitHub Release
+  are all proven.
+
+### Reason
+
+The four slices correct released behavior and add only backward-compatible
+interfaces/configuration. A patch release communicates that scope better than
+silently accumulating local commits or starting v0.8 before reliable trace
+evidence reaches users. Combining them also permits one exact cross-stack CI and
+publication artifact while retaining their individual commits for review.
+
+### Scope and outcome
+
+The source candidate is versioned as 0.7.1 and titled **Trustworthy Local
+Tracing**. Package, CLI, runtime payload/User-Agent, examples, Dashboard metadata,
+tests, release notes, and real screenshots are aligned. Local, clean-clone, and
+protected PR checks pass in PR #3. No merge, tag, package upload, GitHub Release,
+or v0.8 work is authorized by this decision.
+
+---
+
+## 2026-09-11 — Default local network boundaries to loopback and require explicit browser origins
+
+### Decision
+
+- Change the native Collector fallback from `:4319` to `127.0.0.1:4319` while
+  preserving preferred and legacy address overrides.
+- Default Vite development/preview listeners and Docker host port publishing to
+  `127.0.0.1`; keep Collector and Nginx container listeners unchanged.
+- Replace wildcard CORS with exact local Dashboard origins. Let
+  `SLEDTRACE_ALLOWED_ORIGINS` replace the defaults with a comma-separated list.
+- Document remote binding, browser origin, Dashboard API URL, and SDK Collector
+  URL as separate explicit settings.
+
+### Reason
+
+SledTrace stores application prompts, responses, chunks, and metadata in an
+unauthenticated local service. Binding every host interface and allowing every
+browser origin exceeded the local-first default. Constraining the host boundary
+does not require pretending SledTrace has authentication or changing Docker's
+internal networking. Explicit overrides retain deliberate remote development.
+
+### Scope and outcome
+
+Implemented, locally validated, and committed on
+`codex/s4-local-network-defaults` after S3 commit `6562dc3`. Address precedence,
+CORS defaults/override/preflight, all Go tests, Dashboard tests/build, Compose
+expansion, live listeners, SDK ingestion, and browser rendering passed. Docker
+runtime was not exercised on this WSL2-disabled host. No auth, TLS, firewall,
+API, storage, diagnostic, SDK URL, UI, version, or publication change was added.
+
+---
+
+## 2026-09-11 — Keep strict trace delivery and add an explicit observable best-effort path
+
+### Decision
+
+- Preserve `flush()` with its existing synchronous, exception-raising behavior.
+- Add `try_flush()` as an explicit one-attempt alternative returning the public
+  frozen `TraceFlushResult(ok, response, error)` value.
+- Catch ordinary `Exception` values from the complete flush path, including
+  serialization, request, timeout, HTTP, connection, and response parsing.
+  Retain the exact raised exception in the result.
+- Do not catch `BaseException`; do not retry, queue, persist, log automatically,
+  or auto-flush.
+
+### Reason
+
+Changing `flush()` to silently suppress errors would break a released contract
+and hide missing telemetry. Yet strict telemetry delivery in a `finally` block
+can replace the application's real exception. A separate result-returning method
+makes the policy choice visible at the call site and keeps failure evidence
+available without introducing a delivery subsystem. A timeout remains ambiguous:
+it means confirmation failed, not necessarily that persistence did not occur.
+
+### Scope and outcome
+
+Implemented, locally validated, and committed on `codex/s3-trace-delivery-policy` after S2
+commit `ee0a812`. Success, offline/HTTP, timeout, serialization, strict behavior,
+`BaseException`, original application exceptions, preferred/legacy imports,
+wheel/sdist, and clean-wheel behavior passed. S3 is not pushed, merged,
+versioned, or released. Retries, queues, atomic persistence, automatic delivery,
+and application logging policy remain separate decisions.
+
+---
+
+## 2026-09-11 — Preserve retrieval metric type and direction without inventing conversions
+
+### Decision
+
+- Keep the raw numeric `score`, and add nullable `score_type` plus
+  `score_direction` to normalized chunks.
+- Treat named score/similarity/relevance/rerank values as higher-is-better and
+  named distance as lower-is-better. Treat an unannotated tuple value as unknown.
+- Preserve existing explicit `score=` mappings and historical bare scores as
+  higher-is-better by default. Let callers declare custom type/direction.
+- Only higher-is-better and legacy bare scores participate in the Collector's
+  low-score threshold and score-based ordering. Fail closed for lower, unknown,
+  custom-without-direction, and invalid directions.
+- Display the metric and direction in the Dashboard. Do not transform distance.
+
+### Reason
+
+Retrievers expose cosine similarity, relevance, distances, rerank outputs, and
+framework-dependent tuple values with incompatible ranges and directions. The
+old normalizer erased that difference, so a strong distance of 0.10 became a
+weak higher-is-better score under the 0.5 threshold. A universal
+`1 - distance` formula would be wrong for many metrics. Additive annotations
+preserve evidence and compatibility without claiming a normalized scale.
+
+### Scope and outcome
+
+Implemented, locally validated, and committed on
+`codex/s2-retrieval-score-semantics` after S1 local commit `5b5d254`.
+Similarity/distance/unscored/tuple/explicit cases, Collector gating, Dashboard
+labels, packaging, and live traces passed. S2 is not merged, versioned, or
+released. Threshold calibration, adapters,
+delivery policy, and new diagnostics remain separate work.
+
+---
+
+## 2026-09-11 — Represent measured, explicit, and unknown span timing honestly
+
+### Decision
+
+- Add a one-shot `t.measure()` context manager that captures actual UTC operation boundaries and monotonic elapsed time, then pass its completed `SpanTiming` to existing retrieval/LLM record methods.
+- Preserve every prior positional argument. Add retrieval `duration_ms` after existing arguments and retain LLM `latency_ms`; reject ambiguous overlap with `timing` and invalid duration types/values.
+- Keep post-hoc calls compatible but set span duration/end to null when timing was not supplied. Do not infer the earlier operation duration from the later logging call.
+- Treat canonical null as `Not measured` in the Dashboard, preserve measured zero, retain fallbacks only for objects without a canonical duration field, and keep trace duration authoritative instead of summing spans.
+
+### Reason
+
+The old record methods measured their own bookkeeping after the real operation. This produced confident but false 0ms spans. A post-hoc API cannot recover elapsed time or actual start time, while a small explicit timer works without wrapping provider calls, changing span types, or intercepting application exceptions. Null is therefore more truthful than fabricated precision.
+
+### Scope
+
+Implemented and locally validated on `codex/s1-trustworthy-span-timing`, then preserved in local commit `5b5d254`; not merged, versioned, or released. Score semantics, delivery behavior, local network defaults, runtime packaging, and new spans remain separate decisions.
+
+---
+
+## 2026-09-10 — Preserve review evidence and bounded next actions across assistant handover
+
+### Status and authority
+
+The user requested written handover and action instructions for the incoming assistant, expected to be GPT-5.6, after the strategy review. This records a development recommendation and documentation organization; it does not select an entire v0.8 scope, authorize product implementation in this handover turn, or authorize a new release.
+
+### Handover approach
+
+- Recommend span timing correctness as the first slice when development resumes; CURRENT_TASK contains its implementation outline and acceptance criteria.
+- Keep score semantics, delivery behavior, local defaults, onboarding, and diagnostic quality as separately bounded candidates. Real first-run evidence can reprioritize them without blocking confirmed fixes indefinitely.
+- Keep existing Go/Python/React architecture and source-checkout serving as the released baseline. An installed standalone runtime is only a time-bounded investigation candidate, not an approved rewrite or selected package format.
+- Separate code evidence from interpretation: timing and score behavior were reproduced, network exposure follows from configuration but actual reachability was not tested, and diagnostic accuracy has not been measured on a representative dataset.
+- Use CURRENT_TASK for the next action, AI_HANDOFF for the current snapshot, ROADMAP for candidate sequencing, and DEVLOG for chronological history. The short Chinese NEXT_AGENT_BRIEF explains how to resume without repeating completed release work.
+
+### Reason
+
+The review found gaps in measurement and real integration that existing packaging/compatibility tests did not exercise. It also found stale release-state wording in the old handoff despite the successful v0.7 release. A concise current snapshot and explicit acceptance contract reduce context cost and prevent speculative roadmap items from becoming assumed instructions.
+
+The review's competitive context came from the official [Phoenix repository](https://github.com/arize-ai/phoenix), [Langfuse observability documentation](https://langfuse.com/docs/observability/overview), and [LangSmith concepts](https://docs.langchain.com/langsmith/observability-concepts), consulted on 2026-09-10. These establish existing alternatives; the proposed focus on verifiable RAG diagnosis is our strategy judgment, not proof of product-market fit.
+
+---
+
 ## 2026-09-09 — Close v0.7.0 only after protected publication and clean-index validation
 
 ### Decision

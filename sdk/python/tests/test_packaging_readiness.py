@@ -7,19 +7,26 @@ import raglens
 import sledtrace
 import sledtrace.cli
 from raglens import trace as legacy_trace
+from raglens import SpanTiming as LegacySpanTiming
+from raglens import TraceFlushResult as LegacyTraceFlushResult
 from raglens.trace import resolve_collector_url
 from sledtrace import trace as new_trace
+from sledtrace import SpanTiming
+from sledtrace import TraceFlushResult
 
 
 def test_sdk_version_exists() -> None:
     assert hasattr(sledtrace, "__version__")
-    assert sledtrace.__version__ == "0.7.0"
+    assert sledtrace.__version__ == "0.7.1"
 
 
 def test_public_trace_imports() -> None:
     assert new_trace is not None
     assert legacy_trace is not None
     assert new_trace is legacy_trace
+    assert SpanTiming is LegacySpanTiming
+    assert TraceFlushResult is LegacyTraceFlushResult
+    assert isinstance(new_trace("timing").measure(), SpanTiming)
 
 
 def test_default_collector_url() -> None:
@@ -81,7 +88,7 @@ def test_cli_help_describes_source_checkout_limit(capsys) -> None:
 
 def test_cli_version_reports_package_version(capsys) -> None:
     assert sledtrace.cli.main(["version"]) == 0
-    assert capsys.readouterr().out.strip() == "0.7.0"
+    assert capsys.readouterr().out.strip() == "0.7.1"
 
 
 def test_find_repo_root_walks_up_from_nested_directory(tmp_path: Path) -> None:

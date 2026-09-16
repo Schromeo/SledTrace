@@ -102,9 +102,11 @@ Current implemented API:
 
 ```python
 trace(name, query=None, metadata=None, collector_url=None)
-t.retrieval(query, chunks, name="retrieval", top_k=None, metadata=None)
-t.llm(model, prompt=None, response=None, messages=None, name="llm", provider=None, input_tokens=None, output_tokens=None, latency_ms=None, metadata=None)
+t.measure()
+t.retrieval(query, chunks, name="retrieval", top_k=None, metadata=None, duration_ms=None, timing=None)
+t.llm(model, prompt=None, response=None, messages=None, name="llm", provider=None, input_tokens=None, output_tokens=None, latency_ms=None, metadata=None, timing=None)
 t.flush(collector_url=None, timeout=5.0)
+t.try_flush(collector_url=None, timeout=5.0)
 ```
 
 `trace(...)` returns a `SledTraceTrace` context manager.
@@ -126,7 +128,8 @@ def answer_question(user_query: str) -> str:
             "environment": "local",
         },
     ) as t:
-        chunks = my_retriever(user_query)
+        with t.measure() as retrieval_timing:
+            chunks = my_retriever(user_query)
 
         t.retrieval(
             query=user_query,
@@ -136,9 +139,11 @@ def answer_question(user_query: str) -> str:
             metadata={
                 "retriever": "my_retriever_v1",
             },
+            timing=retrieval_timing,
         )
 
-        prompt, answer = my_answerer(user_query, chunks)
+        with t.measure() as llm_timing:
+            prompt, answer = my_answerer(user_query, chunks)
 
         t.llm(
             model="local-answerer-v1",
@@ -146,10 +151,44 @@ def answer_question(user_query: str) -> str:
             response=answer,
             name="answer_generation",
             provider="local",
+            timing=llm_timing,
         )
 
     t.flush()
     return answer
+```
+
+## Span Timing Contract
+
+The recording calls run after your retriever or model has returned, so they cannot infer how long that earlier work took. Use `t.measure()` around the actual operation:
+
+```python
+with t.measure() as retrieval_timing:
+    chunks = my_retriever(user_query)
+
+t.retrieval(
+    query=user_query,
+    chunks=chunks,
+    timing=retrieval_timing,
+)
+```
+
+The timer uses a monotonic clock for elapsed time and UTC timestamps for the actual operation boundaries. Fractional milliseconds are truncated to the integer wire format; a measured sub-millisecond operation remains a real `0ms`.
+
+For applications that already measure latency, pass an explicit non-negative integer instead:
+
+```python
+t.retrieval(query=user_query, chunks=chunks, duration_ms=retrieval_ms)
+t.llm(model=model, response=answer, latency_ms=llm_ms)
+```
+
+Do not combine `timing` with `duration_ms` or `latency_ms` on the same span. Duration-only recording knows the elapsed time but not the original UTC boundaries, so `ended_at` remains `null`. A post-hoc call with neither form remains supported, but its `duration_ms` and `ended_at` are `null`; the Dashboard labels it **Not measured** instead of reconstructing timing from the later recording timestamps.
+
+With the local Collector and Dashboard running, generate one measured and one deliberately unmeasured trace for visual verification:
+
+```bash
+cd sdk/python
+python -m examples.timing_demo
 ```
 
 ## Retrieval Span Example
@@ -175,6 +214,7 @@ Behavior:
 - stores the retrieval query in span input
 - stores retrieved chunks in span output
 - if the trace-level query was not set, the retrieval query becomes the trace query
+- accepts a completed `timing` measurement or an explicit `duration_ms`
 
 ## Recommended Chunk Shape
 
@@ -188,6 +228,8 @@ chunks = [
         "id": "chunk_refund_current",
         "text": "Customers may request a refund within 30 days of purchase.",
         "score": 0.93,
+        "score_type": "similarity",
+        "score_direction": "higher_is_better",
         "rank": 1,
         "source": "refund_policy.md",
         "document_id": "refund_policy",
@@ -204,6 +246,8 @@ Recommended fields for better diagnostics:
 - `id`
 - `text`
 - `score`
+- `score_type`
+- `score_direction`
 - `rank`
 - `source`
 - `document_id`
@@ -216,7 +260,39 @@ Current SDK chunk behavior:
 - if `metadata` is missing or `None`, SDK auto-fills it as `{}`
 - the SDK does not currently hard-validate fields like `text`, `score`, or `source`
 
-Sparse chunks may still ingest, but diagnostics are better when `text`, `score`, `source`, `document_id`, `rank`, and `metadata` are present.
+Sparse chunks may still ingest, but diagnostics are better when `text`, `score`, `score_type`, `score_direction`, `source`, `document_id`, `rank`, and `metadata` are present.
+
+### Retrieval score semantics
+
+The legacy/canonical `score` field remains higher-is-better when no annotations
+are present. For native retriever outputs, prefer `normalize_chunk(...)` or
+`normalize_chunks(...)` so the metric meaning is retained:
+
+- `score`, `similarity`, `similarity_score`, `relevance_score`, and
+  `rerank_score` are higher-is-better
+- `distance` is lower-is-better
+- the second value in an unannotated `(document, value)` tuple is direction-unknown
+- unscored chunks remain unscored
+
+Distance and unknown values are preserved for display but do not participate in
+the higher-is-better `low_retrieval_score` threshold or score-based diagnostic
+ordering. SledTrace does not apply a universal `1 - distance` conversion because
+distance scales and ranges vary by retriever.
+
+For a custom metric, declare the mapping explicitly:
+
+```python
+chunk = normalize_chunk(
+    raw_result,
+    text="passage",
+    score="metric_value",
+    score_type="euclidean_distance",
+    score_direction="lower_is_better",
+)
+```
+
+Valid directions are `higher_is_better`, `lower_is_better`, and `unknown`.
+Existing explicit `score=` mappings default to higher-is-better for compatibility.
 
 ## LLM Span Examples
 
@@ -228,6 +304,7 @@ Current behavior:
 - supports both `prompt` and `messages`
 - if `response` is provided, it becomes the trace final answer
 - `provider`, `input_tokens`, `output_tokens`, `total_tokens`, and `latency_ms` are stored in span metadata
+- a completed `timing` measurement records the actual operation boundaries and duration
 
 Usage note:
 
@@ -288,11 +365,39 @@ with trace(name="my-trace", query=query) as t:
 t.flush()
 ```
 
+`flush()` is intentionally strict. JSON serialization failures, timeouts, HTTP
+errors, and connection failures raise. This preserves the historical contract
+for tests and applications that require confirmed trace delivery.
+
+For applications where observability must not replace business behavior, choose
+`try_flush()` explicitly:
+
+```python
+delivery = t.try_flush()
+
+if not delivery.ok:
+    app_logger.warning("SledTrace delivery failed: %r", delivery.error)
+```
+
+It returns a `TraceFlushResult`:
+
+- `ok=True`, `response=<collector response>`, `error=None` on success
+- `ok=False`, `response=None`, `error=<original exception>` on an ordinary failure
+
+The failure is not logged automatically; inspect or log `result.error` according
+to your application's policy. A timeout means success was not confirmed—it does
+not prove that the Collector failed to persist the request.
+
+`try_flush()` makes one synchronous attempt. It adds no retry, queue, disk
+buffer, background worker, or automatic flush. It deliberately does not catch
+`KeyboardInterrupt`, `SystemExit`, or other `BaseException` subclasses.
+
 Why this matters:
 
 - `ended_at` and `duration_ms` are finalized when the trace context exits
 - flushing inside the `with` block can send incomplete lifecycle fields
 - `flush()` accepts optional `collector_url` and `timeout` arguments
+- `try_flush()` accepts the same arguments and returns an observable result
 
 ## Error Trace Behavior
 
@@ -304,11 +409,29 @@ If an exception escapes the `with trace(...)` block:
 
 That means the SDK records the failure state, but your application still receives the exception unless you catch it yourself.
 
+If you also attempt trace delivery while an application exception is already
+propagating, use `try_flush()` in `finally`; strict `flush()` can replace that
+exception with a delivery error:
+
+```python
+delivery = None
+t = trace(name="my-trace", query=query)
+try:
+    with t:
+        answer = run_pipeline(query)
+finally:
+    delivery = t.try_flush()
+```
+
+The original application exception continues to propagate, and any delivery
+failure remains available in `delivery.error`.
+
 ## Common Mistakes
 
 ### Collector not running
 
-If the collector is not listening on `http://localhost:4319`, `flush()` will fail.
+If the collector is not listening on `http://localhost:4319`, strict `flush()`
+raises. `try_flush()` returns the same failure in `result.error`.
 
 ### Calling `flush()` inside the `with` block
 
@@ -318,7 +441,7 @@ This can send a trace before `ended_at` and `duration_ms` are finalized.
 
 The SDK expects chunk dictionaries, not arbitrary retriever-native objects.
 
-### Missing chunk `text`, `score`, or `source`
+### Missing chunk `text`, score semantics, or `source`
 
 The SDK may still ingest sparse chunks, but dashboard readability and warning quality will be worse.
 

@@ -8,7 +8,10 @@ It helps developers inspect why a RAG application produced a bad answer by showi
 
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
-Latest release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
+Latest published release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
+
+Current source candidate: **v0.7.1 — Trustworthy Local Tracing**. It is not yet
+merged, tagged, or published.
 
 Install the Python SDK from PyPI:
 
@@ -127,6 +130,37 @@ Open:
 http://localhost:5173
 ```
 
+Collector and Dashboard host ports are published on `127.0.0.1` by default.
+The source-based Collector and Vite development server also default to loopback,
+and browser access is allowed only from the two local Dashboard origins
+(`localhost:5173` and `127.0.0.1:5173`). SDK and command-line requests without an
+`Origin` header continue to work normally.
+
+For intentional access from another machine, configure all three boundaries
+explicitly and review your firewall before starting the services:
+
+```bash
+# Docker Compose (.env)
+SLEDTRACE_BIND_HOST=0.0.0.0
+SLEDTRACE_ALLOWED_ORIGINS=http://YOUR_HOST:5173
+VITE_SLEDTRACE_API_URL=http://YOUR_HOST:4319
+
+# Source-based Collector
+SLEDTRACE_COLLECTOR_ADDR=0.0.0.0:4319
+SLEDTRACE_ALLOWED_ORIGINS=http://YOUR_HOST:5173
+
+# Source-based Dashboard
+VITE_SLEDTRACE_API_URL=http://YOUR_HOST:4319
+npm run dev -- --host 0.0.0.0
+
+# SDK process on another machine
+SLEDTRACE_COLLECTOR_URL=http://YOUR_HOST:4319
+```
+
+If you change the Dashboard port, include the resulting exact origin in
+`SLEDTRACE_ALLOWED_ORIGINS`. These settings expose an unauthenticated local
+development service; SledTrace does not add TLS or firewall rules.
+
 ### Install and inspect the Python SDK
 
 ```bash
@@ -225,24 +259,34 @@ Contributors working against local SDK changes can instead use `python -m pip in
 
 4. Instrument your own request path with the Python SDK:
 
+`t.measure()` and `t.try_flush()` below are part of the **v0.7.1** release
+candidate and are not in the published `sledtrace==0.7.0` package. To use them
+now, install from source (`pip install -e sdk/python`) or a locally built
+0.7.1 wheel instead of the published `pip install sledtrace` above. Against
+published 0.7.0, drop `t.measure()`, pass explicit `duration_ms`/`latency_ms`
+if known, and use the existing strict `t.flush()` instead of `t.try_flush()`.
+
 ```python
 from sledtrace import trace
 
 
 def answer_question(user_query: str) -> str:
     with trace(name="my-rag-request", query=user_query) as t:
-        retrieved = my_retriever(user_query)
-        chunks = to_sledtrace_chunks(retrieved)
+        with t.measure() as retrieval_timing:
+            retrieved = my_retriever(user_query)
+            chunks = to_sledtrace_chunks(retrieved)
 
         t.retrieval(
             query=user_query,
             chunks=chunks,
             name="primary_retrieval",
             top_k=len(chunks),
+            timing=retrieval_timing,
         )
 
         prompt = build_prompt(user_query, chunks)
-        answer = my_answerer(prompt)
+        with t.measure() as llm_timing:
+            answer = my_answerer(prompt)
 
         t.llm(
             model="my-model-name",
@@ -250,13 +294,29 @@ def answer_question(user_query: str) -> str:
             response=answer,
             name="answer_generation",
             provider="local",
+            timing=llm_timing,
         )
 
     t.flush()
     return answer
 ```
 
+`t.flush()` remains strict: serialization, timeout, and Collector failures raise.
+When trace delivery must not replace a successful response or an existing
+application exception, choose the explicit observable best-effort path:
+
+```python
+delivery = t.try_flush()
+if not delivery.ok:
+    print(f"SledTrace delivery failed: {delivery.error!r}")
+```
+
+`try_flush()` returns a `TraceFlushResult`; it does not retry, queue, log, or hide
+the error from its result.
+
 `to_sledtrace_chunks(...)` represents your app-owned adapter from retriever-native results to SledTrace chunk dictionaries.
+
+`t.measure()` times the actual operation with a monotonic clock and records its real UTC boundaries. Existing post-hoc `t.retrieval(...)` and `t.llm(...)` calls remain valid, but without a completed measurement or explicit latency their span duration is reported as not measured rather than a misleading `0ms`.
 
 A minimal chunk shape looks like this:
 
@@ -265,11 +325,20 @@ A minimal chunk shape looks like this:
     "id": "chunk_1",
     "text": "Customers may return most physical products within 30 days.",
     "score": 0.92,
+    "score_type": "similarity",
+    "score_direction": "higher_is_better",
     "metadata": {
         "source": "refund_policy.md"
     }
 }
 ```
+
+Canonical `score` values are treated as higher-is-better for compatibility. Use
+`normalize_chunk(...)` / `normalize_chunks(...)` for retriever-native results:
+named similarity/relevance scores and distances keep their type and direction,
+while ambiguous tuple scores remain direction-unknown. SledTrace does not guess a
+universal `1 - distance` conversion, and distance/unknown values do not enter the
+higher-is-better low-score threshold.
 
 Current implemented span types are `retrieval` and `llm` only.
 
@@ -409,6 +478,7 @@ bash ./scripts/mac/smoke.sh
 * `docs/releases/V0_5_0.md` - Python SDK distribution and packaging-readiness release notes.
 * `docs/releases/V0_6_0.md` - Local CLI and startup UX release notes.
 * `docs/releases/V0_7_0.md` - External Developer Readiness release notes.
+* `docs/releases/V0_7_1.md` - Trustworthy Local Tracing release notes.
 * `docs/REBRANDING.md` - migration notes for the RAGLens to SledTrace rename.
 
 ### For contributors / maintainers
@@ -435,6 +505,7 @@ Milestone snapshot:
 * v0.5.0 Python SDK distribution / packaging readiness: complete
 * v0.6.0 local CLI / startup UX: complete
 * v0.7.0 external developer readiness: complete
+* v0.7.1 trustworthy local tracing: release candidate; not yet published
 
 Published releases:
 
@@ -442,10 +513,10 @@ Published releases:
 * [v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
 * [v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
-Current version:
+Current source version:
 
 ```text
-v0.7.0 - External Developer Readiness
+v0.7.1 - Trustworthy Local Tracing (release candidate)
 ```
 
 Completed:

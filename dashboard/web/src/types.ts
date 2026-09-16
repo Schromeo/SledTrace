@@ -118,6 +118,8 @@ export type Chunk = {
   id?: string;
   text?: string;
   score?: number;
+  score_type?: string;
+  score_direction?: string;
   rank?: number;
   source?: string;
   document_id?: string;

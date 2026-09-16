@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"sledtrace-collector/internal/models"
@@ -136,10 +137,19 @@ func withLogging(next http.Handler) http.Handler {
 }
 
 func withCORS(next http.Handler) http.Handler {
+	allowedOrigins := configuredAllowedOrigins()
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		origin := r.Header.Get("Origin")
+		if origin != "" {
+			w.Header().Add("Vary", "Origin")
+		}
+
+		if _, allowed := allowedOrigins[origin]; allowed {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		}
 
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
@@ -148,4 +158,21 @@ func withCORS(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func configuredAllowedOrigins() map[string]struct{} {
+	configured := os.Getenv("SLEDTRACE_ALLOWED_ORIGINS")
+	if strings.TrimSpace(configured) == "" {
+		configured = "http://localhost:5173,http://127.0.0.1:5173"
+	}
+
+	origins := make(map[string]struct{})
+	for _, value := range strings.Split(configured, ",") {
+		origin := strings.TrimSpace(value)
+		if origin != "" {
+			origins[origin] = struct{}{}
+		}
+	}
+
+	return origins
 }

@@ -1,5 +1,265 @@
 # Devlog
 
+## 2026-09-11 (v0.7.1 Release Candidate Preparation)
+
+### Completed
+
+- Selected **v0.7.1 — Trustworthy Local Tracing** as the patch release grouping
+  for S1 timing, S2 score semantics, S3 delivery policy, and S4 network defaults.
+- Created `codex/v0.7.1-reliability` from S4 commit `fc85bda`.
+- Aligned Python package/import/CLI/runtime/example validation and Dashboard
+  package metadata to 0.7.1.
+- Added `docs/releases/V0_7_1.md` and kept root release status explicit that
+  v0.7.0 remains the latest published version.
+- Generated nine deterministic reference traces from the 0.7.1 source and
+  refreshed all three README screenshots from the real local Dashboard at
+  1440x950. The images show honest unknown trace duration and score-direction
+  labels rather than generated or mocked UI.
+
+### Local validation
+
+- `cd sdk/python && pytest -q`: 62 passed.
+- `cd sdk/python && python -m build`: built
+  `sledtrace-0.7.1-py3-none-any.whl` and `sledtrace-0.7.1.tar.gz`.
+- `cd sdk/python && python -m twine check dist/*`: passed for the 0.7.1 artifacts
+  and retained historical local artifacts. Twine was installed only in a system
+  temporary directory because it was absent from the host Python environment.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed in a new temporary
+  virtual environment, including version 0.7.1, preferred/legacy imports,
+  timing, score semantics, delivery policy, CLI, and out-of-checkout `serve`.
+- `cd collector/go && go test ./... -count=1`: all packages passed.
+- `cd dashboard/web && npm.cmd ci`: passed; npm re-reported the known four
+  development-dependency advisories (one moderate, three high).
+- `cd dashboard/web && npm.cmd test`: 10 passed.
+- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- Default and explicit-remote `docker compose config` expansion passed.
+- Live Collector/Dashboard listeners were loopback-only and all nine reference
+  traces rendered in the browser.
+
+### Remaining candidate gates
+
+- Do not merge, tag, publish to PyPI, or create a GitHub Release without a
+  separate release-stage decision.
+
+### Clean-clone validation
+
+- Committed release preparation as `25521d4508a924a96132b72147f69171e7a3af37`.
+- Cloned that exact branch commit to a new system temporary directory; initial
+  and post-smoke `git status --short` were clean.
+- `npm.cmd ci` installed the locked Dashboard dependencies in the clone.
+- A new venv installed the clone's SDK; installed `sledtrace version` returned
+  `0.7.1`.
+- The installed `sledtrace serve` entry point found the checkout and started the
+  current Collector/Dashboard on `127.0.0.1:4319` and `127.0.0.1:5173`.
+- Collector health and Dashboard HTML returned 200.
+- The clone's reference app stored a conflict trace; API readback returned two
+  spans, one warning, null trace duration, and higher-is-better semantics for the
+  first score. The same detail is open in the user's browser.
+
+### Pull request validation
+
+- Pushed `codex/v0.7.1-reliability` and opened protected pull request
+  [#3](https://github.com/Schromeo/SledTrace/pull/3) to `main`.
+- The PR head matches the locally prepared candidate history; `origin/main`
+  remained the direct ancestor with no rebase or conflict required.
+- Required checks passed: Python 3.9, Python 3.13, Go Collector, and Dashboard.
+- The PR remains open. No merge, tag, PyPI upload, production-index claim, or
+  GitHub Release was performed.
+
+---
+
+## 2026-09-11 (S4 Local Network Defaults)
+
+### Completed
+
+- Changed the native Collector fallback and Vite development/preview scripts to
+  loopback while preserving explicit address/host overrides.
+- Bound both Docker-published host ports to `SLEDTRACE_BIND_HOST`, defaulting to
+  `127.0.0.1`, while keeping container-internal listeners unchanged.
+- Replaced wildcard CORS with the two exact local Dashboard origins plus a
+  comma-separated `SLEDTRACE_ALLOWED_ORIGINS` replacement list.
+- Added address precedence and CORS allow/deny/preflight tests.
+- Documented the full intentional-remote boundary, including binding, browser
+  origin, Dashboard API URL, SDK URL, and the unauthenticated-service warning.
+- Replaced the old S2 live services with the current S4 processes and left the
+  validated Dashboard available at `http://127.0.0.1:5173`.
+
+### Validation
+
+- Focused Collector address/API tests: passed.
+- `cd collector/go && go test ./... -count=1`: all packages passed.
+- `cd dashboard/web && npm.cmd test`: 10 tests passed.
+- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- Default `docker compose config`: both host ports expanded to `127.0.0.1`,
+  Collector stayed on container `:4319`, and local origins were explicit.
+- Explicit remote Compose expansion preserved `0.0.0.0`, the supplied origin,
+  and the supplied Dashboard API URL.
+- Live listeners were exactly `127.0.0.1:4319` and `127.0.0.1:5173`.
+- Live HTTP checks covered no Origin, both allowed local origins, and a denied
+  origin with `Vary: Origin`.
+- Python SDK trace `trace_abc2dc4e6b494b6687a2472903863998` stored and rendered
+  in the actual Dashboard with retrieval/LLM spans and a warning.
+- Restricted Go/npm runs initially hit local cache/path access denials; the same
+  tests passed with normal tool access. One assistant-written live probe used
+  unsupported `trace(input=..., output=...)` arguments and failed before network
+  I/O; it was corrected to the repository's real API and then passed.
+
+### Boundary
+
+- S4 is complete and committed only on the local branch; it is not pushed,
+  merged, versioned, or released.
+- Docker runtime was not retried because the known WSL2 host prerequisite is
+  unavailable; Compose structure was validated without the daemon.
+- No auth, TLS, firewall, proxy, API, storage, warning, span, SDK URL default,
+  Dashboard visual, version, or publication change entered the slice.
+
+---
+
+## 2026-09-11 (S3 Trace Delivery Policy)
+
+### Completed
+
+- Reproduced strict delivery behavior for non-JSON metadata, offline Collector,
+  timeout, and delivery attempted while an application exception propagated.
+- Kept `flush()` strict and additive-only; added public frozen
+  `TraceFlushResult` plus explicit `try_flush()` for a single observable
+  best-effort attempt.
+- Preserved exact ordinary exceptions in `result.error`, left
+  `KeyboardInterrupt`/`SystemExit` behavior untouched, and verified that a
+  delivery failure no longer replaces an original business exception when the
+  caller chooses `try_flush()` in `finally`.
+- Exported the same result class through preferred `sledtrace` and temporary
+  `raglens` compatibility imports; extended clean-wheel validation.
+- Updated root/package integration guidance and the active context documents.
+
+### Validation
+
+- Focused delivery/package tests: 21 passed after correcting the test module
+  target; the first six failures occurred before product execution because the
+  package-level `raglens.trace` function shadowed the module in a string mock path.
+- `cd sdk/python && pytest -q`: 62 passed.
+- `cd sdk/python && python -m build`: passed; wheel and sdist produced.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed, including the new
+  delivery result, S1/S2 APIs, preferred/legacy imports, and CLI.
+- `git diff --check`: passed with line-ending conversion warnings only.
+- Deterministic demonstration: strict offline flush raised `RuntimeError`;
+  `try_flush()` returned `ok=False` with that error; the application still
+  propagated `LookupError("business failure")` while delivery failure remained
+  separately inspectable.
+
+### Boundary
+
+- S3 is complete and committed only on the local branch; it is not pushed,
+  merged, versioned, or released.
+- No Collector, API, SQLite, Dashboard, warning, span, retry, queue, disk buffer,
+  background worker, automatic logging, version, or publication change entered
+  the slice.
+- Go and Dashboard checks were not repeated because those components did not
+  change. Their S2 validation remains attached to local commit `ee0a812`.
+
+---
+
+## 2026-09-11 (S2 Retrieval Score Semantics)
+
+### Completed
+
+- Closed S1 into local commit `5b5d254` and created
+  `codex/s2-retrieval-score-semantics`; no push, PR, merge, version, tag, or
+  release was created.
+- Reproduced that similarity 0.10, distance 0.10, explicit score 0.10, and a
+  tuple value 0.10 all collapsed into the same bare `score` contract.
+- Added `score_type` and `score_direction` to normalized chunks, automatic known
+  metric semantics, explicit custom overrides, unknown tuple semantics, and
+  non-finite-value handling while preserving explicit/legacy score behavior.
+- Gated the Collector's low-score threshold and score-based diagnostic ordering
+  so lower/unknown/unannotated-custom/invalid directions cannot be silently
+  interpreted as higher-is-better.
+- Added Dashboard metric/direction labels and dependency-free behavior tests.
+- Added `examples.score_semantics_demo` and aligned SDK, onboarding, architecture,
+  active-context, and handoff documentation.
+
+### Validation
+
+- `cd sdk/python && pytest -q`: 52 passed.
+- `cd sdk/python && python -m build`: passed.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed.
+- Clean-wheel score-semantics probe outside the checkout: passed.
+- `cd collector/go && go test ./... -count=1`: all packages passed.
+- `cd dashboard/web && npm.cmd test`: ten tests passed.
+- `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
+- `git diff --check`: passed with line-ending conversion warnings only.
+- Live trace/API/Dashboard evidence: similarity 0.10 produced
+  `low_retrieval_score` and `Similarity 0.10 ↑`; distance 0.10 produced no
+  warning and `Distance 0.10 ↓`.
+
+### Boundary
+
+- S2 is complete and committed only on the local branch; it is not pushed,
+  merged, versioned, or released.
+- No score conversion, retriever-specific adapter, threshold tuning, new span or
+  warning, delivery behavior, runtime packaging, or publication work was added.
+- README prose was updated for the contract, but showcase images were not
+  replaced. The existing images remain accurate; live screenshots cover this
+  localized checkpoint, with release-quality refresh deferred to a selected
+  Dashboard-changing release.
+
+---
+
+## 2026-09-11 (S1 Trustworthy Span Timing)
+
+### Completed
+
+- Continued from the assistant handover on branch `codex/s1-trustworthy-span-timing`, preserving all uncommitted handover documentation.
+- Added public `SpanTiming` and `t.measure()` for actual-operation UTC boundaries plus monotonic elapsed time.
+- Changed unmeasured post-hoc retrieval/LLM records from logging-overhead duration to null; added retrieval `duration_ms`, retained LLM `latency_ms`, and preserved prior positional argument order and `sledtrace`/`raglens` compatibility.
+- Added controlled-clock, invalid-input, real-zero, exception-propagation, compatibility, and payload tests.
+- Added POST → SQLite → GET coverage proving null and zero remain distinct.
+- Centralized Dashboard timing resolution, rendered canonical null as `Not measured`, preserved legacy data fallback, and removed misleading trace span-sum fallback.
+- Added five dependency-free Node timing tests and wired them into Dashboard CI.
+- Updated root/package SDK examples, the integration guide, custom/reference examples, and a deterministic `examples.timing_demo` visual fixture.
+
+### Validation
+
+- `cd sdk/python && pytest -q`: 34 passed.
+- `cd sdk/python && python -m build`: passed; produced wheel and sdist. The first restricted run failed while bootstrapping isolated build dependencies and then hit local error-output encoding; rerunning with normal dependency/temp access passed before project build assertions were evaluated.
+- `cd sdk/python && python scripts/validate-wheel.py`: passed, including clean install, preferred/legacy imports, new timing API, CLI, and documented out-of-checkout `serve` behavior.
+- `cd collector/go && go test ./... -count=1`: passed. Initial restricted cache access failed before compilation; the normal-permission rerun passed.
+- `cd dashboard/web && npm.cmd test`: five tests passed.
+- `cd dashboard/web && npm.cmd run build`: passed. Initial sandbox path access failed before Vite loaded configuration; normal-permission reruns passed.
+- `git diff --check`: passed with line-ending conversion warnings only.
+- Live non-Docker Collector/Dashboard check used an isolated ignored database: measured trace displayed 200ms total, 80ms retrieval, and 120ms LLM; unmeasured trace displayed `Not measured` for both spans. The in-app browser was left open for the user.
+
+### Boundary
+
+- S1 is complete in the working tree only. No commit, push, PR, version bump, tag, or release was created.
+- No score, delivery, network-default, warning-rule, new-span, or standalone-runtime work was included.
+- Existing README showcase screenshots were not replaced: they still represent valid diagnostic views and do not demonstrate the new unknown-timing state. Conversation/browser evidence and `examples.timing_demo` cover this checkpoint; refresh release-quality screenshots if a selected release needs the state publicly showcased.
+
+---
+
+## 2026-09-10 (Strategy Review and Next-Assistant Handover)
+
+### Work recorded
+
+- Reviewed the released repository at `906fd2999a86fac5abb538cb83ee16b79ce4cda8` and compared the product direction with official competitor documentation.
+- Recorded SDK timing, distance/score semantics, strict trace-delivery behavior, heuristic diagnostic limits, uncalibrated confidence display, local network defaults, and persistence/UI follow-up findings in AI_HANDOFF.
+- During the preceding read-only review, an in-memory sample with about 80ms retrieval and 120ms LLM work produced about 200ms trace duration and two 0ms recorded spans; a no-network normalization sample mapped distance 0.1 to score 0.1. Mocked delivery/serialization failures were also reproduced. These were observations, not fixes.
+- At the user's request, wrote NEXT_AGENT_BRIEF for the incoming assistant and made CURRENT_TASK a focused span-timing action/acceptance contract.
+- Added explicitly proposed post-v0.7 sequencing to ROADMAP and documented its non-committed status in DECISIONS.
+- Condensed AI_HANDOFF into current state and evidence, leaving detailed release history in existing DEVLOG/release notes. Removed the stale pending-PyPI statement and incorrect API test path from the active handoff.
+- Updated AGENTS with Chinese-response preference, context ownership, visible-validation expectations, and bounded continuation guidance.
+
+### Scope and validation boundary
+
+- Documentation only; no SDK, Collector, Dashboard, dependency, version, or workflow changes.
+- No new commit, push, PR, tag, or release is part of this handover turn.
+- Documentation validation passed: `git diff --check` exited 0 (only existing LF/CRLF conversion warnings), all 17 internal file links across the seven changed documents resolved, and the proposed roadmap anchor was checked. Scope review confirmed only documentation changes; full product builds/tests were not rerun for this prose-only change.
+- Independent read-only handover review found no release-state or authority contradiction. Added explicit null/zero storage-round-trip and conditional wrapper-exception acceptance criteria to S1.
+- The v0.7 production installation, full suite results, and Docker/WSL limitation below remain dated historical evidence, not validations rerun on 2026-09-10.
+- No proposed fix or future milestone is marked complete. When development resumes, start with S1 in CURRENT_TASK and reassess after its acceptance criteria pass.
+
+---
+
 ## 2026-09-09 (v0.7.0 Published and Clean-Install Validated)
 
 ### Completed

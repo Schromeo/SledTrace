@@ -1,9 +1,9 @@
 import warnings
 
-from .trace import trace, RAGLensTrace, SledTraceTrace
+from .trace import trace, RAGLensTrace, SledTraceTrace, SpanTiming, TraceFlushResult
 from .chunks import ChunkNormalizationError, normalize_chunk, normalize_chunks
 
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 warnings.warn(
     "The 'raglens' package is deprecated and kept only for temporary compatibility. "
@@ -17,6 +17,8 @@ __all__ = [
     "trace",
     "SledTraceTrace",
     "RAGLensTrace",
+    "SpanTiming",
+    "TraceFlushResult",
     "ChunkNormalizationError",
     "normalize_chunk",
     "normalize_chunks",

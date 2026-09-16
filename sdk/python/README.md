@@ -2,17 +2,28 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-Current release: **0.7.0 — External Developer Readiness**
+This checkout's source and package metadata are the **0.7.1 — Trustworthy Local
+Tracing** release candidate, which is not yet merged, tagged, or published.
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
 ## Distribution status
 
-Install the released SDK and CLI from production PyPI:
+Production PyPI currently publishes **sledtrace 0.7.0**:
 
 ```bash
 python -m pip install sledtrace==0.7.0
 ```
+
+After the 0.7.1 candidate described in this README is published, install it with:
+
+```bash
+python -m pip install sledtrace==0.7.1
+```
+
+Until then, use "Install from source for development" below to run the 0.7.1
+candidate APIs (such as `t.measure()` and `try_flush()`) documented further down
+in this README.
 
 The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
 
@@ -50,38 +61,78 @@ sledtrace serve --help
 sledtrace version
 ```
 
-`sledtrace version` reports `0.7.0` for this release.
+`sledtrace version` reports `0.7.1` when installed from this source checkout's candidate; production PyPI currently reports `0.7.0`.
 
 `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
 ## Basic usage
 
+This example uses the 0.7.1 candidate's `t.measure()` and `t.try_flush()`,
+available from source or after 0.7.1 publication (see "Distribution status"
+above). Against the published `sledtrace==0.7.0` package, omit `t.measure()`
+and pass explicit `duration_ms`/`latency_ms` (or leave timing unset).
+
 ```python
 from sledtrace import trace
 
 with trace("example") as t:
-    t.retrieval(
-        query="What is the refund policy?",
-        chunks=[
+    with t.measure() as retrieval_timing:
+        chunks = [
             {
                 "id": "chunk-1",
                 "text": "Refunds are accepted within 30 days with proof of purchase.",
                 "score": 0.92,
+                "score_type": "similarity",
+                "score_direction": "higher_is_better",
                 "metadata": {"source": "refund_policy.md"},
             }
-        ],
+        ]
+
+    t.retrieval(
+        query="What is the refund policy?",
+        chunks=chunks,
         top_k=1,
+        timing=retrieval_timing,
     )
+
+    with t.measure() as llm_timing:
+        answer = "Refunds are accepted within 30 days with proof of purchase."
 
     t.llm(
         model="demo-model",
         prompt="Question: What is the refund policy?",
-        response="Refunds are accepted within 30 days with proof of purchase.",
+        response=answer,
         provider="local-demo",
+        timing=llm_timing,
     )
 
 t.flush()
 ```
+
+`t.flush()` is the existing strict delivery path and still raises on
+serialization, timeout, HTTP, or connection failures. Applications that must
+keep telemetry failure separate from business behavior can opt into the
+observable best-effort path:
+
+```python
+delivery = t.try_flush()
+if not delivery.ok:
+    print(f"SledTrace delivery failed: {delivery.error!r}")
+```
+
+`try_flush()` returns `TraceFlushResult(ok, response, error)`. It performs one
+synchronous attempt with the same URL/timeout options as `flush()`; it does not
+retry, queue, log automatically, or catch `KeyboardInterrupt`/`SystemExit`.
+
+`t.measure()` captures actual operation timing. Calls recorded only after the work, without `timing`, `duration_ms` for retrieval, or `latency_ms` for LLM, remain compatible and are shown as not measured.
+
+For retriever-native results, use `normalize_chunk(...)` or `normalize_chunks(...)`.
+The normalizer preserves `score_type` and `score_direction`: named distances are
+lower-is-better, named similarity/relevance scores are higher-is-better, and
+ambiguous tuple scores are unknown. SledTrace never assumes a universal
+`1 - distance` conversion. Explicit custom mappings can set `score_type` and
+`score_direction`; existing explicit `score=` mappings remain higher-is-better by
+default for compatibility.
 
 ## Collector URL configuration
 
@@ -124,6 +175,7 @@ from sledtrace import trace
 - [Full project README and screenshots](https://github.com/Schromeo/SledTrace#readme)
 - [User onboarding guide](https://github.com/Schromeo/SledTrace/blob/main/docs/product/USER_ONBOARDING.md)
 - [Python SDK integration guide](https://github.com/Schromeo/SledTrace/blob/main/docs/integrations/PYTHON_SDK_GUIDE.md)
+- [v0.7.1 release notes](https://github.com/Schromeo/SledTrace/blob/main/docs/releases/V0_7_1.md)
 - [v0.7.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
 Repository examples such as `examples.custom_pipeline_demo` are local developer examples and not a separate public SDK surface.

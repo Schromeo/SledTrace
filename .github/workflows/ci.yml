@@ -98,5 +98,8 @@ jobs:
       - name: Install Dashboard dependencies
         run: npm ci
 
+      - name: Run Dashboard timing tests
+        run: npm test
+
       - name: Build Dashboard
         run: npm run build
