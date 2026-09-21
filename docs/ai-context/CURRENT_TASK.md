@@ -1,84 +1,77 @@
 # Current Task
 
-Updated: 2026-09-11. Status: **v0.7.1 candidate PR #3 is open; local, clean-clone, visible UI, and all required remote checks pass**.
+Updated: 2026-09-15. Status: **H0 locally implemented and validated; E1 is next**.
 
-## Current focus and authority
+## Baseline and authority
 
-The user selected **v0.7.1 — Trustworthy Local Tracing** as the patch release
-candidate for the four completed post-v0.7 reliability slices:
+HEAD remains 1e77338 on codex/b2-independent-app-integration.
+The worktree contains the previous roadmap documentation and this H0 slice;
+neither was committed or published in this turn. Latest confirmed release is
+v0.7.0; remote PR/publication state was not refreshed.
 
-- S1 timing: local commit `5b5d254`
-- S2 score semantics: local commit `ee0a812`
-- S3 trace delivery policy: local commit `6562dc3`
-- S4 local network defaults: local commit `fc85bda`
+The user adopted incremental development under ROAD_TO_V1_0 and explicitly
+requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout after each slice.
+This authorizes bounded implementation, not every future feature or release.
 
-The active branch is `codex/v0.7.1-reliability`; PR
-[#3](https://github.com/Schromeo/SledTrace/pull/3) targets `main`. The user
-authorized preparing, pushing, and opening the candidate pull request. This does
-not authorize merging, tagging, PyPI publication, a GitHub Release, or v0.8
-implementation. v0.7.0 remains the latest published release until the complete
-protected release path is proven.
+## H0 outcome and self-check
 
-## Candidate decision card
+- Replaced confidence percentages with heuristic labeling and language/domain
+  applicability guidance. Zero warnings explicitly does not confirm correctness.
+- Preserved raw API confidence, legacy enhanced-layout selection, evidence,
+  severity, numeric comparisons and recommended actions.
+- Added six focused warning normalization/compatibility/guidance tests.
+  Dashboard now passes 16 tests; production build passed after a sandbox-only
+  esbuild directory denial was resolved by a normal-permission rerun.
+- Real Collector/SDK/browser checks covered confidence 0.88, null confidence,
+  evidence/actions, and a genuine zero-warning fixture. No percentage badges
+  appeared. Malformed/legacy payload behavior is covered by unit tests, not
+  claimed as a separate full browser automation suite.
+- Refreshed the README conflict screenshot and explicitly labeled the retained
+  older grounding screenshot. Exact commands/evidence are in DEVLOG.
+- No SDK, Go, schema, warning-rule, dependency or version changes.
+  No blocker remains for H0; do not reopen it for cosmetic work.
 
-| Question | Current answer |
+Preview was left at http://127.0.0.1:5174/ with Collector 4320, using a temporary
+database. Verify it is still running before reuse; the original database was
+not touched.
+
+## Next implementation slice: E1 — existing LLM usage visibility
+
+| Decision-card question | Answer |
 | --- | --- |
-| User value | Deliver four evidence/reliability fixes to existing users as one reviewable patch without mixing in speculative product expansion. |
-| Confirmed blocker | S1-S4 existed only as local commits with 0.7.0 metadata and no combined artifact, release notes, clean-clone result, or remote CI evidence. |
-| Existing capability | Protected main, cross-stack CI, tag-gated Trusted Publishing, clean-wheel validation, reference traces, and a repeatable release checklist already exist. |
-| Smallest deliverable | Align source metadata to 0.7.1, add release notes, refresh materially changed screenshots, complete local/clean-clone validation, then push and open one PR. |
-| Non-goals | No merge, tag, package upload, GitHub Release, v0.8 feature, auth/cloud, new span, adapter, retry queue, or unrelated dependency fix. |
-| Validation | Python tests/build/Twine/clean wheel; all Go tests; npm clean install/tests/build; Compose expansion; clean-clone source startup; live browser inspection; required PR checks. |
-| Visible evidence | Nine deterministic 0.7.1 traces and refreshed real Dashboard images show `Not measured` and explicit score direction. |
+| User value | Identify which recorded LLM call accounts for known tokens/time and see measurement gaps. |
+| Confirmed blocker | Current llm metadata stores input/output/total tokens, but the Dashboard has no per-call ledger or known subtotal. |
+| Existing capability | LLM span metadata, prompt/response viewer, measured/unknown timing and trace detail API. |
+| Smallest deliverable | Add a compact per-call usage view and known subtotal/coverage in the existing detail page; navigate to the selected call using existing span selection. |
+| Non-goals | No tool/agent spans, automatic provider capture, pricing service, A/B comparison, new runtime, full graph, version or release. |
+| Validation | Focused usage aggregation/presentation tests; Dashboard tests/build; one real multi-LLM trace and one partial-data trace in the browser; diff and documentation checks. |
+| Visible evidence | Hand-checkable per-call counts/subtotal, unknown data shown explicitly, selected call prompt/response visible. |
+| Budget and stopping | About 1–2 focused development days. Stop when the existing-data ledger is useful and verified; defer additional charts and provider integrations. |
 
-## Prepared candidate
+Acceptance:
 
-- Python package, preferred and legacy import versions, CLI, payload metadata,
-  User-Agent, examples, test expectations, and wheel validator use `0.7.1`.
-- Dashboard `package.json` and lockfile use `0.7.1`.
-- Root README distinguishes the v0.7.1 source candidate from latest published
-  v0.7.0. Package README contains intended 0.7.1 artifact content.
-- `docs/releases/V0_7_1.md` records the four changes, compatibility constraints,
-  remote-network upgrade note, validation, and explicit non-goals.
-- All three README screenshots were recaptured from a clean temporary database
-  populated with nine deterministic reference traces from current source.
+1. Show input/output/total values per recorded LLM call, model and measured/unknown
+   duration. If usage provenance is absent, label it unknown instead of claiming
+   provider-verified counts.
+2. Preserve zero versus missing/invalid values. Total-only records do not invent
+   input/output splits; conflicting totals must not silently create a confident
+   aggregate.
+3. Label aggregates as known subtotals with coverage for observed calls, not all
+   calls the uninstrumented application may have made. Do not double-count a
+   supplied total and its components.
+4. Old traces with no usage remain readable. Unknown data cannot look like a
+   free/fast operation, and span durations are not summed as task wall time.
+5. Selecting a call reveals its existing prompt/response or honest missing state.
+6. Complete self-review, relevant tests, visible evidence and DEVLOG/CURRENT_TASK/
+   ROADMAP updates before handing off. No automatic continuation into E2.
 
-## Local validation completed
+## Deferred findings and guardrails
 
-- [x] `cd sdk/python && pytest -q`: 62 passed.
-- [x] `cd sdk/python && python -m build`: 0.7.1 wheel/sdist built.
-- [x] `cd sdk/python && python -m twine check dist/*`: 0.7.1 artifacts passed.
-- [x] `cd sdk/python && python scripts/validate-wheel.py`: passed in a clean
-  temporary venv, including imports, version, CLI, timing, scores, delivery, and
-  out-of-checkout `serve` behavior.
-- [x] `cd collector/go && go test ./... -count=1`: all packages passed.
-- [x] `cd dashboard/web && npm.cmd ci`: passed.
-- [x] `cd dashboard/web && npm.cmd test`: 10 passed.
-- [x] `cd dashboard/web && npm.cmd run build`: passed; 38 modules transformed.
-- [x] Default and explicit-remote `docker compose config` expansion passed.
-- [x] Live non-Docker loopback stack stored and displayed nine reference traces.
-- [x] Three 1440x950 Dashboard screenshots refreshed and visually inspected.
-- [x] Clean clone of release-prep commit `25521d4` installed Dashboard
-  dependencies and SDK 0.7.1 in a new venv.
-- [x] Installed clean-clone `sledtrace serve` started loopback Collector and
-  Dashboard; health, HTTP, conflict trace round trip, UI detail, and clean Git
-  status passed.
-- [x] PR #3 Python 3.9, Python 3.13, Go Collector, and Dashboard checks passed.
-- [x] `git diff --check`: passed with Windows line-ending warnings only.
+Only retrieval/llm spans exist. Parent storage fields are already present, but
+Python writes None; automatic usage capture and pricing are future work.
 
-Environment notes:
+During H0, a no-retrieval fixture triggered the current no_retrieved_chunks rule.
+E2 must review RAG-rule applicability before claiming general agent support.
+Do not change warning rules as an incidental E1 fix.
 
-- The restricted build initially could not bootstrap its isolated environment;
-  the same build passed with normal temporary-directory/package-index access.
-- Host Python lacked Twine, so Twine 7.0.0 was installed only into a system
-  temporary directory for validation.
-- `npm ci` re-reported four known development-dependency advisories: one
-  moderate and three high. No automatic audit fix entered this candidate.
-- Docker runtime remains untested on this WSL2-disabled host. Static Compose
-  expansion is not being represented as a container startup smoke.
-
-## Remaining gates
-
-Stop at the open, green candidate PR. Merge, tag, package publication,
-production-index validation, and GitHub Release require a separate release-stage
-decision.
+Full plan and later gates: [ROAD_TO_V1_0](../product/ROAD_TO_V1_0.md).

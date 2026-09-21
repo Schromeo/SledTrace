@@ -8,6 +8,12 @@ import {
   getDurationMs,
   getTraceDurationMs,
 } from "../utils/timing";
+import {
+  hasEnhancedWarning,
+  normalizeWarning,
+  NO_WARNINGS_MESSAGE,
+  WARNING_GUIDANCE,
+} from "../utils/warnings";
 import type {
   Chunk,
   EvidenceItem,
@@ -154,9 +160,10 @@ export default function TraceDetailPage({ traceId }: Props) {
           />
 
           <h3>Warnings</h3>
+          <p className="warning-help">{WARNING_GUIDANCE}</p>
           {detail.warnings.length === 0 ? (
             <div className="empty-card compact">
-              No warnings generated for this trace.
+              {NO_WARNINGS_MESSAGE}
             </div>
           ) : (
             <div className="warning-list">
@@ -172,17 +179,15 @@ export default function TraceDetailPage({ traceId }: Props) {
                   {hasEnhancedWarning(warning) ? (
                     <>
                       <div className="warning-meta-row">
+                        <span className="warning-meta-badge warning-meta-badge-secondary">
+                          Heuristic
+                        </span>
                         {warning.category ? (
                           <span className="warning-meta-badge">
                             {warning.category}
                           </span>
                         ) : null}
 
-                        {hasNumericConfidence(warning.confidence) ? (
-                          <span className="warning-meta-badge warning-meta-badge-secondary">
-                            {formatConfidence(warning.confidence)}
-                          </span>
-                        ) : null}
                       </div>
 
                       <p>{warning.explanation || warning.message}</p>
@@ -319,44 +324,6 @@ function getChunks(span: Span): Chunk[] {
   }
 
   return raw as Chunk[];
-}
-
-function normalizeWarning(warning: Warning): Warning {
-  return {
-    ...warning,
-    details: warning.details ?? {},
-    confidence: hasNumericConfidence(warning.confidence)
-      ? warning.confidence
-      : null,
-    evidence: warning.evidence ?? [],
-    diagnostics: warning.diagnostics ?? [],
-    signals: warning.signals ?? [],
-  };
-}
-
-function hasNumericConfidence(
-  confidence: Warning["confidence"],
-): confidence is number {
-  return typeof confidence === "number" && Number.isFinite(confidence);
-}
-
-function formatConfidence(confidence: number): string {
-  const percent = confidence >= 0 && confidence <= 1
-    ? confidence * 100
-    : confidence;
-
-  return `${Math.round(percent)}% confidence`;
-}
-
-function hasEnhancedWarning(warning: Warning): boolean {
-  return Boolean(
-    warning.schema_version ||
-      warning.title ||
-      warning.category ||
-      hasNumericConfidence(warning.confidence) ||
-      warning.explanation ||
-      (warning.evidence?.length ?? 0) > 0,
-  );
 }
 
 function getWarningTitle(warning: Warning): string {

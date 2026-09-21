@@ -1,13 +1,14 @@
 # AI Handoff
 
-Last reviewed: 2026-09-11 on branch `codex/v0.7.1-reliability`, based on local S4 commit `fc85bda`, S3 commit `6562dc3`, S2 commit `ee0a812`, S1 commit `5b5d254`, and released-main baseline `906fd2999a86fac5abb538cb83ee16b79ce4cda8`.
-This snapshot distinguishes released behavior from the v0.7.1 candidate. S1-S4 and release-prep commit `25521d4` are pushed in PR [#3](https://github.com/Schromeo/SledTrace/pull/3); version/release metadata, local cross-stack validation, clean-clone startup, live Dashboard evidence, refreshed screenshots, and all four required PR checks pass. Nothing is merged, tagged, published, or released.
+Last local review: 2026-09-15 at HEAD `1e77338` on `codex/b2-independent-app-integration`, plus uncommitted planning and H0 changes. B1 improves source startup; B2 proves copied independent-app behavior from the built wheel. H0 is locally validated: Dashboard no longer presents raw confidence as a calibrated probability. Execution evidence is in DEVLOG; CURRENT_TASK owns E1 next. Remote release state was not refreshed.
+This snapshot distinguishes released behavior from the v0.7.1 candidate and subsequent local B1/B2 work. PR [#3](https://github.com/Schromeo/SledTrace/pull/3) is open at `1ab83ef` with all four checks passing (verified 2026-09-14). B1/B2 are not part of that remote PR. None of the candidate, B1, or B2 is merged or published.
 
 ## Read this first
 
-- [NEXT_AGENT_BRIEF.md](NEXT_AGENT_BRIEF.md): Chinese handover addressed to the next assistant, expected to be GPT-5.6.
+- [NEXT_AGENT_BRIEF.md](NEXT_AGENT_BRIEF.md): concise Chinese entry for any incoming assistant.
 - [CURRENT_TASK.md](CURRENT_TASK.md): the recommended first implementation slice, acceptance criteria, and stopping point.
 - [ROADMAP.md](ROADMAP.md): candidate sequence and milestone-selection gates.
+- [ROAD_TO_V1_0.md](../product/ROAD_TO_V1_0.md): detailed product hypotheses, slices, acceptance gates, and stopping rules; a proposed plan, not implemented scope.
 - [DECISIONS.md](DECISIONS.md): rationale and historical decisions.
 - [DEVLOG.md](DEVLOG.md): chronological work and validation evidence.
 
@@ -43,12 +44,14 @@ Python trace() -> retrieval / llm records -> explicit flush()
 - The wheel contains SDK/CLI only. `sledtrace serve` requires a source checkout; it does not install or bundle Collector/Dashboard runtime assets.
 - API routes: `GET /health`, `POST /api/traces`, `GET /api/traces`, `GET /api/traces/{trace_id}`.
 - Implemented spans are only `retrieval` and `llm`. No agent/tool/memory/retry spans, streaming lifecycle, or partial ingestion.
+- `llm()` already stores supplied input/output/total token metadata. It does not automatically capture provider usage, calculate a complete cost ledger, or distinguish failed LLM attempts through a public status argument. Each response currently updates the trace answer.
+- The wire/Go/SQLite model already has `parent_span_id`; current Python retrieval/LLM methods set it to None. Extend deliberately if a selected workflow needs nesting; do not invent a missing-storage-field migration.
 - Seven warning rules exist: no retrieved chunks, low retrieval score, duplicates, weak query/chunk overlap, conflicting chunks, numeric mismatch, and answer not grounded.
 - Grounding/conflict diagnostics are deterministic heuristics, not semantic factuality evaluation. No framework adapters, cloud/auth service, or LLM-as-judge are implemented.
 
 ## Evidence from the 2026-09-10 read-only review
 
-All findings below were unfixed at the released baseline. Timing, score semantics, trace delivery policy, and local network defaults are resolved in local S1-S4 commits. The others remain unfixed. Code locations are relative to the repository; use symbols because line numbers will change.
+All findings below were unfixed at the released baseline. Timing, score semantics, trace delivery policy, and local network defaults are resolved in local S1-S4 commits; misleading confidence presentation is resolved in local H0 work. The other findings remain open. Code locations are relative to the repository; use symbols because line numbers will change.
 
 | Finding | Evidence and qualification | Code entry point |
 | --- | --- | --- |
@@ -57,12 +60,12 @@ All findings below were unfixed at the released baseline. Timing, score semantic
 | Distance was treated as relevance score — **resolved locally in S2** | Normalization now preserves metric type/direction. Named distance is lower-is-better, ambiguous tuples are unknown, explicit mappings can declare semantics, and only higher-is-better/legacy scores enter the threshold and score ordering. Dashboard labels the distinction. | `sdk/python/raglens/chunks.py`; `engine.go`: `higherIsBetterScore`; `scoreSemantics.ts` |
 | Trace delivery could replace successful work or an application exception — **resolved locally in S3** | Strict `flush()` remains unchanged. Explicit `try_flush()` performs one synchronous attempt and returns `TraceFlushResult(ok, response, error)` for ordinary failures, without retry/queue/logging. `BaseException` still propagates. | `sdk/python/raglens/trace.py`: `TraceFlushResult`, `flush`, `try_flush` |
 | Rule generality is unproven | Tokenization uses `[^a-z0-9]+`, topics focus on English store policies, and numeric extraction handles limited integer/range/unit forms. The 13 warning tests reviewed focus on that domain; no measured multilingual or cross-domain accuracy is established. | `engine.go`: `nonWordRegex`, numeric/topic helpers; `engine_test.go` |
-| Percentage confidence is not calibrated | Some confidence values are constants such as 0.75, 0.88, and 0.9, rendered as percentage confidence. No calibration dataset was found. | `engine.go`: warning construction; `TraceDetailPage.tsx`: `formatConfidence` |
+| Percentage confidence is not calibrated — **presentation resolved locally in H0** | The raw constants remain in the API for compatibility; UI now uses heuristic guidance and applicability limits without a percentage. Evidence/severity/actions remain. No calibration or general accuracy claim was added. | `engine.go`: warning construction; `TraceDetailPage.tsx`; `utils/warnings.ts` |
 | Local defaults expose more than loopback — **resolved locally in S4** | Native Collector and Vite defaults bind loopback; Compose publishes host ports on loopback while retaining container-internal listeners; CORS allows exact configured origins. Explicit address, host, origin, and client URL settings preserve intentional remote use. | `cmd/sledtrace-collector/main.go`, `internal/api/handlers.go`, `dashboard/web/package.json`, `docker-compose.yml` |
 | Persistence/retry boundary needs a separate reliability slice | Trace/spans commit before warnings in another transaction. A later write failure can leave partial state; resending hits existing primary keys. This follows from code; no fault-injection test ran in the review. | `handlers.go`: `handlePostTrace`; `sqlite.go`: `SaveTracePayload`, `SaveWarnings` |
 | Repeated debugging is limited | List is capped at latest 100 without pagination; no baseline comparison or trace deep link; evidence preview shows only two items without chunk navigation. | `sqlite.go`: `ListTraces`; `dashboard/web/src/App.tsx`, page components |
 
-S1-S4 are locally complete, with the active validation in CURRENT_TASK. The remaining findings are a prioritized candidate backlog, not instructions to fix everything in one pass.
+S1-S4 candidate validation is recorded in DEVLOG (2026-09-11). B1 closes the reproduced partial-startup cleanup gap and adds dependency/port/readiness checks. B2 adds a copied external application check for success, business exception, and Collector-offline behavior from the built wheel, plus installation-aware empty-state guidance. DEVLOG records the completed tests. The remaining findings are a prioritized candidate backlog, not instructions to fix everything in one pass.
 
 ## Validation already completed versus still needed
 
@@ -87,6 +90,13 @@ S4 local validation on 2026-09-11: all Go tests, ten Dashboard tests, Dashboard 
 
 v0.7.1 candidate validation on 2026-09-11: 62 Python tests, wheel/sdist build, Twine metadata check, clean-wheel install/API/CLI validation at version 0.7.1, all Go tests, ten Dashboard tests, Dashboard 0.7.1 production build, Compose default/remote expansion, nine live reference traces, and three refreshed 1440x950 Dashboard screenshots passed. A clean clone of `25521d4` also passed npm install, editable SDK install, installed CLI version/startup, loopback listeners, health/Dashboard HTTP, reference trace round trip, and clean Git status. PR #3 passed Python 3.9, Python 3.13, Go Collector, and Dashboard checks.
 
+B1/B2 local validation on 2026-09-14: 18 startup tests, 62 SDK tests,
+wheel/sdist build, existing clean-wheel validation, copied independent-app
+validation, all Go packages, ten Dashboard tests, and Dashboard production build
+passed. A separate temporary venv installed the wheel and sent real ok/error
+traces from a copied file; API readback and the actual Dashboard confirmed them.
+No B1/B2 remote CI has run, and this internal evidence is not an external tester.
+
 Environment facts last observed:
 
 - Local host is Windows/PowerShell. Use `npm.cmd` where needed.
@@ -101,7 +111,13 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user authorized v0.7.1 candidate preparation and PR creation on 2026-09-11. This does not authorize merging, tagging, package publication, a GitHub Release, or v0.8 implementation. Use CURRENT_TASK for the remaining clean-clone and PR checks, and keep v0.7.0 as the released version until publication is proven.
+The user adopted incremental development under the roadmap on 2026-09-15 and requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0 is locally complete; E1 usage visibility from existing data is next, followed by one agent path, conservative signals and outcome-aware comparison. Broad RAG tuning stays behind that value experiment. Later runtime, privacy/data controls and release reliability remain gated. Publication is separate; keep v0.7.0 as the latest confirmed release until newer publication is proven.
+
+H0 browser evidence used an isolated loopback Collector 4320/Dashboard 5174 and
+temporary database, not the user's existing data. The preview was left available
+for inspection; verify liveness before reusing it. A no-retrieval fixture generated
+the existing no_retrieved_chunks warning even without a retrieval span. Before E2
+claims non-RAG agent support, review rule applicability; this is not a new H0 fix.
 
 For scope that changes architecture or publication, inspect DECISIONS and the current user instruction. Preserve prior authorization where it actually applies, and never bypass protected branch or deployment rules.
 
