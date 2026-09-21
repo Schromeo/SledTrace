@@ -1,0 +1,71 @@
+{
+  "commands": {
+    "diff-check": {
+      "cwd": ".",
+      "argv": ["git", "diff", "--check"]
+    },
+    "dashboard-test": {
+      "cwd": "dashboard/web",
+      "argv": ["npm", "test"],
+      "windows_argv": ["npm.cmd", "test"]
+    },
+    "dashboard-build": {
+      "cwd": "dashboard/web",
+      "argv": ["npm", "run", "build"],
+      "windows_argv": ["npm.cmd", "run", "build"]
+    },
+    "sdk-test": {
+      "cwd": "sdk/python",
+      "argv": ["{python}", "-m", "pytest", "-q"]
+    },
+    "sdk-build": {
+      "cwd": "sdk/python",
+      "argv": ["{python}", "-m", "build"]
+    },
+    "sdk-wheel": {
+      "cwd": "sdk/python",
+      "argv": ["{python}", "scripts/validate-wheel.py"]
+    },
+    "sdk-independent-app": {
+      "cwd": "sdk/python",
+      "argv": ["{python}", "scripts/validate-independent-app.py"]
+    },
+    "collector-test": {
+      "cwd": "collector/go",
+      "argv": ["go", "test", "./...", "-count=1"]
+    },
+    "startup-test": {
+      "cwd": ".",
+      "argv": ["{python}", "-B", "-m", "unittest", "discover", "-s", "scripts/tests", "-v"]
+    },
+    "agent-harness-test": {
+      "cwd": ".",
+      "argv": ["{python}", "scripts/dev/test_slice.py", "-v"]
+    }
+  },
+  "profiles": {
+    "docs": ["diff-check"],
+    "agent-harness": ["agent-harness-test", "diff-check"],
+    "dashboard": ["dashboard-test", "dashboard-build", "diff-check"],
+    "sdk": ["sdk-test", "diff-check"],
+    "collector": ["collector-test", "diff-check"],
+    "cross-stack": [
+      "sdk-test",
+      "collector-test",
+      "dashboard-test",
+      "dashboard-build",
+      "diff-check"
+    ],
+    "release": [
+      "sdk-test",
+      "startup-test",
+      "sdk-build",
+      "sdk-wheel",
+      "sdk-independent-app",
+      "collector-test",
+      "dashboard-test",
+      "dashboard-build",
+      "diff-check"
+    ]
+  }
+}

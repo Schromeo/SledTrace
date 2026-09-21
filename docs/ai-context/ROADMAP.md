@@ -16,17 +16,20 @@ Future scope is not implemented capability or blanket authorization.
 ### Current facts
 
 - Latest confirmed published release: v0.7.0, published 2026-09-09.
-- S1–S4: locally complete; selected v0.7.1 candidate PR #3 was open with required
-  checks passing when last verified on 2026-09-14. Publication is not established.
-- B1 source startup and B2 independent-app integration: locally complete; HEAD
-  1e77338 on codex/b2-independent-app-integration, verified 2026-09-15.
+- S1–S4: merged through PR #3 as `272bc56`; publication is not established.
+- B1 source startup, B2 independent-app integration and H0 honest diagnostic
+  presentation: merged through PR #5 as `e8b034d` after its four required checks
+  passed on 2026-09-20.
 - Only retrieval and llm spans are implemented. Existing token metadata is not a
   complete usage ledger; the wheel still does not contain a standalone runtime.
 - No independent external first-run or repeat-use evidence is recorded.
-- H0 is locally validated in the working tree: heuristic guidance replaces
-  probability badges, evidence/actions remain visible, and zero warnings is not
-  described as a correctness verdict. See DEVLOG for tests and browser evidence.
-- The H0 pass did not refresh remote release state. Sequence remains unchanged.
+- D0 workflow harness is complete and review-ready in PR #6 without changing the
+  product sequence. Its CURRENT_TASK contract now describes D0 itself so the
+  committed PR range passes the repository scope check. E1 remains unstarted.
+- PR #3 and PR #5 are merged. PR #6 is normalized directly onto current `main` as
+  the D0-only review layer. Cumulative PR #4 remains closed as superseded; this
+  changes review topology, not milestone sequence.
+- These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
 
@@ -50,8 +53,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns E1 and its stop point. H0 has been handed off;
-do not reopen it for cosmetic optimization. No agent runtime, automatic
+[CURRENT_TASK](CURRENT_TASK.md) owns the D0 review boundary and records E1 as the
+next candidate after D0's merge decision. H0 has been handed off; do not reopen
+it for cosmetic optimization. No agent runtime, automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.
 

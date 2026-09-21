@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. B1/B2 are locally complete at HEAD `1e77338`; H0 honest diagnostic presentation is locally validated in the working tree. CURRENT_TASK selects E1 existing-token visibility next. New agent/tool/compare/runtime capabilities are planned, not implemented or authorized en masse. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) was open with passing checks when last verified on 2026-09-14; no newer publication is established here.
+Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. The v0.7.1 reliability work and B1/B2/H0 integration are merged on `main`; D0 repository workflow infrastructure is the current review-ready slice in PR #6. CURRENT_TASK records D0 until its merge decision and names E1 existing-token visibility as the next candidate, not started work. New agent/tool/compare/runtime capabilities are planned, not implemented or authorized en masse. No newer publication than v0.7.0 is established here.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
@@ -34,6 +34,12 @@ historical milestones before every small change.
 Use the repository and these documents as the source of truth.
 Do not assume old milestone information from this file overrides the current AI context documents.
 
+For implementation, use `.agents/skills/sledtrace-slice/SKILL.md` and the active
+CURRENT_TASK metadata. Use `python scripts/dev/slice.py status`, `scope`, and
+`check` instead of rediscovering validation commands. For review, use
+`.agents/skills/sledtrace-review/SKILL.md`. The skills contain workflow detail;
+keep this standing file concise.
+
 CURRENT_TASK owns the next slice and its acceptance criteria. AI_HANDOFF owns the current snapshot and known findings. ROADMAP owns candidate sequencing; DECISIONS owns rationale; DEVLOG owns historical execution evidence. Avoid duplicating long release histories across active documents or rereading historical sections for every small change.
 
 ## Pre-Implementation Decision Gate
@@ -49,6 +55,11 @@ Before each implementation slice, state a compact decision card covering:
 7. user-visible evidence
 
 Do not start implementation until these points form a coherent shortest path to the requested outcome.
+
+Only one CURRENT_TASK slice may be active. Implementation agents stop at a
+validated, documented, review-ready state; they never automatically start the
+next slice. Public API/schema/span-family changes and external/release/security
+actions remain subject to CURRENT_TASK's human gates.
 
 Keep one primary outcome per slice. Record newly discovered non-blocking work instead of following it immediately. After validation and documentation, stop and reassess the next slice rather than continuing through an old plan by inertia.
 
