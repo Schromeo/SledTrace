@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. B1/B2 are locally complete at HEAD `1e77338`; H0 honest diagnostic presentation is locally validated in the working tree. CURRENT_TASK selects E1 existing-token visibility next. New agent/tool/compare/runtime capabilities are planned, not implemented or authorized en masse. The separate v0.7.1 candidate PR [#3](https://github.com/Schromeo/SledTrace/pull/3) was open with passing checks when last verified on 2026-09-14; no newer publication is established here.
+Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. The v0.7.1 reliability work and B1/B2/H0 integration are merged on `main`; D0 repository workflow infrastructure is the current review-ready slice in PR #6. CURRENT_TASK records D0 until its merge decision and names E1 existing-token visibility as the next candidate, not started work. New agent/tool/compare/runtime capabilities are planned, not implemented or authorized en masse. No newer publication than v0.7.0 is established here.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 

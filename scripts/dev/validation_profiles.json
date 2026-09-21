@@ -37,10 +37,15 @@
     "startup-test": {
       "cwd": ".",
       "argv": ["{python}", "-B", "-m", "unittest", "discover", "-s", "scripts/tests", "-v"]
+    },
+    "agent-harness-test": {
+      "cwd": ".",
+      "argv": ["{python}", "scripts/dev/test_slice.py", "-v"]
     }
   },
   "profiles": {
     "docs": ["diff-check"],
+    "agent-harness": ["agent-harness-test", "diff-check"],
     "dashboard": ["dashboard-test", "dashboard-build", "diff-check"],
     "sdk": ["sdk-test", "diff-check"],
     "collector": ["collector-test", "diff-check"],

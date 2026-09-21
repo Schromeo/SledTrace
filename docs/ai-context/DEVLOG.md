@@ -1,5 +1,44 @@
 # Devlog
 
+## 2026-09-20 — Normalize D0 Candidate after PR #5 Merge
+
+Outcome: rebuilt the PR #6 candidate directly on current `origin/main` after
+PR #3 and PR #5 were squash-merged. The candidate retains the three validated
+D0 commits and adds only the minimum contract/documentation correction required
+for a truthful D0-only review. No product functionality, E1 work, release action
+or `main` rewrite occurred.
+
+Review findings and correction:
+
+- PR #6 still targeted the now-diverged PR #5 branch, so GitHub displayed 14
+  commits instead of the intended three D0 commits. A direct retarget would also
+  have reverted current README statements introduced by the merged history.
+- Replayed `459d762`, `b09803a` and `91610fe` without conflict onto `e8b034d`.
+  The effective candidate is exactly the 14 D0 workflow/documentation paths;
+  root and SDK README files are no longer part of the diff.
+- The prior CURRENT_TASK declared E1 active while `auto_continue` was false. Its
+  documented reviewer command, `slice.py scope --base origin/main`, therefore
+  rejected ten files in D0 itself. CURRENT_TASK now records D0 complete and
+  review-ready, E1 as the unstarted next candidate, and the exact D0 boundary.
+- Added the `agent-harness` validation profile and aligned harness tests with the
+  D0 contract. Historical validation entries below remain as point-in-time
+  evidence rather than being rewritten.
+
+Local validation on the normalized candidate:
+
+- `python scripts/dev/slice.py status` — exit 0; D0 complete, repository workflow
+  plus documentation, `agent-harness` profile, auto-continue false.
+- `python scripts/dev/slice.py scope --base origin/main` — exit 0; all 14 changed
+  paths accepted, zero violations.
+- `python scripts/dev/slice.py check` — exit 0; seven harness tests passed and
+  `git diff --check` passed. Windows printed line-ending conversion warnings only.
+
+Delivery state at this record: local normalization branch prepared; remote PR #6
+update and fresh CI are still required. PR #6 is not merged, and E1 remains
+unstarted.
+
+---
+
 ## 2026-09-15 — Normalize Stacked PR History
 
 Outcome: replaced the cumulative D0 review surface with an explicit three-layer

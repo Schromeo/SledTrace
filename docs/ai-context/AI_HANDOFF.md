@@ -1,18 +1,15 @@
 # AI Handoff
 
-Last repository-history normalization: 2026-09-15 on
-`codex/d0-agent-development-harness-clean`. The review stack is now explicit:
-PR [#3](https://github.com/Schromeo/SledTrace/pull/3) remains the unchanged
-v0.7.1 reliability candidate at `1ab83ef`; draft PR
-[#5](https://github.com/Schromeo/SledTrace/pull/5) contains exactly the four
-B1/B2/H0 prerequisite commits through `0fc1e00`; draft PR
-[#6](https://github.com/Schromeo/SledTrace/pull/6) contains the D0 harness above
-#5. The initial replacement runs passed all four checks on #5 and all five checks
-on #6. Cumulative PR [#4](https://github.com/Schromeo/SledTrace/pull/4) was
-closed as superseded after both replacements existed and passed; its branch was
-retained for provenance. No history was rewritten and nothing was merged,
-tagged, published, released, or advanced into E1. CURRENT_TASK still owns E1
-next. The latest confirmed release remains v0.7.0.
+Last repository-history refresh: 2026-09-20. PR
+[#3](https://github.com/Schromeo/SledTrace/pull/3) was squash-merged into `main`
+as `272bc56`; PR [#5](https://github.com/Schromeo/SledTrace/pull/5) passed its
+four required checks and was squash-merged as `e8b034d`. Draft PR
+[#6](https://github.com/Schromeo/SledTrace/pull/6) has a candidate normalized
+directly onto that current `main` so its review surface contains D0 only. Cumulative PR
+[#4](https://github.com/Schromeo/SledTrace/pull/4) remains closed as superseded,
+and its branch is retained for provenance. D0 is review-ready but unmerged; E1
+has not started. Nothing was tagged, published, or released, so the latest
+confirmed release remains v0.7.0.
 
 ## Read this first
 
@@ -123,7 +120,7 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user adopted incremental development under the roadmap on 2026-09-15 and requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0 is locally complete; E1 usage visibility from existing data is next, followed by one agent path, conservative signals and outcome-aware comparison. Broad RAG tuning stays behind that value experiment. Later runtime, privacy/data controls and release reliability remain gated. Publication is separate; keep v0.7.0 as the latest confirmed release until newer publication is proven.
+The user adopted incremental development under the roadmap on 2026-09-15 and requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0 is merged; D0 is the current review-ready slice. E1 usage visibility from existing data is the next candidate, followed by one agent path, conservative signals and outcome-aware comparison. Broad RAG tuning stays behind that value experiment. Later runtime, privacy/data controls and release reliability remain gated. Publication is separate; keep v0.7.0 as the latest confirmed release until newer publication is proven.
 
 D0 makes that workflow executable without changing product behavior:
 CURRENT_TASK has simple YAML metadata; `.agents/skills` contains implementation
@@ -134,10 +131,9 @@ skill. `scope` defaults to HEAD and therefore must run before commit.
 
 Automatic Copilot review was not configured remotely: GitHub CLI authentication
 for `Schromeo` was invalid during D0. Do not retry repeatedly. The maintainer's
-one-time Settings path is documented in AGENT_WORKFLOW. D0 replacement PR #6 is
-stacked on B1/B2/H0 integration PR #5, which is stacked on reliability candidate
-PR #3; none may be described as an isolated diff or merged without the relevant
-human authorization.
+one-time Settings path is documented in AGENT_WORKFLOW. PR #3 and PR #5 are now
+merged; D0 replacement PR #6 is normalized directly onto current `main` and must
+remain a D0-only diff. Its merge still requires the relevant human authorization.
 
 H0 browser evidence used an isolated loopback Collector 4320/Dashboard 5174 and
 temporary database, not the user's existing data. The preview was left available

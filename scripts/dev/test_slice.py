@@ -52,10 +52,12 @@ class MetadataTests(unittest.TestCase):
         metadata = slice_module.load_metadata(
             REPO_ROOT / "docs/ai-context/CURRENT_TASK.md"
         )
-        self.assertEqual(metadata["slice_id"], "E1")
-        self.assertEqual(metadata["slice_status"], "active")
-        self.assertEqual(metadata["components"], ["dashboard"])
-        self.assertEqual(metadata["validation_profile"], "dashboard")
+        self.assertEqual(metadata["slice_id"], "D0")
+        self.assertEqual(metadata["slice_status"], "complete")
+        self.assertEqual(
+            metadata["components"], ["repository_workflow", "documentation"]
+        )
+        self.assertEqual(metadata["validation_profile"], "agent-harness")
         self.assertFalse(metadata["auto_continue"])
 
         result = subprocess.run(
@@ -66,17 +68,18 @@ class MetadataTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(json.loads(result.stdout)["slice_id"], "E1")
+        self.assertEqual(json.loads(result.stdout)["slice_id"], "D0")
 
     def test_active_profile_resolves_without_duplicated_commands(self) -> None:
         profiles = slice_module.load_profiles(
             REPO_ROOT / "scripts/dev/validation_profiles.json"
         )
-        steps = slice_module.profile_steps("dashboard", profiles)
+        steps = slice_module.profile_steps("agent-harness", profiles)
         self.assertEqual(
             [step["name"] for step in steps],
-            ["dashboard-test", "dashboard-build", "diff-check"],
+            ["agent-harness-test", "diff-check"],
         )
+        self.assertIn("dashboard", profiles["profiles"])
         self.assertIn("cross-stack", profiles["profiles"])
         self.assertIn("release", profiles["profiles"])
 
