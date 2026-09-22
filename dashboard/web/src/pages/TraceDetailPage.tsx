@@ -9,6 +9,11 @@ import {
   getTraceDurationMs,
 } from "../utils/timing";
 import {
+  buildUsageLedger,
+  formatCallTotal,
+  formatTokenField,
+} from "../utils/usage";
+import {
   hasEnhancedWarning,
   normalizeWarning,
   NO_WARNINGS_MESSAGE,
@@ -21,6 +26,7 @@ import type {
   TraceDetailResponse,
   Warning,
 } from "../types";
+import type { CallTotal, LlmUsageCall, TokenField, UsageLedger } from "../utils/usage";
 
 type Props = {
   traceId: string;
@@ -80,6 +86,11 @@ export default function TraceDetailPage({ traceId }: Props) {
 
     return detail.spans.find((span) => span.span_id === selectedSpanId) ?? null;
   }, [detail, selectedSpanId]);
+
+  const usageLedger = useMemo(
+    () => buildUsageLedger(detail?.spans ?? [], getDurationMs),
+    [detail],
+  );
 
   if (loading) {
     return <div className="muted">Loading trace detail...</div>;
@@ -149,6 +160,12 @@ export default function TraceDetailPage({ traceId }: Props) {
           </div>
         </div>
       </div>
+
+      <UsageLedgerPanel
+        ledger={usageLedger}
+        selectedSpanId={selectedSpanId}
+        onSelectSpan={setSelectedSpanId}
+      />
 
       <div className="detail-grid">
         <div className="timeline-panel">
@@ -231,6 +248,162 @@ export default function TraceDetailPage({ traceId }: Props) {
       </div>
     </div>
   );
+}
+
+function UsageLedgerPanel({
+  ledger,
+  selectedSpanId,
+  onSelectSpan,
+}: {
+  ledger: UsageLedger;
+  selectedSpanId: string | null;
+  onSelectSpan: (spanId: string) => void;
+}) {
+  const subtotal =
+    ledger.coveredCalls > 0
+      ? ledger.knownSubtotal.toLocaleString("en-US")
+      : "Unknown";
+
+  return (
+    <section className="usage-panel" aria-labelledby="usage-ledger-heading">
+      <div className="usage-panel-header">
+        <div>
+          <div className="eyebrow">Observed execution usage</div>
+          <h3 id="usage-ledger-heading">LLM usage ledger</h3>
+          <p className="usage-help">
+            Known subtotal covers only observed calls with a trustworthy total.
+            Usage source is not provider-verified, and uninstrumented calls may
+            exist outside this trace.
+          </p>
+        </div>
+
+        <div className="usage-summary" aria-label="LLM usage summary">
+          <div>
+            <span>Known subtotal</span>
+            <strong>{subtotal}</strong>
+            <small>tokens</small>
+          </div>
+          <div>
+            <span>Coverage</span>
+            <strong>
+              {ledger.coveredCalls}/{ledger.observedCalls}
+            </strong>
+            <small>observed calls</small>
+          </div>
+          {ledger.conflictCalls > 0 ? (
+            <div className="usage-summary-alert">
+              <span>Conflicts</span>
+              <strong>{ledger.conflictCalls}</strong>
+              <small>excluded</small>
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {ledger.calls.length === 0 ? (
+        <div className="empty-card compact">
+          No LLM calls were recorded in this trace. Usage is unknown, not zero.
+        </div>
+      ) : (
+        <div className="usage-call-list">
+          {ledger.calls.map((call) => (
+            <UsageCallRow
+              key={call.spanId}
+              call={call}
+              selected={call.spanId === selectedSpanId}
+              onSelect={() => onSelectSpan(call.spanId)}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function UsageCallRow({
+  call,
+  selected,
+  onSelect,
+}: {
+  call: LlmUsageCall;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={selected ? "usage-call selected" : "usage-call"}
+      aria-pressed={selected}
+      onClick={onSelect}
+    >
+      <div className="usage-call-identity">
+        <span className="usage-call-order">Call {call.order}</span>
+        <strong>{call.name}</strong>
+        <span>{call.model}</span>
+      </div>
+
+      <UsageMetric label="Input" field={call.inputTokens} />
+      <UsageMetric label="Output" field={call.outputTokens} />
+      <UsageTotalMetric total={call.total} />
+
+      <div className="usage-metric">
+        <span>Duration</span>
+        <strong className={call.durationMs === null ? "usage-unknown" : ""}>
+          {formatDurationMs(call.durationMs)}
+        </strong>
+        <small>call timing</small>
+      </div>
+
+      <div className="usage-metric">
+        <span>Usage source</span>
+        <strong className="usage-unknown">Unknown</strong>
+        <small>not provider-verified</small>
+      </div>
+    </button>
+  );
+}
+
+function UsageMetric({ label, field }: { label: string; field: TokenField }) {
+  return (
+    <div className="usage-metric">
+      <span>{label}</span>
+      <strong className={getTokenStateClass(field.kind)}>
+        {formatTokenField(field)}
+      </strong>
+      <small>tokens</small>
+    </div>
+  );
+}
+
+function UsageTotalMetric({ total }: { total: CallTotal }) {
+  const detail =
+    total.kind === "known"
+      ? total.basis === "recorded_total"
+        ? "recorded total"
+        : "input + output"
+      : total.kind === "conflict"
+        ? "excluded from subtotal"
+        : "tokens";
+
+  return (
+    <div className="usage-metric usage-metric-total">
+      <span>Total</span>
+      <strong className={getTokenStateClass(total.kind)}>
+        {formatCallTotal(total)}
+      </strong>
+      <small>{detail}</small>
+    </div>
+  );
+}
+
+function getTokenStateClass(kind: TokenField["kind"] | CallTotal["kind"]): string {
+  if (kind === "known") {
+    return "";
+  }
+
+  return kind === "conflict" || kind === "invalid"
+    ? "usage-invalid"
+    : "usage-unknown";
 }
 
 function SelectedSpanView({ span }: { span: Span }) {

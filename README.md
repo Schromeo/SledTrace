@@ -10,8 +10,8 @@ SledTrace is designed for local development first. The default local demo is det
 
 Latest published release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
-Current source candidate: **v0.7.1 — Trustworthy Local Tracing**. It is not yet
-merged, tagged, or published.
+The **v0.7.1 — Trustworthy Local Tracing** source candidate is merged into
+`main`, but no v0.7.1 tag, package upload, or release has been published.
 
 Install the Python SDK from PyPI:
 
@@ -49,6 +49,15 @@ SledTrace shows local RAG traces with warning counts and demo case labels.
 
 ![Trace overview](docs/assets/screenshots/trace-list.png)
 
+### Observed LLM usage
+
+The trace detail view shows recorded token usage and timing for each observed
+LLM call. Its known subtotal counts only calls with a trustworthy recorded or
+derived total, reports coverage separately, and labels unavailable values as
+unknown rather than zero. Usage provenance is not provider-verified.
+
+![Observed per-call LLM usage ledger](docs/assets/screenshots/llm-usage-ledger.png)
+
 ### Conflicting retrieved context
 
 SledTrace can surface conflicting retrieved chunks, such as legacy and current refund policies that disagree.
@@ -83,6 +92,7 @@ The current local MVP supports:
 * trace detail view
 * retrieved chunks viewer
 * LLM prompt / response viewer
+* per-call observed LLM usage, known subtotal, coverage, and timing gaps
 * evidence-backed warning cards
 * diagnostic signals, evidence items, and recommended actions
 * numeric value comparison blocks for grounding diagnostics
