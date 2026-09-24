@@ -1,26 +1,23 @@
 ---
-slice_id: D0
+slice_id: E1
 slice_status: complete
 components:
-  - repository_workflow
+  - dashboard
   - documentation
-validation_profile: agent-harness
+validation_profile: dashboard
 scope_base: HEAD
 allowed_paths:
-  - .agents/skills/sledtrace-review/SKILL.md
-  - .agents/skills/sledtrace-slice/SKILL.md
-  - .github/copilot-instructions.md
-  - .github/workflows/ci.yml
-  - AGENTS.md
+  - README.md
+  - dashboard/web/src/pages/TraceDetailPage.tsx
+  - dashboard/web/src/style.css
+  - dashboard/web/src/utils/usage.ts
+  - dashboard/web/tests/usage.test.mjs
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
-  - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
-  - docs/development/AGENT_WORKFLOW.md
-  - scripts/dev/slice.py
+  - docs/assets/screenshots/llm-usage-ledger.png
   - scripts/dev/test_slice.py
-  - scripts/dev/validation_profiles.json
 human_gates:
   - public_api_change
   - persisted_schema_or_data_contract_change
@@ -34,105 +31,82 @@ auto_continue: false
 
 # Current Task
 
-Updated: 2026-09-20. Status: **D0 is complete and review-ready in PR #6; E1 is the next candidate and has not started**.
-
-## D0 outcome and review boundary
-
-D0 adds repository-native delivery mechanics without starting E1. Its completed
-scope is the machine-readable task contract, shared implementation/review skills,
-deterministic `status`/`scope`/`check` commands, declarative validation profiles,
-a lightweight CI contract job, Copilot instructions, and their documentation.
-
-PR #3 and PR #5 were squash-merged into `main` as `272bc56` and `e8b034d`.
-PR #6 is normalized directly onto that current `main` and contains only D0.
-Cumulative PR #4 remains closed as superseded and its branch is retained for
-provenance. PR #6 is not merged or released.
-Automatic Copilot review still requires the maintainer's one-time GitHub setting
-described in `docs/development/AGENT_WORKFLOW.md`.
+Updated: 2026-09-22. Status: **E1 is locally complete and review-ready — existing LLM usage is visible without changing collection contracts**.
 
 ## Baseline and authority
 
-The delivery branch for PR #6 is `codex/d0-agent-development-harness-clean`.
-Current `main` includes the v0.7.1 reliability and B1/B2/H0 integration commits,
-but no newer tag or PyPI publication is established: the latest confirmed release
-remains v0.7.0. D0 is review-ready repository infrastructure, not product or
-release functionality.
+PR #3, PR #5 and PR #6 were squash-merged into `main` as `272bc56`,
+`e8b034d` and `0a63e3d`. PR #4 remains closed as superseded and its branch is
+retained for provenance. The latest confirmed publication remains v0.7.0; none
+of these merges establishes a newer tag, package upload or release.
 
-The user adopted incremental development under ROAD_TO_V1_0 and explicitly
-requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout after each slice.
-This authorizes bounded implementation, not every future feature or release.
+The user authorized continued bounded development after D0 merged. This activates
+E1 only. It does not authorize E2, a public-contract change, a merge, versioning,
+publication or release.
 
-## D0 acceptance and stop point
+## E1 decision card
 
-1. PR #6 compares directly with current `main` and contains only the 14 declared
-   workflow/documentation paths.
-2. `status`, committed-range `scope`, the `agent-harness` validation profile and
-   the additive Slice Contract CI job pass without weakening the D0 boundary.
-3. Existing Python, Collector and Dashboard CI jobs remain present and unchanged
-   in purpose; no runtime product behavior, public API, schema or version changes.
-4. Documentation distinguishes merged, review-ready, released and future states.
-5. Stop after a review-ready PR and remote CI. Do not merge PR #6, begin E1, tag,
-   publish or release without the corresponding human decision.
-
-## H0 outcome and self-check
-
-- Replaced confidence percentages with heuristic labeling and language/domain
-  applicability guidance. Zero warnings explicitly does not confirm correctness.
-- Preserved raw API confidence, legacy enhanced-layout selection, evidence,
-  severity, numeric comparisons and recommended actions.
-- Added six focused warning normalization/compatibility/guidance tests.
-  Dashboard now passes 16 tests; production build passed after a sandbox-only
-  esbuild directory denial was resolved by a normal-permission rerun.
-- Real Collector/SDK/browser checks covered confidence 0.88, null confidence,
-  evidence/actions, and a genuine zero-warning fixture. No percentage badges
-  appeared. Malformed/legacy payload behavior is covered by unit tests, not
-  claimed as a separate full browser automation suite.
-- Refreshed the README conflict screenshot and explicitly labeled the retained
-  older grounding screenshot. Exact commands/evidence are in DEVLOG.
-- No SDK, Go, schema, warning-rule, dependency or version changes.
-  No blocker remains for H0; do not reopen it for cosmetic work.
-
-Preview was left at http://127.0.0.1:5174/ with Collector 4320, using a temporary
-database. Verify it is still running before reuse; the original database was
-not touched.
-
-## Next candidate after D0 merge decision: E1 — existing LLM usage visibility
-
-| Decision-card question | Answer |
+| Question | Answer |
 | --- | --- |
 | User value | Identify which recorded LLM call accounts for known tokens/time and see measurement gaps. |
-| Confirmed blocker | Current llm metadata stores input/output/total tokens, but the Dashboard has no per-call ledger or known subtotal. |
-| Existing capability | LLM span metadata, prompt/response viewer, measured/unknown timing and trace detail API. |
-| Smallest deliverable | Add a compact per-call usage view and known subtotal/coverage in the existing detail page; navigate to the selected call using existing span selection. |
-| Non-goals | No tool/agent spans, automatic provider capture, pricing service, A/B comparison, new runtime, full graph, version or release. |
-| Validation | Focused usage aggregation/presentation tests; Dashboard tests/build; one real multi-LLM trace and one partial-data trace in the browser; diff and documentation checks. |
-| Visible evidence | Hand-checkable per-call counts/subtotal, unknown data shown explicitly, selected call prompt/response visible. |
-| Budget and stopping | About 1–2 focused development days. Stop when the existing-data ledger is useful and verified; defer additional charts and provider integrations. |
+| Confirmed blocker | LLM metadata stores input/output/total tokens, but the Dashboard has no per-call ledger or trustworthy known subtotal. |
+| Existing capability | LLM span metadata, model/prompt/response fields, measured/unknown timing and existing span selection. |
+| Smallest deliverable | Add a Dashboard-only usage normalizer plus compact known-subtotal/coverage and per-call rows; selecting a row reuses the current span detail. |
+| Non-goals | No tool/agent spans, automatic provider capture, pricing service, A/B comparison, new backend contract, full graph, version or release. |
+| Validation | Focused usage tests, Dashboard tests/build, diff check, and browser inspection of one multi-LLM trace plus one partial-data trace. |
+| Visible evidence | Hand-checkable per-call values and known subtotal, explicit unknown/conflict states, and selected-call prompt/response. |
+| Budget and stop | About 1–2 focused development days. Stop at a validated, documented, review-ready E1 branch; do not continue into E2. |
 
-Acceptance:
+## Acceptance
 
-1. Show input/output/total values per recorded LLM call, model and measured/unknown
-   duration. If usage provenance is absent, label it unknown instead of claiming
-   provider-verified counts.
+1. Show input/output/total values per recorded LLM call, model and
+   measured/unknown duration. Usage provenance absent from current records is
+   labeled unknown rather than provider-verified.
 2. Preserve zero versus missing/invalid values. Total-only records do not invent
-   input/output splits; conflicting totals must not silently create a confident
-   aggregate.
-3. Label aggregates as known subtotals with coverage for observed calls, not all
-   calls the uninstrumented application may have made. Do not double-count a
-   supplied total and its components.
-4. Old traces with no usage remain readable. Unknown data cannot look like a
-   free/fast operation, and span durations are not summed as task wall time.
+   input/output splits; conflicting totals do not enter a confident aggregate.
+3. Aggregate only one trustworthy total per observed call: use a valid supplied
+   total when consistent, otherwise the valid input/output sum when both exist.
+   Label the result a known subtotal with covered/observed call counts.
+4. Old traces with no usage remain readable. Unknown data cannot look free or
+   fast, and span durations are not summed as task wall time.
 5. Selecting a call reveals its existing prompt/response or honest missing state.
-6. Complete self-review, relevant tests, visible evidence and DEVLOG/CURRENT_TASK/
-   ROADMAP updates before handing off. No automatic continuation into E2.
+6. Complete self-review, Dashboard tests/build, visible browser evidence and
+   DEVLOG/CURRENT_TASK/ROADMAP closeout. Refresh the README screenshot because
+   the trace-detail product surface materially changes.
 
-## Deferred findings and guardrails
+## Guardrails
 
-Only retrieval/llm spans exist. Parent storage fields are already present, but
-Python writes None; automatic usage capture and pricing are future work.
+Only `retrieval` and `llm` spans exist. Do not add a new span family, change the
+wire/schema, modify warning rules, infer hidden provider retries, or claim that
+the known subtotal covers uninstrumented application calls.
 
-During H0, a no-retrieval fixture triggered the current no_retrieved_chunks rule.
-E2 must review RAG-rule applicability before claiming general agent support.
-Do not change warning rules as an incidental E1 fix.
+Usage-source metadata is not part of the current public contract. E1 must show
+that provenance as unknown rather than invent a provider-verified label. Pricing,
+cost and automatic usage capture remain deferred.
 
-Full plan and later gates: [ROAD_TO_V1_0](../product/ROAD_TO_V1_0.md).
+## Closeout
+
+- Added a Dashboard-only usage normalizer and a compact LLM call ledger. It
+  preserves zero, missing, invalid and conflicting states and counts one
+  trustworthy total per covered observed call.
+- Added eight focused edge-case tests. The full Dashboard suite passes 24/24 and
+  the production build completes with Vite 6.4.3.
+- The repository slice scope accepts all eleven changed paths, and the final
+  Dashboard validation profile passes tests, production build and diff check.
+- Browser validation covered a three-call complete trace (known subtotal 220,
+  coverage 3/3) and a partial/conflicting trace (known subtotal Unknown,
+  coverage 0/3, one conflict excluded). Selecting a ledger row updated the
+  existing prompt/response detail.
+- Saved the real complete-trace view to
+  `docs/assets/screenshots/llm-usage-ledger.png` and refreshed the README.
+- No SDK, Collector, storage schema, public trace contract, warning rule,
+  package version, tag or release changed. E1 is on Draft PR #7; it is not
+  merged. The Slice Contract CI check initially exposed a D0-specific assertion
+  in `test_slice.py`, now changed to validate the active contract generically.
+
+## Next candidate — not active
+
+E2 remains only a candidate: one deliberately bounded Python agent/tool path.
+Before starting it, write a new decision card, examine warning applicability for
+non-RAG runs, define failure/measurement semantics, and obtain any required
+human-gate decision. Do not continue automatically from this completed slice.

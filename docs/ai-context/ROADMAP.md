@@ -20,15 +20,18 @@ Future scope is not implemented capability or blanket authorization.
 - B1 source startup, B2 independent-app integration and H0 honest diagnostic
   presentation: merged through PR #5 as `e8b034d` after its four required checks
   passed on 2026-09-20.
-- Only retrieval and llm spans are implemented. Existing token metadata is not a
-  complete usage ledger; the wheel still does not contain a standalone runtime.
+- Only retrieval and llm spans are implemented. Token metadata is caller-supplied;
+  E1 can summarize observed records but does not make capture complete or
+  provider-verified. The wheel still does not contain a standalone runtime.
 - No independent external first-run or repeat-use evidence is recorded.
-- D0 workflow harness is complete and review-ready in PR #6 without changing the
-  product sequence. Its CURRENT_TASK contract now describes D0 itself so the
-  committed PR range passes the repository scope check. E1 remains unstarted.
-- PR #3 and PR #5 are merged. PR #6 is normalized directly onto current `main` as
-  the D0-only review layer. Cumulative PR #4 remains closed as superseded; this
-  changes review topology, not milestone sequence.
+- D0 workflow harness was squash-merged through PR #6 as `0a63e3d` without
+  changing the product sequence. PR #3 and PR #5 were previously merged as
+  `272bc56` and `e8b034d`; cumulative PR #4 remains closed as superseded.
+- E1 existing-usage visibility is locally complete on
+  `codex/e1-existing-usage-visibility`: per-call recorded tokens, trustworthy
+  known subtotal and coverage, measured/unknown timing, explicit conflict and
+  provenance states, focused tests, production build, and real-browser evidence.
+  It is pushed as Draft PR #7 and remains unmerged, untagged and unpublished.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
@@ -40,8 +43,8 @@ defer broad RAG-rule expansion and bring the efficiency/comparison loop forward.
 | Stage | Bounded deliverables | Exit gate | Suggested release grouping |
 | --- | --- | --- | --- |
 | M0 — H0 locally complete | Honest warning presentation; existing release cleanup remains separate | UI, compatibility tests, build and real-browser checks passed | v0.7.1 remains a separate release decision |
-| M1 — next | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | v0.8 development |
-| M2 | E2: one Python agent/tool path; E3: one usage source and explicit pricing basis | Real workflow, failures and measurement gaps are inspectable | v0.8 development |
+| M1 — locally complete | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | v0.8 development |
+| M2 — next candidate | E2: one Python agent/tool path; E3: one usage source and explicit pricing basis | Real workflow, failures and measurement gaps are inspectable | v0.8 development |
 | M3 | E4: two conservative waste signals; E5: outcome-aware A/B comparison | One real, reviewable improvement or useful regression finding; no fabricated savings | v0.8 candidate, subject to product gate |
 | M4 | U1: checkout-free runtime; U2: find/detail/compare; U3: content/data controls; U4: external onboarding | Supported install path and two genuine first uses | v0.9 candidate |
 | M5 | R1: storage/delivery contract; R2: compatibility; R3: supported-platform verification | Frozen, reliable supported scope | v1.0.0rc candidate |
@@ -53,9 +56,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the D0 review boundary and records E1 as the
-next candidate after D0's merge decision. H0 has been handed off; do not reopen
-it for cosmetic optimization. No agent runtime, automatic
+[CURRENT_TASK](CURRENT_TASK.md) owns the completed E1 boundary and records E2 as
+an unstarted candidate requiring a new decision card and explicit activation.
+H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.
 

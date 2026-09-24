@@ -1,14 +1,14 @@
 # AI Handoff
 
-Last repository-history refresh: 2026-09-20. PR
-[#3](https://github.com/Schromeo/SledTrace/pull/3) was squash-merged into `main`
-as `272bc56`; PR [#5](https://github.com/Schromeo/SledTrace/pull/5) passed its
-four required checks and was squash-merged as `e8b034d`. Draft PR
-[#6](https://github.com/Schromeo/SledTrace/pull/6) has a candidate normalized
-directly onto that current `main` so its review surface contains D0 only. Cumulative PR
+Last repository-history refresh: 2026-09-24. PRs
+[#3](https://github.com/Schromeo/SledTrace/pull/3),
+[#5](https://github.com/Schromeo/SledTrace/pull/5), and
+[#6](https://github.com/Schromeo/SledTrace/pull/6) were squash-merged into
+`main` as `272bc56`, `e8b034d`, and `0a63e3d`. Cumulative PR
 [#4](https://github.com/Schromeo/SledTrace/pull/4) remains closed as superseded,
-and its branch is retained for provenance. D0 is review-ready but unmerged; E1
-has not started. Nothing was tagged, published, or released, so the latest
+and its branch is retained for provenance. E1 existing-usage visibility is
+locally complete and review-ready on `codex/e1-existing-usage-visibility` as
+Draft PR #7; it has not been merged, tagged, or published. The latest
 confirmed release remains v0.7.0.
 
 ## Read this first
@@ -54,6 +54,11 @@ Python trace() -> retrieval / llm records -> explicit flush()
 - API routes: `GET /health`, `POST /api/traces`, `GET /api/traces`, `GET /api/traces/{trace_id}`.
 - Implemented spans are only `retrieval` and `llm`. No agent/tool/memory/retry spans, streaming lifecycle, or partial ingestion.
 - `llm()` already stores supplied input/output/total token metadata. It does not automatically capture provider usage, calculate a complete cost ledger, or distinguish failed LLM attempts through a public status argument. Each response currently updates the trace answer.
+- The E1 Dashboard candidate normalizes those existing token fields into a
+  per-call ledger with a known subtotal and coverage. It distinguishes zero,
+  missing, invalid, and conflicting values; usage provenance remains explicitly
+  unknown. This is presentation of recorded data, not automatic measurement or
+  provider billing truth.
 - The wire/Go/SQLite model already has `parent_span_id`; current Python retrieval/LLM methods set it to None. Extend deliberately if a selected workflow needs nesting; do not invent a missing-storage-field migration.
 - Seven warning rules exist: no retrieved chunks, low retrieval score, duplicates, weak query/chunk overlap, conflicting chunks, numeric mismatch, and answer not grounded.
 - Grounding/conflict diagnostics are deterministic heuristics, not semantic factuality evaluation. No framework adapters, cloud/auth service, or LLM-as-judge are implemented.
@@ -106,6 +111,15 @@ passed. A separate temporary venv installed the wheel and sent real ok/error
 traces from a copied file; API readback and the actual Dashboard confirmed them.
 No B1/B2 remote CI has run, and this internal evidence is not an external tester.
 
+E1 local validation on 2026-09-22: eight focused usage tests and the full 24-test
+Dashboard suite passed; the Vite 6.4.3 production build passed. A real source
+stack showed a complete three-call trace with known subtotal 220 and coverage
+3/3, plus a partial/conflicting trace with Unknown subtotal, coverage 0/3, and
+one excluded conflict. Selecting calls reused the existing span detail. The
+fixtures are deterministic and used no paid model calls. They were written to
+the repo-local ignored `raglens.db`, so those two development traces remain in
+the local data unless the maintainer chooses to remove them.
+
 Environment facts last observed:
 
 - Local host is Windows/PowerShell. Use `npm.cmd` where needed.
@@ -120,7 +134,15 @@ Reply in Chinese unless the user asks for English. Start each implementation sli
 
 Show actual Dashboard behavior for timing/UI work, not only a diff or build log. Use deterministic screenshots without secrets or personal paths. Update README screenshots when their content materially changes.
 
-The user adopted incremental development under the roadmap on 2026-09-15 and requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0 is merged; D0 is the current review-ready slice. E1 usage visibility from existing data is the next candidate, followed by one agent path, conservative signals and outcome-aware comparison. Broad RAG tuning stays behind that value experiment. Later runtime, privacy/data controls and release reliability remain gated. Publication is separate; keep v0.7.0 as the latest confirmed release until newer publication is proven.
+The user adopted incremental development under the roadmap on 2026-09-15 and
+requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0
+and D0 are merged. E1 usage visibility from existing data is on Draft PR #7
+and awaits review/merge decisions. E2, one bounded agent/tool path, is the next
+candidate but is not active. Conservative signals and outcome-aware comparison
+remain later gates. Broad RAG tuning stays behind that value experiment. Later
+runtime, privacy/data controls and release reliability remain gated. Publication
+is separate; keep v0.7.0 as the latest confirmed release until newer publication
+is proven.
 
 D0 makes that workflow executable without changing product behavior:
 CURRENT_TASK has simple YAML metadata; `.agents/skills` contains implementation
@@ -131,15 +153,20 @@ skill. `scope` defaults to HEAD and therefore must run before commit.
 
 Automatic Copilot review was not configured remotely: GitHub CLI authentication
 for `Schromeo` was invalid during D0. Do not retry repeatedly. The maintainer's
-one-time Settings path is documented in AGENT_WORKFLOW. PR #3 and PR #5 are now
-merged; D0 replacement PR #6 is normalized directly onto current `main` and must
-remain a D0-only diff. Its merge still requires the relevant human authorization.
+one-time Settings path is documented in AGENT_WORKFLOW. PR #3, PR #5 and the
+D0-only PR #6 are now merged; do not reconstruct their former stack.
 
 H0 browser evidence used an isolated loopback Collector 4320/Dashboard 5174 and
 temporary database, not the user's existing data. The preview was left available
 for inspection; verify liveness before reusing it. A no-retrieval fixture generated
 the existing no_retrieved_chunks warning even without a retrieval span. Before E2
 claims non-RAG agent support, review rule applicability; this is not a new H0 fix.
+
+E1 browser evidence uses the source stack on Collector 4319/Dashboard 5175. The
+preview was left available for user inspection at closeout; verify liveness
+before reusing it. Unlike H0, the startup helper used the repo-local ignored
+`raglens.db`; trace IDs `trace-e1-complete-20260922` and
+`trace-e1-partial-20260922` are deliberate local test records, not product data.
 
 For scope that changes architecture or publication, inspect DECISIONS and the current user instruction. Preserve prior authorization where it actually applies, and never bypass protected branch or deployment rules.
 

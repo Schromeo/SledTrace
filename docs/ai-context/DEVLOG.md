@@ -1,5 +1,88 @@
 # Devlog
 
+## 2026-09-24 — E1 Draft PR CI repair
+
+- Pushed `codex/e1-existing-usage-visibility` and opened Draft PR #7. The
+  Dashboard, Collector, Python 3.9 and Python 3.13 CI jobs passed on its first
+  run. Slice Contract failed because `test_slice.py` asserted the historical
+  `D0` ID and metadata while `CURRENT_TASK` had correctly advanced to E1.
+- Updated the repository-contract test to validate the current metadata and
+  compare the status CLI's JSON with that metadata, without hard-coding a
+  particular slice. No product implementation, wire contract or schema changed.
+- `python scripts/dev/test_slice.py -v` passed 7/7 locally after the repair.
+  `python scripts/dev/slice.py scope --base origin/main` accepted all eleven
+  changed paths. `python scripts/dev/slice.py check` passed all three steps
+  under normal permissions: Dashboard 24/24 tests, production build and diff
+  check. Its sandboxed build attempt hit the same Windows esbuild path-access
+  denial recorded in the E1 development run; no code workaround was added.
+- Remote CI is pending a new run after this repair is pushed.
+- E2 has not started. No PR merge, version, tag or release was performed.
+
+---
+
+## 2026-09-22 — E1 Existing LLM Usage Visibility
+
+Outcome: completed the bounded E1 Dashboard slice on
+`codex/e1-existing-usage-visibility`. A user can now see where recorded LLM
+tokens and call time went without changing SDK capture, the wire contract,
+Collector storage, warning rules, or package version. E2 did not start.
+
+Implementation:
+
+- Added a pure Dashboard usage normalizer for observed `llm` spans. Token fields
+  preserve known zero, missing and invalid states. A valid recorded total is
+  counted once when consistent; otherwise two valid components can provide an
+  input-plus-output total. Conflicting totals are explicit and excluded.
+- Added a trace-detail ledger with per-call order/name/model, input/output/total,
+  measured or unknown duration, and unknown/not-provider-verified provenance.
+  The summary reports a known subtotal and covered/observed calls; zero covered
+  calls renders `Unknown`, not a misleading free-use total.
+- Kept interaction small: selecting a ledger row reuses the existing span detail
+  for prompt, response and metadata. No new route, chart, pricing table, provider
+  adapter, span family, or backend contract was added.
+- Added eight focused tests for recorded/derived totals, total-only records,
+  zero, conflicts, malformed/partial data, ordering/filtering and format states.
+- Captured the actual complete-trace view as
+  `docs/assets/screenshots/llm-usage-ledger.png` and refreshed README capability
+  wording. The screenshot contains deterministic fixture content only.
+
+Validation:
+
+- `npm.cmd test` in `dashboard/web` — exit 0; 24/24 tests passed.
+- `npm.cmd run build` in `dashboard/web` — exit 0 with normal permissions; Vite
+  6.4.3 transformed 40 modules and produced the production bundle. The sandboxed
+  attempt had failed at esbuild access after TypeScript checking, so no product
+  workaround or dependency change was made.
+- `python -B scripts/start-sledtrace.py --dashboard-port 5175
+  --startup-timeout 60` — source Collector and Dashboard reached readiness at
+  `127.0.0.1:4319` and `127.0.0.1:5175`. The sandboxed first attempt was cleaned
+  up after Go-cache/esbuild access errors; the normal-permission run succeeded.
+- Browser inspection verified a three-call complete trace: 132 recorded-total
+  tokens at 80ms, 50 total-only tokens with unknown duration, and 38 derived
+  tokens at 40ms. Summary: known subtotal 220, coverage 3/3. Selecting Call 2
+  changed the existing detail panel to that call's model/prompt/response.
+- A partial-data trace verified input-only usage, a conflicting 10 + 5 versus 99
+  total, missing usage, and a real 0ms duration. Summary: known subtotal Unknown,
+  coverage 0/3, one conflict excluded. Unknown, invalid, zero and conflict did
+  not collapse into the same presentation.
+- Final repository workflow checks: `python scripts/dev/slice.py scope` — exit 0,
+  all ten changed paths accepted; `python scripts/dev/slice.py check` — exit 0,
+  all three Dashboard-profile steps passed (24 tests, production build, and
+  `git diff --check`). Node's existing experimental type-stripping warning and
+  Windows line-ending notices were non-failing.
+
+Data and delivery boundary:
+
+- The startup helper used the repo-local ignored `raglens.db`; deterministic
+  trace IDs `trace-e1-complete-20260922` and
+  `trace-e1-partial-20260922` remain as local development records. No tracked
+  source or schema was modified by those writes.
+- E1 is locally implemented and browser-validated. At this record it has not
+  been pushed, opened as a PR, merged, tagged, versioned, or published. The
+  latest confirmed release remains v0.7.0.
+
+---
+
 ## 2026-09-20 — Normalize D0 Candidate after PR #5 Merge
 
 Outcome: rebuilt the PR #6 candidate directly on current `origin/main` after
