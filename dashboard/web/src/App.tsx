@@ -25,7 +25,7 @@ export default function App() {
         </div>
 
         <div className="topbar-brand">
-          <div className="eyebrow">Local-first RAG debugger</div>
+          <div className="eyebrow">Local-first AI trace debugger</div>
           <h1>SledTrace</h1>
         </div>
 
@@ -52,7 +52,7 @@ export default function App() {
               <h2>Select a trace</h2>
               <p>
                 Choose a trace from the trace panel to inspect retrieval chunks,
-                LLM calls, metadata, and warnings. You can use the Show traces
+                LLM and tool attempts, metadata, and warnings. You can use the Show traces
                 button in the top bar anytime.
               </p>
             </div>

@@ -1,5 +1,35 @@
 # Architecture Decisions
 
+## 2026-09-24 — E2 uses one caller-instrumented tool span and explicit task result
+
+### Decision
+
+- Add exactly one `tool` span type through the Python trace object. The caller
+  supplies safe input/output summaries and an error summary; SledTrace does not
+  execute tools, capture raw inputs automatically or introduce a framework API.
+- Keep step status separate from final task acceptance. A failed LLM/tool
+  attempt can precede an accepted task, and supplied usage remains attached to
+  a failed LLM attempt. `log_task_result()` explicitly sets the final result,
+  `accepted` flag, and compatibility `answer` field; old RAG calls retain their
+  default last-response behavior.
+- Reuse the existing generic span storage and `parent_span_id: null`. A flat
+  ordered one-tool layer does not justify a new persistence schema or agent DAG.
+- Apply retrieval-grounding warnings only when a retrieval span exists. An
+  explicitly empty retrieval span still receives the old RAG warning.
+- Use trace metadata for task/run/variant/app-version linkage in the first
+  scenario, not a new experiment system. The deterministic local example tests
+  integration only; its product-value gate remains open until a real workflow.
+
+### Reason and boundary
+
+This gives a developer a verifiable failed-step-to-final-outcome path using
+existing wire and UI structures. It avoids treating every tool-only task as a
+failed RAG lookup, and does not imply provider-verified usage, cost, async
+isolation, or an agent runtime. This unmerged E2 work is stacked on E1 Draft
+PR #7; versioning and publication are separate decisions.
+
+---
+
 ## 2026-09-15 — Keep bounded-slice workflow repository-native and deterministic
 
 ### Decision

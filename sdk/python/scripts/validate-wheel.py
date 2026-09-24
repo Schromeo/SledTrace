@@ -96,6 +96,18 @@ def validate_wheel() -> int:
                 "assert distance['score_direction']=='lower_is_better'; "
                 "print('score semantics ok')"
             ),
+            (
+                "from sledtrace import trace; "
+                "t=trace('wheel-tool'); "
+                "span_id=t.tool('lookup', input_summary='key', output_summary='one match'); "
+                "t.llm('fixture', response='draft', status='error', error='invalid', input_tokens=2); "
+                "t.log_task_result('final', accepted=True); "
+                "p=t.to_dict(); "
+                "assert p['spans'][0]['span_id']==span_id and p['spans'][0]['type']=='tool'; "
+                "assert p['spans'][1]['status']=='error' and p['spans'][1]['metadata']['input_tokens']==2; "
+                "assert p['trace']['output']['answer']=='final'; "
+                "print('agent tool contract ok')"
+            ),
             "import raglens; print('legacy raglens import ok')",
         ]
 

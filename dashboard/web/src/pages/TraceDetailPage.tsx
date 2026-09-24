@@ -13,6 +13,7 @@ import {
   formatCallTotal,
   formatTokenField,
 } from "../utils/usage";
+import { stepError, taskDisplay } from "../utils/taskDisplay";
 import {
   hasEnhancedWarning,
   normalizeWarning,
@@ -110,7 +111,8 @@ export default function TraceDetailPage({ traceId }: Props) {
   }
 
   const query = getString(detail.trace.input, "query");
-  const answer = getString(detail.trace.output, "answer");
+  const finalResult = taskDisplay(detail.trace.output);
+  const hasTool = detail.spans.some((span) => span.type === "tool");
   const warningCount = detail.warnings.length;
   const warningCountClass =
     warningCount > 0 ? "summary-value-danger" : "summary-value-ok";
@@ -129,6 +131,21 @@ export default function TraceDetailPage({ traceId }: Props) {
         </div>
       </div>
 
+      {hasTool && (
+        <div className="task-context" aria-label="Task context">
+          {(["task_id", "run_id", "variant", "app_version"] as const).map(
+            (key) => {
+              const value = getString(detail.trace.metadata, key);
+              return value ? (
+                <span key={key}>
+                  <strong>{key.replace("_", " ")}: </strong>{value}
+                </span>
+              ) : null;
+            },
+          )}
+        </div>
+      )}
+
       <div className="summary-grid">
         <div className="summary-card">
           <div className="summary-label">Query</div>
@@ -138,11 +155,16 @@ export default function TraceDetailPage({ traceId }: Props) {
         </div>
 
         <div className="summary-card summary-card-answer">
-          <div className="summary-label">Final answer</div>
+          <div className="summary-label">{finalResult.label}</div>
           <div className="summary-value summary-value-answer">
             <div className="inline-resizable-answer">
-              {answer || "No answer recorded"}
+              {finalResult.text || "No result recorded"}
             </div>
+            {finalResult.accepted !== null ? (
+              <div className="task-acceptance">
+                Acceptance: {finalResult.accepted ? "passed" : "failed"}
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -169,7 +191,7 @@ export default function TraceDetailPage({ traceId }: Props) {
 
       <div className="detail-grid">
         <div className="timeline-panel">
-          <h3>Pipeline timeline</h3>
+          <h3>{hasTool ? "Execution steps" : "Pipeline timeline"}</h3>
           <SpanTimeline
             spans={detail.spans}
             selectedSpanId={selectedSpanId}
@@ -463,6 +485,26 @@ function SelectedSpanView({ span }: { span: Span }) {
             </pre>
           </div>
         </section>
+      )}
+
+      {span.type === "tool" && (
+        <section className="section">
+          <h4>Tool attempt</h4>
+          <div className="llm-box">
+            <div className="summary-label">Input summary</div>
+            <pre>{getString(span.input, "summary") || "Not recorded"}</pre>
+          </div>
+          <div className="llm-box">
+            <div className="summary-label">Output summary</div>
+            <pre>{getString(span.output, "summary") || "Not recorded"}</pre>
+          </div>
+        </section>
+      )}
+
+      {stepError(span.error) && (
+        <div className="error-box compact" role="status">
+          Step error: {stepError(span.error)}
+        </div>
       )}
 
       <section className="section">

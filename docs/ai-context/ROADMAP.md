@@ -20,7 +20,8 @@ Future scope is not implemented capability or blanket authorization.
 - B1 source startup, B2 independent-app integration and H0 honest diagnostic
   presentation: merged through PR #5 as `e8b034d` after its four required checks
   passed on 2026-09-20.
-- Only retrieval and llm spans are implemented. Token metadata is caller-supplied;
+- Released/mainline SDK records retrieval and llm spans; E2's unmerged branch
+  adds one caller-instrumented tool span. Token metadata is caller-supplied;
   E1 can summarize observed records but does not make capture complete or
   provider-verified. The wheel still does not contain a standalone runtime.
 - No independent external first-run or repeat-use evidence is recorded.
@@ -32,6 +33,10 @@ Future scope is not implemented capability or blanket authorization.
   known subtotal and coverage, measured/unknown timing, explicit conflict and
   provenance states, focused tests, production build, and real-browser evidence.
   It is pushed as Draft PR #7 and remains unmerged, untagged and unpublished.
+- E2 single Python tool path is locally complete on a branch stacked on E1.
+  Deterministic success, business failure and tool-recovery traces passed local
+  API/UI checks; the new SDK contract passed clean-wheel validation. It is not
+  merged, released or externally validated. E3 is the next candidate.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
@@ -44,7 +49,7 @@ defer broad RAG-rule expansion and bring the efficiency/comparison loop forward.
 | --- | --- | --- | --- |
 | M0 — H0 locally complete | Honest warning presentation; existing release cleanup remains separate | UI, compatibility tests, build and real-browser checks passed | v0.7.1 remains a separate release decision |
 | M1 — locally complete | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | v0.8 development |
-| M2 — next candidate | E2: one Python agent/tool path; E3: one usage source and explicit pricing basis | Real workflow, failures and measurement gaps are inspectable | v0.8 development |
+| M2 — E2 local candidate | E2: one Python agent/tool path locally complete; E3: one usage source and explicit pricing basis remains a candidate | Real workflow and provider usage/price basis still need evidence | v0.8 development |
 | M3 | E4: two conservative waste signals; E5: outcome-aware A/B comparison | One real, reviewable improvement or useful regression finding; no fabricated savings | v0.8 candidate, subject to product gate |
 | M4 | U1: checkout-free runtime; U2: find/detail/compare; U3: content/data controls; U4: external onboarding | Supported install path and two genuine first uses | v0.9 candidate |
 | M5 | R1: storage/delivery contract; R2: compatibility; R3: supported-platform verification | Frozen, reliable supported scope | v1.0.0rc candidate |
@@ -56,8 +61,8 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the completed E1 boundary and records E2 as
-an unstarted candidate requiring a new decision card and explicit activation.
+[CURRENT_TASK](CURRENT_TASK.md) owns the locally completed E2 boundary and
+records E3 as an unstarted candidate requiring a new decision card.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.

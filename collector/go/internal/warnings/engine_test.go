@@ -6,6 +6,28 @@ import (
 	"sledtrace-collector/internal/models"
 )
 
+func TestToolOnlyTaskDoesNotGetRetrievalGroundingWarning(t *testing.T) {
+	payload := models.TracePayload{
+		Trace: models.TraceRecord{
+			TraceID: "agent_no_retrieval", Name: "agent", Status: "ok",
+			Output: models.JSONMap{"answer": "Refund review: five business days"},
+		},
+		Spans: []models.Span{{
+			SpanID: "tool_1", TraceID: "agent_no_retrieval", Type: "tool",
+			Name: "policy_lookup", Status: "ok",
+		}},
+	}
+	if got := NewEngine().Generate(payload); len(got) != 0 {
+		t.Fatalf("tool-only trace should have no RAG warnings, got %v", warningTypes(got))
+	}
+
+	payload.Spans = append(payload.Spans, models.Span{
+		SpanID: "retrieval_1", TraceID: "agent_no_retrieval", Type: "retrieval",
+		Name: "search", Status: "ok", Output: models.JSONMap{"chunks": []any{}},
+	})
+	requireWarningType(t, NewEngine().Generate(payload), TypeNoRetrievedChunks)
+}
+
 func TestLowRetrievalScorePreservesLegacyHigherIsBetterBehavior(t *testing.T) {
 	payload := basePayload(
 		"trace_legacy_low_score",
