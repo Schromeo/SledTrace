@@ -1,5 +1,71 @@
 # Devlog
 
+## 2026-09-24 — E1 merge and E2 restack for review
+
+- Reviewed E1 and E2 against the slice contract. No blocking code finding was
+  identified; known limits remain caller-supplied usage and an internal-only
+  E2 integration example.
+- Squash-merged E1 PR #7 into `main` as `622ff69` after five green checks.
+  The E1 branch and new `main` had identical file trees.
+- Preserved the original E2 commit `468ee48` under local branch
+  `archive/e2-pre-restack-20260924`; rebased its single change onto `622ff69`
+  as `d4d8982`. The old and new E2 heads have identical file trees. PR #8 now
+  targets `main` and shows the original E2-only 18-file diff.
+- Local review validation: 68 Python tests, all Go packages, 27 Dashboard
+  tests, production build, and diff check passed. The default Go cache and
+  sandboxed Vite config read failed for environment reasons; a temporary Go
+  cache and normal-permission build passed without code changes.
+- E2 merge and fresh PR checks remain to be confirmed. No version, tag,
+  publication, paid call, or E3 work occurred.
+
+---
+
+## 2026-09-24 — E2 single Python tool path (stacked on E1)
+
+Outcome: locally implemented one synchronous Python tool path after the user
+approved the public SDK method and `tool` span family. Work is on
+`codex/e2-python-tool-path`, based on unmerged E1 commit `941fd06`. This is an
+internal review candidate, not a release or a real external-agent validation.
+
+- Added `t.tool(...)` with caller-supplied safe summaries, explicit status and
+  error, optional measured/unknown timing, and returned span ID. Added failed
+  LLM status/error without losing supplied usage, plus
+  `t.log_task_result(result, accepted)` to separate attempts from final outcome.
+  Old positional RAG calls and legacy import remain supported.
+- Reused generic Collector span storage; no schema migration or endpoint change.
+  Grounding now requires a retrieval span, while an explicit empty retrieval
+  still warns. Dashboard shows task linkage, final acceptance, ordered tool/LLM
+  steps and failed-step details. Unknown spans retain generic JSON fallback.
+- Added standard-library deterministic success, business-failure and
+  tool-recovery scenarios. No paid model, provider API, framework adapter or
+  external tester was involved.
+
+Validation:
+
+- Targeted SDK E2 tests passed 5/5 initially; final full cross-stack profile
+  passed 68 Python tests, all Go packages, 27 Dashboard tests, production build
+  and `git diff --check`. Slice Contract tests passed 7/7 and E2 path scope
+  passed. `python -m build` produced wheel/sdist; `validate-wheel.py` passed a
+  clean-venv E2 API check and legacy import/CLI checks;
+  `validate-independent-app.py` passed its copied-wheel legacy flow.
+- A local isolated stack used Collector `127.0.0.1:4321`, Dashboard
+  `127.0.0.1:5176`, and a temporary E2 SQLite DB. All three sample traces
+  were POSTed and read back by ID. Returned task statuses were `ok`, `error`,
+  `ok`; tool recovery had steps `llm ok → tool error → tool ok → llm ok`.
+  Each produced zero RAG warnings. The actual Dashboard showed result,
+  acceptance, ledger subtotal and step error. The recovery view remains open
+  for user inspection during this turn.
+- Environment incidents: isolated build and Vite/Go cache access needed normal
+  permissions. The first full profile encountered a pre-existing pytest temp
+  ACL denial. A Windows-backslash `PYTEST_ADDOPTS` attempt misparsed and created
+  two test-only directories inside `sdk/python`; both exact paths were checked
+  and removed. A forward-slash dedicated temp path let the full profile pass.
+
+No merge, tag, version bump, PyPI upload or external trial occurred. Remote
+push/PR/CI state is recorded separately after delivery. E3 did not start.
+
+---
+
 ## 2026-09-24 — E1 Draft PR CI repair
 
 - Pushed `codex/e1-existing-usage-visibility` and opened Draft PR #7. The

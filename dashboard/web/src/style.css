@@ -444,6 +444,22 @@ button {
   font-weight: 800;
 }
 
+.task-acceptance {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.task-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 12px 0;
+  color: #475569;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
 .usage-panel {
   margin-top: 16px;
   min-width: 0;

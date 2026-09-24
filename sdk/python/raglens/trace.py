@@ -211,6 +211,9 @@ class RAGLensTrace:
         latency_ms: Optional[int] = None,
         metadata: Optional[JsonDict] = None,
         timing: Optional[SpanTiming] = None,
+        *,
+        status: str = "ok",
+        error: Optional[str] = None,
     ) -> None:
         """
         Record an LLM span.
@@ -227,7 +230,10 @@ class RAGLensTrace:
             latency_ms: LLM call latency.
             metadata: Additional metadata.
             timing: Completed measurement returned by ``t.measure()``.
+            status: ``ok`` or ``error`` for this attempt, not the whole task.
+            error: Error summary for a failed attempt; do not include secrets.
         """
+        _validate_step_result(status, error)
         started_at, ended_at, resolved_duration_ms = _resolve_span_timing(
             timing=timing,
             explicit_duration_ms=latency_ms,
@@ -248,7 +254,8 @@ class RAGLensTrace:
 
         if response is not None:
             span_output["response"] = response
-            self._output["answer"] = response
+            if status == "ok" and "task_result" not in self._output:
+                self._output["answer"] = response
 
         span_metadata: JsonDict = metadata.copy() if metadata else {}
 
@@ -273,17 +280,80 @@ class RAGLensTrace:
             parent_span_id=None,
             type="llm",
             name=name,
-            status="ok",
+            status=status,
             input=span_input,
             output=span_output,
             metadata=span_metadata,
             started_at=started_at,
             ended_at=ended_at,
             duration_ms=resolved_duration_ms,
-            error=None,
+            error={"message": error} if error is not None else None,
         )
 
         self._spans.append(span)
+
+    def tool(
+        self,
+        name: str,
+        input_summary: Optional[str] = None,
+        output_summary: Optional[str] = None,
+        *,
+        status: str = "ok",
+        error: Optional[str] = None,
+        metadata: Optional[JsonDict] = None,
+        duration_ms: Optional[int] = None,
+        timing: Optional[SpanTiming] = None,
+    ) -> str:
+        """Record one synchronous tool attempt using caller-supplied summaries.
+
+        The SDK does not run or inspect the tool. Only pass summaries safe to
+        retain locally; raw arguments, responses and secrets are not required.
+        Returns the recorded span ID for correlation.
+        """
+        if not isinstance(name, str) or not name:
+            raise ValueError("tool name must be a non-empty string.")
+        for label, summary in (
+            ("input_summary", input_summary),
+            ("output_summary", output_summary),
+        ):
+            if summary is not None and not isinstance(summary, str):
+                raise TypeError(f"{label} must be a string summary, not raw data.")
+        _validate_step_result(status, error)
+        started_at, ended_at, resolved_duration_ms = _resolve_span_timing(
+            timing=timing,
+            explicit_duration_ms=duration_ms,
+            explicit_name="duration_ms",
+        )
+        span = Span(
+            span_id=new_id("span"),
+            trace_id=self.trace_id,
+            parent_span_id=None,
+            type="tool",
+            name=name,
+            status=status,
+            input={"summary": input_summary} if input_summary is not None else {},
+            output={"summary": output_summary} if output_summary is not None else {},
+            metadata=metadata.copy() if metadata else {},
+            started_at=started_at,
+            ended_at=ended_at,
+            duration_ms=resolved_duration_ms,
+            error={"message": error} if error is not None else None,
+        )
+        self._spans.append(span)
+        return span.span_id
+
+    def log_task_result(self, result: str, accepted: bool) -> None:
+        """Set the explicit final task output, independently of LLM responses."""
+        if not isinstance(result, str):
+            raise TypeError("result must be a string.")
+        if not isinstance(accepted, bool):
+            raise TypeError("accepted must be a boolean.")
+        self._output["task_result"] = result
+        self._output["accepted"] = accepted
+        # Keep the established trace-list and RAG-warning answer field useful;
+        # explicit task output overrides the last intermediate LLM response.
+        self._output["answer"] = result
+        self._status = "ok" if accepted else "error"
 
     def log_answer(self, answer: str) -> None:
         """Record the final answer at trace level."""
@@ -449,6 +519,15 @@ def _validate_duration_ms(value: int, name: str) -> int:
     if value < 0:
         raise ValueError(f"{name} must be greater than or equal to zero.")
     return value
+
+
+def _validate_step_result(status: str, error: Optional[str]) -> None:
+    if status not in {"ok", "error"}:
+        raise ValueError("step status must be 'ok' or 'error'.")
+    if status == "error" and (not isinstance(error, str) or not error):
+        raise ValueError("an error step needs a non-empty error summary.")
+    if status == "ok" and error is not None:
+        raise ValueError("an ok step cannot have an error summary.")
 
 
 def trace(

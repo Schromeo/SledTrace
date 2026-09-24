@@ -2074,6 +2074,19 @@ type answerClaimSupportCandidate struct {
 }
 
 func (e *Engine) detectAnswerNotGrounded(payload models.TracePayload) []models.Warning {
+	// Grounding against retrieval is not applicable to tool-only workflows.
+	// An explicit empty retrieval span remains eligible for the existing rule.
+	hasRetrieval := false
+	for _, span := range payload.Spans {
+		if span.Type == "retrieval" {
+			hasRetrieval = true
+			break
+		}
+	}
+	if !hasRetrieval {
+		return nil
+	}
+
 	answer, llmSpanID := extractFinalAnswer(payload)
 	answer = strings.TrimSpace(answer)
 
