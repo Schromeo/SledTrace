@@ -112,6 +112,21 @@ Historical v0.7 release validation on 2026-09-09:
 
 These release tests establish the tested packaging/runtime contracts, not general diagnostic accuracy. The 2026-09-10 review used code inspection and small in-memory reproductions; it did not rerun the full release suite or change product code.
 
+2026-09-24 diagnostic regression evidence: `reference_rag_app all` completed
+nine local realistic-shape cases, and `local_rag_demo trace-all` completed five
+deterministic cases. Together they exercised all seven warning types through
+Collector/API readback; fresh traces and warning counts were visible in the
+Dashboard. This is small-scale integration evidence only. It did not use a real
+provider or paid call, and it measured no concurrency or throughput.
+
+The run also exposed a compatibility risk in the repo-local development DB:
+some legacy warning rows contain string `confidence="heuristic"`, while current
+detail reads expect a numeric value and can return HTTP 500. Treat compatibility
+read/migration and isolated validation databases as candidates before any larger
+repeated-run or scale test. The suites also suggest that generic score
+thresholds and lexical rules need labeled cross-domain precision evidence before
+threshold retuning; do not interpret warning counts as accuracy.
+
 S1 local validation on 2026-09-11: 34 Python tests, wheel/sdist build, clean-wheel validation including `SpanTiming`, all Go tests, five Dashboard timing tests, Dashboard production build, and `git diff --check` passed. A live non-Docker run persisted and displayed a measured 200ms trace with 80ms retrieval/120ms LLM spans plus an unmeasured trace whose two spans read `Not measured`.
 
 S2 local validation on 2026-09-11: 52 Python tests, wheel/sdist build, clean-wheel validation including score semantics, all Go tests, ten Dashboard tests, Dashboard production build, and `git diff --check` passed. A live isolated run showed similarity 0.10 with one low-score warning and `Similarity 0.10 ↑`, while distance 0.10 showed zero warnings and `Distance 0.10 ↓`.

@@ -1,5 +1,88 @@
 # Devlog
 
+## 2026-09-24 — Two-suite RAG diagnostic regression validation
+
+Ran two local end-to-end RAG suites against the source Collector on
+`127.0.0.1:4319` and inspected the real Dashboard at `127.0.0.1:5173`.
+Neither run called an external model or incurred a paid API call.
+
+- `reference_rag_app all`: nine cases completed successfully through local
+  document loading, lexical retrieval, mixed result-shape normalization, SDK
+  tracing, Collector ingestion, SQLite persistence, and API readback. The
+  observed warning coverage included `conflicting_chunks`,
+  `low_retrieval_score`, `weak_query_chunk_overlap`, `numeric_mismatch`, and
+  `answer_not_grounded`. The `damaged` and `subscription` cases returned zero
+  warnings, providing two low-noise checks.
+- `local_rag_demo trace-all`: five cases completed with Collector status
+  `stored`. The cases exercised `no_retrieved_chunks`, `low_retrieval_score`,
+  `duplicate_chunks`, `conflicting_chunks`, and `answer_not_grounded`. A fresh
+  `no_match` readback returned one `no_retrieved_chunks` warning. A fresh
+  duplicate case returned trace
+  `trace_62ca9cf1916342f8b0c7acf160c3bee2` with
+  `duplicate_chunks, answer_not_grounded`.
+- Dashboard inspection showed the fresh traces in the list with warning counts;
+  the duplicate trace detail was reachable and rendered its warning state.
+
+This is realistic small-scale integration evidence, not a scale or performance
+test. The corpus and request volume are small, execution is sequential, and no
+throughput, concurrency, p95 latency, memory, SQLite contention, or large
+Dashboard-list behavior was measured.
+
+New findings and bounded follow-up candidates:
+
+- The local development database contains legacy warnings whose `confidence`
+  value is the string `heuristic`. Current detail reads expect a numeric value,
+  so some historical trace detail requests return HTTP 500. A compatibility
+  read/migration test should precede any larger repeated-run or scale exercise.
+- Warning counts are not equivalent to warning precision. Correct or benign
+  reference cases can still receive low-score or conflict warnings because the
+  generic threshold and lexical heuristics are not calibrated to every
+  retriever/corpus. Build a small cross-domain labeled corpus and measure false
+  positives before changing thresholds or adding rules.
+- The two suites should become separate validation layers: deterministic rule
+  fixtures for exact coverage, and realistic external-corpus adapters for
+  ingestion/normalization/readback. Each run should use an isolated database or
+  a unique trace namespace so historical records cannot contaminate results.
+- A later scale profile should vary corpus size, payload size, concurrent
+  flushes, sustained duration, and Dashboard list volume, and should report
+  throughput and p50/p95/p99 latency. This remains a candidate investigation,
+  not an authorization to start E3 or add infrastructure.
+
+No product code or schema was changed by this validation. The provider-usage
+and price-provenance question remains the separately gated E3 decision.
+
+Documentation closeout validation: `python scripts/dev/slice.py scope` and
+`git diff --check` passed. Earlier reruns encountered Windows pytest temporary-
+directory ACL errors and a Collector process left on port 4319 during browser
+inspection. At delivery, a fresh `python scripts/dev/slice.py check` passed all
+68 SDK tests and diff check; pytest only reported a cache-write warning. No
+source regression is attributed to the documentation-only update.
+
+## 2026-09-24 — X1 external Federalist Papers RAG exercise
+
+- Selected [harvard-hbs/rag-example](https://github.com/harvard-hbs/rag-example)
+  at `e47fab50cfaf64ced94dac23ba68ed9c797ee667` because its included
+  Federalist Papers PDF is authentic source material. Rejected an otherwise
+  convenient prebuilt movie SQLite database after checking its 90 invented plots.
+- Adapted the PDF to a local 297-row SQLite FTS5 page index. The adapter records
+  BM25 as lower-is-better retrieval data and labels its answer extraction as a
+  simulation. No SDK/API/schema change, real LLM, paid call, or external trial.
+- Default query matched pages 28/29/85; Collector stored trace
+  `trace_862f8fa097de4835af50dc8e0e53a992` with retrieval and simulated
+  answer spans, both visible on API readback, and zero warnings. Empty-result
+  query stored `trace_4e5cf4d414284adabe096ee0bbe5c900` with
+  `no_retrieved_chunks` and `answer_not_grounded`. The isolated Collector ran
+  on 4322 with a separate database. See the runbook for commands and limits.
+- This confirms local ingestion and rule behavior for two cases, not retrieval
+  accuracy, answer quality, or upstream Chroma/LLM compatibility. E3 remains a
+  separate decision.
+- Validation: `python scripts/dev/slice.py scope` passed for five changed paths;
+  the `sdk` profile passed 68 SDK tests and `git diff --check`. Python syntax
+  compilation passed. Pytest reported a cache-write warning in this sandbox;
+  tests themselves passed. No Collector or Dashboard source was changed.
+
+---
+
 ## 2026-09-24 — E1 merge and E2 restack for review
 
 - Reviewed E1 and E2 against the slice contract. No blocking code finding was
