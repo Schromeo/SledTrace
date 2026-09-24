@@ -11,6 +11,9 @@ locally complete and review-ready on `codex/e1-existing-usage-visibility` as
 Draft PR #7; it has not been merged, tagged, or published. The latest
 confirmed release remains v0.7.0.
 
+E2's synchronous one-tool Python path is locally complete on
+`codex/e2-python-tool-path`, stacked on E1. It is not a released capability.
+
 ## Read this first
 
 - [NEXT_AGENT_BRIEF.md](NEXT_AGENT_BRIEF.md): concise Chinese entry for any incoming assistant.
@@ -52,14 +55,27 @@ Python trace() -> retrieval / llm records -> explicit flush()
 - Preferred configuration is `SLEDTRACE_COLLECTOR_URL`, with temporary `RAGLENS_COLLECTOR_URL` fallback.
 - The wheel contains SDK/CLI only. `sledtrace serve` requires a source checkout; it does not install or bundle Collector/Dashboard runtime assets.
 - API routes: `GET /health`, `POST /api/traces`, `GET /api/traces`, `GET /api/traces/{trace_id}`.
-- Implemented spans are only `retrieval` and `llm`. No agent/tool/memory/retry spans, streaming lifecycle, or partial ingestion.
-- `llm()` already stores supplied input/output/total token metadata. It does not automatically capture provider usage, calculate a complete cost ledger, or distinguish failed LLM attempts through a public status argument. Each response currently updates the trace answer.
+- Mainline/released spans remain `retrieval` and `llm`. E2's unmerged branch adds
+  one caller-instrumented `tool` span, not agent/memory/retry, streaming or
+  partial ingestion.
+- `llm()` stores supplied input/output/total token metadata. E2 adds an
+  explicit failed-attempt status/error while retaining supplied usage; only
+  successful responses update the legacy trace answer until the application
+  sets an explicit task result. It still does not capture provider usage or
+  calculate complete cost.
 - The E1 Dashboard candidate normalizes those existing token fields into a
   per-call ledger with a known subtotal and coverage. It distinguishes zero,
   missing, invalid, and conflicting values; usage provenance remains explicitly
   unknown. This is presentation of recorded data, not automatic measurement or
   provider billing truth.
 - The wire/Go/SQLite model already has `parent_span_id`; current Python retrieval/LLM methods set it to None. Extend deliberately if a selected workflow needs nesting; do not invent a missing-storage-field migration.
+- E2's `tool()` returns its span ID and records only caller-provided summaries,
+  status/error and measured/unknown timing. `log_task_result(result, accepted)`
+  records final output and acceptance separately from attempts; an uncaught
+  application exception still marks the trace as error. Task/run/variant/app
+  version are optional caller-supplied metadata, not an experiment system.
+- E2's Collector grounding rule requires a retrieval span. Tool-only runs no
+  longer get a RAG grounding warning; an empty retrieval span still can.
 - Seven warning rules exist: no retrieved chunks, low retrieval score, duplicates, weak query/chunk overlap, conflicting chunks, numeric mismatch, and answer not grounded.
 - Grounding/conflict diagnostics are deterministic heuristics, not semantic factuality evaluation. No framework adapters, cloud/auth service, or LLM-as-judge are implemented.
 
@@ -136,9 +152,9 @@ Show actual Dashboard behavior for timing/UI work, not only a diff or build log.
 
 The user adopted incremental development under the roadmap on 2026-09-15 and
 requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0
-and D0 are merged. E1 usage visibility from existing data is on Draft PR #7
-and awaits review/merge decisions. E2, one bounded agent/tool path, is the next
-candidate but is not active. Conservative signals and outcome-aware comparison
+and D0 are merged. E1 usage visibility is on Draft PR #7. E2's single tool path
+is locally complete on a stacked branch; neither is merged. E3 usage provenance
+is the next candidate, not active. Conservative signals and outcome-aware comparison
 remain later gates. Broad RAG tuning stays behind that value experiment. Later
 runtime, privacy/data controls and release reliability remain gated. Publication
 is separate; keep v0.7.0 as the latest confirmed release until newer publication

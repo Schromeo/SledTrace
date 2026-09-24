@@ -87,6 +87,49 @@ checkout's editable package or built wheel before running its examples.
 
 ## Basic usage
 
+### E2 development candidate: one Python tool path
+
+The unmerged E2 branch adds a synchronous, caller-instrumented `tool` span and
+explicit task result. These APIs are **not in production PyPI 0.7.0**. From this
+checkout, run the standard-library, deterministic example without a paid model:
+
+```bash
+cd sdk/python
+python -m examples.agent_tool_demo success
+python -m examples.agent_tool_demo business-failure
+python -m examples.agent_tool_demo tool-recovery
+```
+
+Add `--flush` when a local Collector is running. The example uses one tool layer
+and simulated LLM outputs solely to check integration; it is not proof of value
+in a real external agent. For your own synchronous workflow, record safe input
+and output summaries, and keep the final task result separate from intermediate
+LLM responses:
+
+```python
+with trace("policy-review", metadata={
+    "task_id": "case-1", "run_id": "run-1",
+    "variant": "baseline", "app_version": "my-app-1",
+}) as t:
+    with t.measure() as timing:
+        found = lookup_policy("refund")
+    t.tool("policy_lookup", input_summary="refund key",
+           output_summary="one match" if found else "no match", timing=timing)
+    t.llm(model="my-model", response="draft", input_tokens=10)
+    t.log_task_result("review accepted", accepted=True)
+```
+
+`t.tool(...)` records only what the application supplies and returns a span ID.
+Use `status="error", error="safe summary"` for a failed tool or LLM attempt;
+the error is per step and does not automatically fail a recovered task.
+`log_task_result(result, accepted=...)` sets trace-level `task_result`,
+`accepted`, and the compatibility `answer` field; `accepted=False` marks the
+task trace as an error. No agent/LLM is run by the SDK, no provider usage is
+captured automatically, and sensitive arguments or secrets should not be put
+in summaries.
+
+## Existing RAG usage
+
 This example uses the 0.7.1 candidate's `t.measure()` and `t.try_flush()`,
 available from source or after 0.7.1 publication (see "Distribution status"
 above). Against the published `sledtrace==0.7.0` package, omit `t.measure()`

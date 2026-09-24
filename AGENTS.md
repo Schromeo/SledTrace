@@ -11,7 +11,7 @@ Current stable project direction is SledTrace-first. Legacy RAGLens compatibilit
 
 Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
 
-Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. The v0.7.1 reliability work and B1/B2/H0 integration are merged on `main`; D0 repository workflow infrastructure is the current review-ready slice in PR #6. CURRENT_TASK records D0 until its merge decision and names E1 existing-token visibility as the next candidate, not started work. New agent/tool/compare/runtime capabilities are planned, not implemented or authorized en masse. No newer publication than v0.7.0 is established here.
+Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. The v0.7.1 reliability work, B1/B2/H0 integration, and D0 workflow harness are merged on `main`. E1 usage visibility is on unmerged Draft PR #7; E2's single Python tool path is locally complete on a branch stacked on E1, awaiting review. E3 and later compare/runtime capabilities are candidates, not implemented or authorized en masse. No newer publication than v0.7.0 is established here.
 
 The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
 
@@ -74,7 +74,7 @@ do not excuse skipping necessary safety checks or claiming unfinished work passe
 ```text
 Python SDK
   -> trace()
-  -> retrieval + llm spans
+  -> retrieval + llm spans (released); tool span (E2 review candidate)
   -> flush()
   -> Go collector
   -> deterministic Warning Engine
@@ -86,6 +86,7 @@ Current implemented span types:
 
 - retrieval
 - llm
+- tool — E2 branch only, not in a published release
 
 Current major components:
 
