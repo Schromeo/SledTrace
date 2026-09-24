@@ -1,14 +1,14 @@
 # AI Handoff
 
-Last repository-history refresh: 2026-09-22. PRs
+Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),
 [#5](https://github.com/Schromeo/SledTrace/pull/5), and
 [#6](https://github.com/Schromeo/SledTrace/pull/6) were squash-merged into
 `main` as `272bc56`, `e8b034d`, and `0a63e3d`. Cumulative PR
 [#4](https://github.com/Schromeo/SledTrace/pull/4) remains closed as superseded,
 and its branch is retained for provenance. E1 existing-usage visibility is
-locally complete and review-ready on `codex/e1-existing-usage-visibility`; it
-has not been pushed, opened as a PR, merged, tagged, or published. The latest
+locally complete and review-ready on `codex/e1-existing-usage-visibility` as
+Draft PR #7; it has not been merged, tagged, or published. The latest
 confirmed release remains v0.7.0.
 
 ## Read this first
@@ -136,8 +136,8 @@ Show actual Dashboard behavior for timing/UI work, not only a diff or build log.
 
 The user adopted incremental development under the roadmap on 2026-09-15 and
 requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0
-and D0 are merged. E1 usage visibility from existing data is locally complete
-and awaits a delivery decision. E2, one bounded agent/tool path, is the next
+and D0 are merged. E1 usage visibility from existing data is on Draft PR #7
+and awaits review/merge decisions. E2, one bounded agent/tool path, is the next
 candidate but is not active. Conservative signals and outcome-aware comparison
 remain later gates. Broad RAG tuning stays behind that value experiment. Later
 runtime, privacy/data controls and release reliability remain gated. Publication

@@ -1,5 +1,25 @@
 # Devlog
 
+## 2026-09-24 — E1 Draft PR CI repair
+
+- Pushed `codex/e1-existing-usage-visibility` and opened Draft PR #7. The
+  Dashboard, Collector, Python 3.9 and Python 3.13 CI jobs passed on its first
+  run. Slice Contract failed because `test_slice.py` asserted the historical
+  `D0` ID and metadata while `CURRENT_TASK` had correctly advanced to E1.
+- Updated the repository-contract test to validate the current metadata and
+  compare the status CLI's JSON with that metadata, without hard-coding a
+  particular slice. No product implementation, wire contract or schema changed.
+- `python scripts/dev/test_slice.py -v` passed 7/7 locally after the repair.
+  `python scripts/dev/slice.py scope --base origin/main` accepted all eleven
+  changed paths. `python scripts/dev/slice.py check` passed all three steps
+  under normal permissions: Dashboard 24/24 tests, production build and diff
+  check. Its sandboxed build attempt hit the same Windows esbuild path-access
+  denial recorded in the E1 development run; no code workaround was added.
+- Remote CI is pending a new run after this repair is pushed.
+- E2 has not started. No PR merge, version, tag or release was performed.
+
+---
+
 ## 2026-09-22 — E1 Existing LLM Usage Visibility
 
 Outcome: completed the bounded E1 Dashboard slice on

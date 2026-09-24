@@ -31,7 +31,7 @@ Future scope is not implemented capability or blanket authorization.
   `codex/e1-existing-usage-visibility`: per-call recorded tokens, trustworthy
   known subtotal and coverage, measured/unknown timing, explicit conflict and
   provenance states, focused tests, production build, and real-browser evidence.
-  It is not pushed, merged, tagged, or published at this record.
+  It is pushed as Draft PR #7 and remains unmerged, untagged and unpublished.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence

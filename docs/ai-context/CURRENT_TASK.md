@@ -17,6 +17,7 @@ allowed_paths:
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
   - docs/assets/screenshots/llm-usage-ledger.png
+  - scripts/dev/test_slice.py
 human_gates:
   - public_api_change
   - persisted_schema_or_data_contract_change
@@ -90,7 +91,7 @@ cost and automatic usage capture remain deferred.
   trustworthy total per covered observed call.
 - Added eight focused edge-case tests. The full Dashboard suite passes 24/24 and
   the production build completes with Vite 6.4.3.
-- The repository slice scope accepts all ten changed paths, and the final
+- The repository slice scope accepts all eleven changed paths, and the final
   Dashboard validation profile passes tests, production build and diff check.
 - Browser validation covered a three-call complete trace (known subtotal 220,
   coverage 3/3) and a partial/conflicting trace (known subtotal Unknown,
@@ -99,8 +100,9 @@ cost and automatic usage capture remain deferred.
 - Saved the real complete-trace view to
   `docs/assets/screenshots/llm-usage-ledger.png` and refreshed the README.
 - No SDK, Collector, storage schema, public trace contract, warning rule,
-  package version, tag or release changed. The branch has not been pushed or
-  merged at this record.
+  package version, tag or release changed. E1 is on Draft PR #7; it is not
+  merged. The Slice Contract CI check initially exposed a D0-specific assertion
+  in `test_slice.py`, now changed to validate the active contract generically.
 
 ## Next candidate — not active
 
