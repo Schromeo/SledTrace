@@ -4,15 +4,17 @@ Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),
 [#5](https://github.com/Schromeo/SledTrace/pull/5), and
 [#6](https://github.com/Schromeo/SledTrace/pull/6) were squash-merged into
-`main` as `272bc56`, `e8b034d`, and `0a63e3d`. Cumulative PR
+`main` as `272bc56`, `e8b034d`, and `0a63e3d`. E1 PR
+[#7](https://github.com/Schromeo/SledTrace/pull/7) was squash-merged as
+`622ff69`. Cumulative PR
 [#4](https://github.com/Schromeo/SledTrace/pull/4) remains closed as superseded,
 and its branch is retained for provenance. E1 existing-usage visibility is
-locally complete and review-ready on `codex/e1-existing-usage-visibility` as
-Draft PR #7; it has not been merged, tagged, or published. The latest
-confirmed release remains v0.7.0.
+mainline but has not been tagged or published. The latest confirmed release
+remains v0.7.0.
 
 E2's synchronous one-tool Python path is locally complete on
-`codex/e2-python-tool-path`, stacked on E1. It is not a released capability.
+`codex/e2-python-tool-path`; PR #8 targets `main` after a tree-equivalent
+restack. Check its merge state live. It is not a released capability.
 
 ## Read this first
 
@@ -55,9 +57,9 @@ Python trace() -> retrieval / llm records -> explicit flush()
 - Preferred configuration is `SLEDTRACE_COLLECTOR_URL`, with temporary `RAGLENS_COLLECTOR_URL` fallback.
 - The wheel contains SDK/CLI only. `sledtrace serve` requires a source checkout; it does not install or bundle Collector/Dashboard runtime assets.
 - API routes: `GET /health`, `POST /api/traces`, `GET /api/traces`, `GET /api/traces/{trace_id}`.
-- Mainline/released spans remain `retrieval` and `llm`. E2's unmerged branch adds
-  one caller-instrumented `tool` span, not agent/memory/retry, streaming or
-  partial ingestion.
+- The published release has `retrieval` and `llm` spans. E2 adds one
+  caller-instrumented `tool` span, not agent/memory/retry, streaming or partial
+  ingestion. Check PR #8 for its mainline status.
 - `llm()` stores supplied input/output/total token metadata. E2 adds an
   explicit failed-attempt status/error while retaining supplied usage; only
   successful responses update the legacy trace answer until the application
@@ -152,8 +154,8 @@ Show actual Dashboard behavior for timing/UI work, not only a diff or build log.
 
 The user adopted incremental development under the roadmap on 2026-09-15 and
 requires self-review, DEVLOG, CURRENT_TASK and ROADMAP closeout each slice. H0
-and D0 are merged. E1 usage visibility is on Draft PR #7. E2's single tool path
-is locally complete on a stacked branch; neither is merged. E3 usage provenance
+and D0 are merged. E1 usage visibility was merged via PR #7. E2's single tool path
+is locally complete in PR #8, targeting `main`; check its merge status live. E3 usage provenance
 is the next candidate, not active. Conservative signals and outcome-aware comparison
 remain later gates. Broad RAG tuning stays behind that value experiment. Later
 runtime, privacy/data controls and release reliability remain gated. Publication

@@ -20,23 +20,24 @@ Future scope is not implemented capability or blanket authorization.
 - B1 source startup, B2 independent-app integration and H0 honest diagnostic
   presentation: merged through PR #5 as `e8b034d` after its four required checks
   passed on 2026-09-20.
-- Released/mainline SDK records retrieval and llm spans; E2's unmerged branch
-  adds one caller-instrumented tool span. Token metadata is caller-supplied;
+- The published SDK records retrieval and llm spans; E2 adds one
+  caller-instrumented tool span, with mainline status determined by PR #8.
+  Token metadata is caller-supplied;
   E1 can summarize observed records but does not make capture complete or
   provider-verified. The wheel still does not contain a standalone runtime.
 - No independent external first-run or repeat-use evidence is recorded.
 - D0 workflow harness was squash-merged through PR #6 as `0a63e3d` without
   changing the product sequence. PR #3 and PR #5 were previously merged as
   `272bc56` and `e8b034d`; cumulative PR #4 remains closed as superseded.
-- E1 existing-usage visibility is locally complete on
-  `codex/e1-existing-usage-visibility`: per-call recorded tokens, trustworthy
+- E1 existing-usage visibility was squash-merged via PR #7 as `622ff69`:
+  per-call recorded tokens, trustworthy
   known subtotal and coverage, measured/unknown timing, explicit conflict and
   provenance states, focused tests, production build, and real-browser evidence.
-  It is pushed as Draft PR #7 and remains unmerged, untagged and unpublished.
-- E2 single Python tool path is locally complete on a branch stacked on E1.
+  It remains untagged and unpublished.
+- E2 single Python tool path is locally complete in PR #8, retargeted to `main`.
   Deterministic success, business failure and tool-recovery traces passed local
   API/UI checks; the new SDK contract passed clean-wheel validation. It is not
-  merged, released or externally validated. E3 is the next candidate.
+  released or externally validated; check its merge status live. E3 is the next candidate.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence

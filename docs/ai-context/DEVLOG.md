@@ -1,5 +1,25 @@
 # Devlog
 
+## 2026-09-24 — E1 merge and E2 restack for review
+
+- Reviewed E1 and E2 against the slice contract. No blocking code finding was
+  identified; known limits remain caller-supplied usage and an internal-only
+  E2 integration example.
+- Squash-merged E1 PR #7 into `main` as `622ff69` after five green checks.
+  The E1 branch and new `main` had identical file trees.
+- Preserved the original E2 commit `468ee48` under local branch
+  `archive/e2-pre-restack-20260924`; rebased its single change onto `622ff69`
+  as `d4d8982`. The old and new E2 heads have identical file trees. PR #8 now
+  targets `main` and shows the original E2-only 18-file diff.
+- Local review validation: 68 Python tests, all Go packages, 27 Dashboard
+  tests, production build, and diff check passed. The default Go cache and
+  sandboxed Vite config read failed for environment reasons; a temporary Go
+  cache and normal-permission build passed without code changes.
+- E2 merge and fresh PR checks remain to be confirmed. No version, tag,
+  publication, paid call, or E3 work occurred.
+
+---
+
 ## 2026-09-24 — E2 single Python tool path (stacked on E1)
 
 Outcome: locally implemented one synchronous Python tool path after the user

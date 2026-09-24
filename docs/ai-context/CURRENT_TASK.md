@@ -7,7 +7,7 @@ components:
   - dashboard
   - documentation
 validation_profile: cross-stack
-scope_base: origin/codex/e1-existing-usage-visibility
+scope_base: origin/main
 allowed_paths:
   - AGENTS.md
   - sdk/python/raglens/trace.py
@@ -41,16 +41,17 @@ auto_continue: false
 
 # Current Task — E2 Python tool path
 
-Updated: 2026-09-24. Status: **E2 locally complete, stacked review candidate**.
+Updated: 2026-09-24. Status: **E2 locally complete, PR #8 merge candidate**.
 
 ## Authority and topology
 
 The user explicitly approved E2's minimal `tool` span and public SDK contract
-on 2026-09-24. E1 is on unmerged Draft PR #7. This E2 branch starts at E1's
-`941fd06`; its eventual PR must target the E1 branch and disclose that stack.
-No merge, version, tag, publication, paid model call or external trial is
-authorized. Existing Collector span storage is generic; do not introduce a
-persisted schema migration under this approval.
+on 2026-09-24, then authorized review and merge of the current PRs. E1 PR #7
+was squash-merged into `main` as `622ff69`. E2 PR #8 was restacked onto that
+commit with the same file tree and retargeted from E1 to `main`. Version, tag,
+publication, paid model call and external trial remain separate human gates.
+Existing Collector span storage is generic; do not introduce a persisted
+schema migration under this approval.
 
 ## Decision card
 
@@ -63,7 +64,7 @@ persisted schema migration under this approval.
 | Non-goals | No agent/memory/retry span family, framework adapter, automatic provider usage/pricing, async/thread guarantee, DAG, optimizer, release or external validation. |
 | Validation | Cross-stack profile, SDK build and installed-wheel checks for the public API, focused scenario tests, API readback, and real Dashboard inspection. |
 | Visible evidence | Success, business failure, and tool-failure-then-recovery traces show ordered steps, step status, timing/usage gaps, and final outcome. |
-| Stop | Review-ready stacked Draft PR after self-review and closeout; E3 does not start automatically. |
+| Stop | Review and merge PR #8 after fresh CI; E3 does not start automatically. |
 
 ## Acceptance
 
@@ -104,8 +105,8 @@ persisted schema migration under this approval.
   All had zero RAG warnings. Real Dashboard inspection on 5176 showed step
   errors and final acceptance. The sample uses no paid model or external app;
   the real-user value gate remains open.
-- This branch is stacked on unmerged E1 Draft PR #7. It is not merged,
-  versioned, tagged or published. Delivery/remote CI status is in DEVLOG.
+- PR #8 now targets `main` after a tree-equivalent restack. Check its merge and
+  CI status live. E2 is not versioned, tagged or published.
 
 ## Next candidate — not active
 
