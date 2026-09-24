@@ -674,7 +674,9 @@ func (s *Store) getWarnings(ctx context.Context, traceID string) ([]models.Warni
 		`
 SELECT
 	id, trace_id, span_id, type, severity, message,
-	schema_version, rule_id, rule_version, title, category, confidence, explanation,
+	schema_version, rule_id, rule_version, title, category,
+	CASE WHEN typeof(confidence) IN ('integer', 'real') THEN confidence ELSE NULL END,
+	explanation,
 	details_json, evidence_json, diagnostics_json, signals_json, recommended_action,
 	created_at
 FROM warnings
