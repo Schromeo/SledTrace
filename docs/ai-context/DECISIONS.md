@@ -1,5 +1,22 @@
 # Architecture Decisions
 
+## 2026-09-25 — Close and publish the E3-inclusive v0.7.1 release
+
+- Protected release PR #14 merged as `33d2335`; immutable annotated tag
+  `v0.7.1` points to the same commit. All five required CI checks passed.
+- The tag workflow built wheel and sdist, passed Twine metadata validation,
+  and successfully published both artifacts through the protected PyPI
+  Trusted Publishing environment.
+- A clean external virtual environment installed the production wheel and
+  verified preferred/legacy imports, `sledtrace.openai`, CLI version/help,
+  and the documented nonzero out-of-checkout `serve` guidance.
+- GitHub Release was published for the same tag. Release closure is complete.
+- E3 evidence remains offline and sanitized; do not describe it as a paid
+  provider run, complete capture, or bill reconciliation. Select a genuine
+  workflow and quality outcome before defining the next efficiency slice.
+
+---
+
 ## 2026-09-25 — Include bounded offline E3 in the v0.7.1 release scope
 
 The user chose to include merged PRs #11–#13 in v0.7.1, rather than publishing

@@ -1,24 +1,23 @@
 ---
-slice_id: RC071E3
-slice_status: active
+slice_id: POST071CLOSE
+slice_status: complete
 components:
   - sdk
   - dashboard
   - documentation
-validation_profile: release
-scope_base: 7bcbeec
+validation_profile: docs
+scope_base: 33d2335
 allowed_paths:
-  - dashboard/web/package-lock.json
-  - docs/assets/screenshots/*
+  - AGENTS.md
   - README.md
   - sdk/python/README.md
   - docs/releases/V0_7_1.md
-  - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
-  - docs/ai-context/DEVLOG.md
+  - docs/ai-context/AI_HANDOFF.md
+  - docs/ai-context/NEXT_AGENT_BRIEF.md
   - docs/ai-context/ROADMAP.md
   - docs/ai-context/DECISIONS.md
-  - AGENTS.md
+  - docs/ai-context/DEVLOG.md
 human_gates:
   - persisted_schema_or_data_contract_change
   - version_tag_release_or_publication
@@ -28,32 +27,40 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — RC071E3 final release acceptance
+# Current Task — Post v0.7.1 publication documentation closeout
 
-Updated: 2026-09-25. Status: **active; no tag or publication yet**.
+Updated: 2026-09-25. Status: **complete**.
 
-The user chose to include the offline E3 work from PRs #12–#13 in v0.7.1 and
-authorized publication only if final acceptance passes. PRs #11, #12 and #13
-have merged in order; final mainline baseline is `7bcbeec`. This release does
-not claim provider-wide capture, a real-provider run, or bill reconciliation.
+The user chose to include E3 from PRs #12–#13 in v0.7.1. Release PR #14
+merged to `main` as `33d2335`; annotated tag `v0.7.1` points to that commit.
+The protected PyPI workflow succeeded on 2026-09-25 and published wheel plus
+sdist. A fresh virtual environment outside the repository installed the wheel,
+verified `sledtrace`/`raglens`/`sledtrace.openai` imports, CLI version/help and
+the documented out-of-checkout serving guidance. GitHub Release:
+https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1 .
 
-Decision card: user value is a truthful, installable 0.7.1 with visible usage
-and bounded estimated cost. The blocker is release material that predates E3,
-four fixable Dashboard lockfile advisories, and the absence of final-main
-distribution/visual evidence. Reuse the existing SDK/Collector/Dashboard,
-offline fixture, protected CI and trusted-publishing workflow. Make only a
-lockfile refresh plus release/status/screenshot updates; no E4, paid API call,
-schema change or runtime redesign. Verify the exact final tree with the full
-release profile, metadata and clean install, audit, local UI inspection,
-required PR CI, then publish from an immutable matching tag. Stop if any gate
-fails or the protected PyPI approval is unavailable.
+Closeout result: PR #14's five required CI checks and clean-clone release
+profile passed; the final tag workflow built and checked both distributions,
+then published them through protected PyPI Trusted Publishing. The real
+PyPI wheel was installed and its expected CLI/import boundaries were verified.
+The GitHub Release was published against the same immutable tag. E3 remains
+limited to explicit caller-supplied non-streaming Responses usage, offline
+fixtures and indicative cost; no paid provider call or bill reconciliation was
+performed.
 
-Acceptance: accurately describe E3's explicit non-streaming boundary and
-indicative two-model text-token estimate; zero current audit findings after a
-lockfile-only fix; clean release tests and package metadata; an honest
-full-width Dashboard image; protected merge, tag, PyPI clean install and
-GitHub Release from the same final commit. Keep the pre-existing untracked
-`docs/demo/comprehensive_trace_example.json` untouched.
+Known packaging note: PyPI's 0.7.1 long description is embedded in the
+immutable published artifact and still contains pre-publication wording
+("when available"). The repository SDK README now reflects publication; do
+not rebuild/re-upload 0.7.1. Carry the corrected description into a later
+version if PyPI does not provide a supported project-description edit.
+
+Next decision: before E4, choose one genuine bounded workflow and decide what
+quality outcome can be observed alongside usage/tool traces. Use an existing
+user-owned run or a no-cost local fixture first; do not claim provider billing
+or diagnostic effectiveness without corresponding evidence. The detailed
+ROADMAP and ROAD_TO_V1_0 remain candidate sequencing, not blanket authorization.
+The pre-existing untracked `docs/demo/comprehensive_trace_example.json` remains
+untouched and outside this documentation closeout.
 
 ## Previous task — E3R usage-state review fix
 

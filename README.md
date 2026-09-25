@@ -9,8 +9,8 @@ It helps developers inspect why a RAG application produced a bad answer by showi
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
 Release history: [GitHub Releases](https://github.com/Schromeo/SledTrace/releases).
-This source tree is versioned **0.7.1 — Trustworthy Local Tracing**; see
-[PyPI](https://pypi.org/project/sledtrace/) for published package availability.
+This source tree and the published Python package are **0.7.1 — Trustworthy
+Local Tracing**. Install it from [PyPI](https://pypi.org/project/sledtrace/0.7.1/).
 
 Install the Python SDK from PyPI:
 
@@ -18,7 +18,7 @@ Install the Python SDK from PyPI:
 python -m pip install sledtrace
 ```
 
-The `0.7.0rc1` prerelease remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) as the immutable publication candidate that preceded the production release.
+The `0.7.0rc1` prerelease remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) as historical candidate provenance.
 
 #### Why "SledTrace"?
 
@@ -570,13 +570,14 @@ Milestone snapshot:
 * v0.5.0 Python SDK distribution / packaging readiness: complete
 * v0.6.0 local CLI / startup UX: complete
 * v0.7.0 external developer readiness: complete
-* v0.7.1 trustworthy local tracing and explicit Responses usage: release scope
+* v0.7.1 trustworthy local tracing and explicit Responses usage: released
 
 Published releases:
 
 * [v0.5.0 — Python SDK Packaging Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0)
 * [v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
 * [v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
+* [v0.7.1 — Trustworthy Local Tracing](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1)
 
 Current source version:
 

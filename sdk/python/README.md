@@ -10,14 +10,14 @@ Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/
 
 ## Distribution status
 
-For this version, install from PyPI when available:
+This version is published on production PyPI:
 
 ```bash
 python -m pip install sledtrace==0.7.1
 ```
 
-Before publication, or when testing source changes, use the editable install
-or locally built wheel below. The preceding production version is 0.7.0.
+When testing source changes, use the editable install or locally built wheel
+below. The preceding production version is 0.7.0.
 
 The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
 
@@ -260,7 +260,7 @@ from sledtrace import trace
 - [User onboarding guide](https://github.com/Schromeo/SledTrace/blob/main/docs/product/USER_ONBOARDING.md)
 - [Python SDK integration guide](https://github.com/Schromeo/SledTrace/blob/main/docs/integrations/PYTHON_SDK_GUIDE.md)
 - [v0.7.1 release notes](https://github.com/Schromeo/SledTrace/blob/main/docs/releases/V0_7_1.md)
-- [v0.7.0 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
+- [v0.7.1 release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1)
 
 Repository examples are source-only aids and are not bundled as a separate
 public SDK surface. `examples.independent_app` is deliberately copyable and uses

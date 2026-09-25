@@ -15,61 +15,38 @@ Future scope is not implemented capability or blanket authorization.
 
 ### Current facts
 
-- Latest confirmed published release: v0.7.0, published 2026-09-09.
-- S1–S4: merged through PR #3 as `272bc56`; publication is not established.
-- B1 source startup, B2 independent-app integration and H0 honest diagnostic
-  presentation: merged through PR #5 as `e8b034d` after its four required checks
-  passed on 2026-09-20.
-- The published SDK records retrieval and llm spans; E2's
-  caller-instrumented tool span is on `main` through PR #8 (`0734e20`), but
-  remains unpublished.
-  Token metadata is caller-supplied;
-  E1 can summarize observed records but does not make capture complete or
-  provider-verified. The wheel still does not contain a standalone runtime.
+- Latest release: v0.7.1 — Trustworthy Local Tracing, published 2026-09-25
+  from immutable annotated tag `v0.7.1` at `33d2335`. Protected PyPI upload,
+  clean install outside the repository, and GitHub Release all succeeded.
+- S1–S4 reliability work and B1/B2/H0 integration were included in the
+  protected v0.7.1 mainline and release.
+- D0 workflow harness was squash-merged through PR #6 as `0a63e3d`; cumulative
+  PR #4 remains closed as superseded. PR #3 and PR #5 are merged.
+- E1 usage visibility was squash-merged via PR #7 as `622ff69` and is in
+  v0.7.1: per-call recorded tokens, trustworthy subtotal/coverage,
+  measured/unknown timing, and explicit conflict/provenance states.
+- E2's single Python tool path merged via PR #8 as `0734e20`. Deterministic
+  success, business failure and recovery paths passed local API/UI checks.
+  It is one caller-instrumented synchronous tool span, not an agent runtime.
+- X1 merged via PR #10 as `755c19c`: a Harvard Federalist Papers PDF was
+  indexed into SQLite FTS5 and queried through a traced adapter. This exercises
+  existing retrieval diagnostics; it does not add a product capability.
+- X2 merged via PR #9 as `92b27b9`; historical text `confidence="heuristic"`
+  now reads as unknown without rewriting SQLite rows.
+- E3 is an optional explicit mapping for caller-supplied completed,
+  non-streaming OpenAI Responses results, with an indicative estimate for two
+  supported models. Evidence is sanitized offline fixture and local UI
+  readback, not a paid provider call, complete capture or billing comparison.
 - No independent external first-run or repeat-use evidence is recorded.
-- D0 workflow harness was squash-merged through PR #6 as `0a63e3d` without
-  changing the product sequence. PR #3 and PR #5 were previously merged as
-  `272bc56` and `e8b034d`; cumulative PR #4 remains closed as superseded.
-- E1 existing-usage visibility was squash-merged via PR #7 as `622ff69`:
-  per-call recorded tokens, trustworthy
-  known subtotal and coverage, measured/unknown timing, explicit conflict and
-  provenance states, focused tests, production build, and real-browser evidence.
-  It remains untagged and unpublished.
-- E2 single Python tool path was merged through PR #8 as `0734e20`.
-  Deterministic success, business failure and tool-recovery traces passed local
-  API/UI checks; the new SDK contract passed clean-wheel validation. It is not
-  released or externally validated. E3 is the next candidate.
-- X1 external-corpus exercise merged through PR #10 as `755c19c`: a Harvard Federalist Papers
-  PDF was indexed into SQLite FTS5 and queried through an SledTrace-traced
-  adapter. This is integration evidence for existing retrieval diagnostics,
-  not a new product capability or a change to the E3 sequence.
-- Two follow-up local RAG suites also passed end-to-end: nine realistic
-  `reference_rag_app` cases and five deterministic `local_rag_demo` cases
-  exercised all seven warning types through Collector/API readback and
-  Dashboard visibility. This confirms small-scale integration behavior, not
-  throughput or production-scale reliability. The run exposed legacy warning
-  rows with string `confidence="heuristic"` that can make current detail reads
-  return HTTP 500; compatibility handling and isolated test databases should be
-  considered before larger repeated-run testing. No sequence change is made.
-- X2 fixes that historical-detail blocker and merged through PR #9 as `92b27b9`:
-  text-typed legacy confidence now reads as unknown without rewriting SQLite
-  rows; a persisted-database HTTP regression and all Go tests passed. It is
-  not yet released. Use an isolated database for later validation.
-- The 0.7.1 candidate PR #11, E3 offline parser PR #12, and E3 integration
-  PR #13 merged in order after their required checks passed. The user chose
-  to include their combined scope in v0.7.1. A final release-closure slice
-  owns accurate package/README claims, dependency-lockfile audit, full-width
-  image, exact-tree distribution checks and protected publication. Until those
-  finish, v0.7.0 remains the latest confirmed published release.
-- E3's explicit non-streaming Responses helper and sanitized fixture reach the
-  existing SDK-to-Collector-to-Dashboard path with a dated two-model Standard
-  text-token estimate. This is local integration evidence, not a real provider
-  call or bill reconciliation. E3's real-workflow product gate remains open.
+- PRs #11–#13 and release-closure PR #14 merged in order. All v0.7.1 release
+  gates are complete; see CURRENT_TASK and DEVLOG for evidence.
 - E3R corrects two Dashboard state labels found in PR #13 review: invalid
   provider usage is unknown, while true count contradictions remain conflicts;
   explicit invalid token fields remain invalid. This is a reliability follow-up
   within E3, not a roadmap sequence change or real-provider validation.
-- These merges did not change the public release state. Sequence remains unchanged.
+- The release gate is closed. Product sequence remains unchanged; select the
+  next bounded slice after deciding which genuine workflow and outcome measure
+  should ground E4.
 
 ### Proposed post-v0.7 sequence
 
@@ -79,9 +56,9 @@ defer broad RAG-rule expansion and bring the efficiency/comparison loop forward.
 
 | Stage | Bounded deliverables | Exit gate | Suggested release grouping |
 | --- | --- | --- | --- |
-| M0 — H0 locally complete | Honest warning presentation; existing release cleanup remains separate | UI, compatibility tests, build and real-browser checks passed | v0.7.1 remains a separate release decision |
-| M1 — locally complete | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | v0.8 development |
-| M2 — E2 mainline, unpublished | E2: one Python agent/tool path merged; E3: one usage source and explicit pricing basis remains a candidate | Real workflow and provider usage/price basis still need evidence | v0.8 development |
+| M0 — complete and released | Honest warning presentation and release cleanup | UI, compatibility tests, build, real-browser checks, protected publication and clean install passed | Included in v0.7.1 |
+| M1 — complete and released | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | Included in v0.7.1 |
+| M2 — implementation released, external value unverified | E2: one Python tool path; E3: explicit OpenAI Responses usage and bounded indicative pricing | Validate a genuine workflow and determine whether the captured evidence changes a decision | v0.7.1 shipped; v0.8 scope remains open |
 | M3 | E4: two conservative waste signals; E5: outcome-aware A/B comparison | One real, reviewable improvement or useful regression finding; no fabricated savings | v0.8 candidate, subject to product gate |
 | M4 | U1: checkout-free runtime; U2: find/detail/compare; U3: content/data controls; U4: external onboarding | Supported install path and two genuine first uses | v0.9 candidate |
 | M5 | R1: storage/delivery contract; R2: compatibility; R3: supported-platform verification | Frozen, reliable supported scope | v1.0.0rc candidate |
@@ -93,9 +70,10 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the final E3-inclusive 0.7.1 release
-acceptance and publication gate. PRs #11–#13 are merged; product sequencing
-after release remains unchanged until a separate real-workflow decision.
+[CURRENT_TASK](CURRENT_TASK.md) records the completed v0.7.1 release closure
+and the next decision: pick a genuine, bounded workflow and quality outcome
+before selecting E4 implementation scope. PRs #11–#14 are merged; E3's offline
+validation is not external workflow evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.
