@@ -2283,3 +2283,16 @@ cleanup, both ports released, and clean Git status. `npm audit` reported four
 fixable transitive toolchain advisories: baseline-browser-mapping (moderate),
 browserslist, nanoid, and postcss (high). These were not changed here; review
 the lockfile and exposure before any publication decision.
+
+RC071 review closeout: corrected `NEXT_AGENT_BRIEF.md`'s stale span inventory.
+Captured three real-browser conversation screenshots of the sanitized
+tool-recovery fixture at the trace header, usage/steps, and selected failed
+tool detail. Checked legibility, error/provenance/no-warning wording, and
+absence of secrets/private user data. These are narrow-view candidate evidence,
+not a new full-width README screenshot. PR #11 remains a draft; no merge, tag,
+PyPI upload, or GitHub Release occurred. E3 remains the next separate slice.
+The RC071 `release` validation profile was rerun after these documentation
+changes and passed all nine steps (SDK 68, startup 18, Go suite, Dashboard 27,
+build/wheel/independent-app, and diff check). Local `scope` still reports only
+the preexisting untracked `docs/demo/comprehensive_trace_example.json`; it is
+not included in the PR. Confirm the clean PR scope through Slice Contract CI.

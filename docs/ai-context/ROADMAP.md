@@ -55,10 +55,12 @@ Future scope is not implemented capability or blanket authorization.
   text-typed legacy confidence now reads as unknown without rewriting SQLite
   rows; a persisted-database HTTP regression and all Go tests passed. It is
   not yet released. Use an isolated database for later validation.
-- The exact-main v0.7.1 candidate closure is active. Its release notes and
-  package README must cover E1/E2 as well as reliability work; publication
-  remains a separate user decision. The E3 OpenAI-client slice may begin after
-  candidate closure with offline fixtures only.
+- The exact-main v0.7.1 candidate is locally validated in draft PR #11;
+  release notes cover E1/E2 as well as reliability work. Candidate browser
+  screenshots were checked; full-width README imagery and toolchain advisories
+  remain pre-publication review items. Publication remains a separate user
+  decision. E3 is the next bounded slice with OpenAI Python SDK offline
+  fixtures only, after the PR review/merge decision.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence

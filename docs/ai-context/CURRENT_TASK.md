@@ -1,6 +1,6 @@
 ---
 slice_id: RC071
-slice_status: active
+slice_status: complete
 components:
   - sdk
   - dashboard
@@ -16,6 +16,7 @@ allowed_paths:
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
+  - docs/ai-context/NEXT_AGENT_BRIEF.md
 human_gates:
   - persisted_schema_or_data_contract_change
   - version_tag_release_or_publication
@@ -27,7 +28,8 @@ auto_continue: false
 
 # Current Task — RC071 exact-main release candidate closure
 
-Updated: 2026-09-24. Status: **active, candidate-only authorization**.
+Updated: 2026-09-24. Status: **locally complete, PR #11 draft/review-ready;
+candidate-only authorization**.
 
 X1 and X2 have merged into `main` through PRs #10 and #9. The source tree is
 already versioned 0.7.1, but release notes and READMEs still describe an
@@ -57,6 +59,24 @@ of `cb0dfd0` passed locked `npm ci`, real startup/ingestion/CORS/shutdown smoke,
 and clean Git status. `npm audit` found four fixable transitive Dashboard
 toolchain advisories (one moderate, three high); review before publication.
 No merge or release is authorized by this local/CI evidence alone.
+
+Review follow-up: the handoff entry now distinguishes published v0.7.0's
+`retrieval`/`llm` from the source-only E2 `tool` path. Three real-browser
+candidate screenshots checked the trace header, usage/steps, and selected tool
+error detail using the sanitized offline fixture; text was legible, no secrets
+or private user data appeared, and the unknown provenance and no-warning caveat
+remained visible. The in-app browser is narrow, so these are conversation
+evidence rather than a new full-width README asset. The README's older
+full-width usage screenshot is explicitly labeled as earlier candidate; refresh
+full-width release imagery before publication.
+
+Next bounded decision — E3: after PR #11 review/merge decision, select one
+OpenAI Python SDK Responses non-streaming call boundary and an offline sanitized
+fixture. Preserve the provider's input/output totals and cached/reasoning
+subfields without double-counting. Keep OpenAI as an optional integration, not a
+core SDK dependency. Do not call a paid API, add broad adapters or stream
+ingestion, or claim provider-verified coverage beyond this explicit boundary.
+Any persisted wire-contract change requires the recorded human gate.
 
 ## Previous task — X2 legacy warning read compatibility
 

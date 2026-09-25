@@ -4,8 +4,9 @@
 
 `origin/main` currently points to `92b27b9`: X1 PR #10 and X2 PR #9 were
 squash-merged after their required checks passed. No release newer than v0.7.0
-is established; 0.7.1 exact-main candidate validation is now active, with
-publication separately gated. X2 makes historical text `confidence="heuristic"`
+is established; 0.7.1 exact-main candidate validation is locally complete in
+draft PR #11, with publication separately gated. X2 makes historical text
+`confidence="heuristic"`
 read as unknown rather than fail trace detail with HTTP 500. The persisted
 SQLite/API regression and all Go tests passed; user databases were not
 rewritten. The user selected OpenAI Python SDK plus offline fixtures for E3,
