@@ -86,23 +86,29 @@ function normalizeLlmUsage(
   order: number,
   durationMs: number | null,
 ): LlmUsageCall {
-  const inputTokens = readTokenField(span.metadata, "input_tokens");
-  const outputTokens = readTokenField(span.metadata, "output_tokens");
-  const recordedTotalTokens = readTokenField(span.metadata, "total_tokens");
   const provenance = span.metadata.usage_source === "openai_responses"
     ? "openai_responses" : "unknown";
-  const cachedInputTokens = readTokenField(span.metadata, "cached_input_tokens");
-  const cacheWriteTokens = readTokenField(span.metadata, "cache_write_tokens");
-  const reasoningOutputTokens = readTokenField(span.metadata, "reasoning_output_tokens");
+  const providerRecord = provenance === "openai_responses";
+  const inputTokens = readTokenField(span.metadata, "input_tokens", providerRecord);
+  const outputTokens = readTokenField(span.metadata, "output_tokens", providerRecord);
+  const recordedTotalTokens = readTokenField(span.metadata, "total_tokens", providerRecord);
+  const cachedInputTokens = readTokenField(span.metadata, "cached_input_tokens", providerRecord);
+  const cacheWriteTokens = readTokenField(span.metadata, "cache_write_tokens", providerRecord);
+  const reasoningOutputTokens = readTokenField(span.metadata, "reasoning_output_tokens", providerRecord);
   const usageIssues = provenance === "openai_responses" && Array.isArray(span.metadata.usage_issues)
     ? span.metadata.usage_issues.filter((issue): issue is string => typeof issue === "string")
     : [];
-  const providerInvalid = provenance === "openai_responses" && [
-    "input_tokens_state", "output_tokens_state", "total_tokens_state",
-    "cached_input_tokens_state", "cache_write_tokens_state", "reasoning_output_tokens_state",
-  ].some((key) => span.metadata[key] === "invalid");
+  const conflictIssues = new Set([
+    "total_mismatch", "cached_exceeds_input", "cache_subfields_exceed_input",
+    "reasoning_exceeds_output",
+  ]);
+  const providerInvalid = providerRecord && (
+    [inputTokens, outputTokens, recordedTotalTokens, cachedInputTokens,
+      cacheWriteTokens, reasoningOutputTokens].some((field) => field.kind === "invalid") ||
+    usageIssues.some((issue) => !conflictIssues.has(issue))
+  );
   const subfieldConflict = provenance === "openai_responses" && (
-    usageIssues.length > 0 ||
+    usageIssues.some((issue) => conflictIssues.has(issue)) ||
     (inputTokens.kind === "known" && cachedInputTokens.kind === "known" && cachedInputTokens.value > inputTokens.value) ||
     (outputTokens.kind === "known" && reasoningOutputTokens.kind === "known" && reasoningOutputTokens.value > outputTokens.value) ||
     (inputTokens.kind === "known" && cacheWriteTokens.kind === "known" && cachedInputTokens.kind === "known" &&
@@ -133,7 +139,10 @@ function normalizeLlmUsage(
   };
 }
 
-function readTokenField(metadata: JsonObject, key: string): TokenField {
+function readTokenField(metadata: JsonObject, key: string, providerRecord = false): TokenField {
+  if (providerRecord && metadata[`${key}_state`] === "invalid") {
+    return { kind: "invalid", value: null };
+  }
   if (
     !Object.prototype.hasOwnProperty.call(metadata, key) ||
     metadata[key] === null

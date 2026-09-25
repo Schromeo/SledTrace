@@ -18,6 +18,9 @@ validates explicit Responses
 recording, generic Collector persistence, Dashboard provenance/subfields and a
 dated two-model text-token estimate. No provider call or bill reconciliation
 occurred. Review the PR stack and exact CI before merging or publishing.
+An E3R follow-up on PR #13 corrects the reviewed unknown/invalid/conflict
+Dashboard labels. No schema or rate change was needed; check its latest CI
+before declaring the review finding closed.
 
 Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),

@@ -1,5 +1,24 @@
 # Devlog
 
+## 2026-09-25 — E3R Dashboard usage-state review follow-up
+
+Review of draft PR #13 found two reproducible mislabels. The Dashboard treated
+`invalid_usage_object` as a token conflict even though no comparable counts
+existed; it also discarded explicit `*_state=invalid` markers and displayed
+those fields as missing. The reader now distinguishes invalid/malformed input
+from arithmetic or subfield contradictions, without changing persisted data,
+SDK capture, Collector or price rates. Unknown and invalid states remain out
+of the known subtotal and cost estimate. Added focused regressions for both
+cases; existing zero, legacy and true-conflict cases still pass.
+
+Dashboard profile passed: 33 tests, production build and diff check. A fresh
+temporary SQLite Collector on 4327 stored a sanitized two-attempt trace; the
+real Dashboard on 5178 showed malformed usage `Total: Unknown`, explicit
+invalid cache `Cached input: Invalid`, coverage `0/2`, and no cost estimate for
+either. The unrelated pre-existing untracked demo JSON still causes the local
+slice scope check's only violation and was excluded from the patch. Final PR
+CI remains to be checked after push; no merge or release is implied.
+
 ## 2026-09-25 — E3 explicit Responses usage and indicative text-token cost
 
 Built on the separate E3 parser PR branch, not on public `main`. A caller may

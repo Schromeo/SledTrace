@@ -70,6 +70,10 @@ Future scope is not implemented capability or blanket authorization.
   to-Dashboard path and a dated two-model Standard text-token rate snapshot.
   Real-provider and billing reconciliation evidence is still absent; E3's
   product gate remains open until a user-owned workflow is validated.
+- E3R corrects two Dashboard state labels found in PR #13 review: invalid
+  provider usage is unknown, while true count contradictions remain conflicts;
+  explicit invalid token fields remain invalid. This is a reliability follow-up
+  within E3, not a roadmap sequence change or real-provider validation.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence

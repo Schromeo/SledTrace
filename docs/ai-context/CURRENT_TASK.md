@@ -1,28 +1,16 @@
 ---
-slice_id: E3
+slice_id: E3R
 slice_status: complete
 components:
-  - sdk
   - dashboard
   - documentation
-validation_profile: cross-stack
-scope_base: a70fa0d
+validation_profile: dashboard
+scope_base: a9ae1cd
 allowed_paths:
-  - sdk/python/sledtrace/_openai_usage.py
-  - sdk/python/sledtrace/openai.py
-  - sdk/python/raglens/trace.py
-  - sdk/python/tests/test_openai_usage.py
-  - sdk/python/tests/test_openai_recording.py
-  - sdk/python/tests/fixtures/openai_response_usage.json
   - dashboard/web/src/utils/usage.ts
-  - dashboard/web/src/utils/pricing.ts
-  - dashboard/web/src/pages/TraceDetailPage.tsx
-  - dashboard/web/src/style.css
   - dashboard/web/tests/usage.test.mjs
-  - sdk/python/README.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
-  - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
 human_gates:
@@ -33,6 +21,33 @@ human_gates:
   - external_user_outreach
 auto_continue: false
 ---
+
+# Current Task — E3R usage-state review fix
+
+Updated: 2026-09-25. Status: **locally complete, PR #13 update pending**.
+
+Last review reproduced two Dashboard mislabels: an invalid Responses usage
+object was shown as `Conflict` instead of `Unknown`, and an explicit invalid
+cached-token state was shown as `Unknown` instead of `Invalid`. The SDK already
+persists `usage_issues` and `*_state` markers. Fix only the Dashboard reader;
+keep known totals, real arithmetic/subfield conflicts, zero, and old records
+unchanged. Add regression tests for both reported cases plus no-cost behavior.
+
+Acceptance: targeted and dashboard-profile validation pass; browser-visible
+state is truthful; update PR #13 with a focused commit and await CI. Do not
+merge the stack, publish, call a paid provider, or start E4 in this slice.
+
+Closeout: provider `*_state=invalid` now drives the corresponding Dashboard
+field to `Invalid`; an invalid/malformed usage object is `Unknown`, while
+arithmetic and subset contradictions remain `Conflict`. Unknown/invalid calls
+remain outside known subtotal and price. Existing legacy caller-supplied usage
+and known-zero behavior are unchanged. Regression tests cover the two reported
+cases. PR #13 remains stacked on #12 and #11; review their latest checks before
+any merge. Real provider/billing evidence is still a later human-gated decision.
+The Dashboard profile passed with 33 tests, production build and diff check.
+An isolated local Collector and live Dashboard on 4327/5178 displayed a
+malformed usage total as `Unknown`, an invalid cached field as `Invalid`,
+coverage `0/2`, and no price estimate for either attempt.
 
 # Current Task — E3 OpenAI Responses usage ledger and indicative cost
 

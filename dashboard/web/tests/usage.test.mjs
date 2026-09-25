@@ -36,6 +36,25 @@ test("cost stays unknown for missing cache, unknown model, provider conflict or 
   }
 });
 
+test("malformed provider usage is unknown, not a fabricated conflict or zero", () => {
+  const call = buildUsageLedger([span({ model: "gpt-4.1-mini", metadata: {
+    usage_source: "openai_responses", usage_issues: ["invalid_usage_object"],
+  } })]).calls[0];
+  assert.equal(call.total.kind, "unknown");
+  assert.equal(call.cachedInputTokens.kind, "missing");
+  assert.equal(estimateOpenAITextCost(call), null);
+});
+
+test("invalid provider cache count stays invalid and cannot contribute cost", () => {
+  const call = buildUsageLedger([span({ model: "gpt-4.1-mini", metadata: {
+    usage_source: "openai_responses", input_tokens: 10, output_tokens: 5,
+    total_tokens: 15, cached_input_tokens_state: "invalid", cache_write_tokens: 0,
+  } })]).calls[0];
+  assert.equal(call.cachedInputTokens.kind, "invalid");
+  assert.equal(call.total.kind, "unknown");
+  assert.equal(estimateOpenAITextCost(call), null);
+});
+
 test("explicit future rate-card input can price another model but rejects invalid rates", () => {
   const call = buildUsageLedger([span({ model: "my-model", metadata: {
     usage_source: "openai_responses", input_tokens: 1_000_000,
