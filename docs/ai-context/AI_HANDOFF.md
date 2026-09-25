@@ -11,10 +11,13 @@ read as unknown rather than fail trace detail with HTTP 500. The persisted
 SQLite/API regression and all Go tests passed; user databases were not
 rewritten. The user selected OpenAI Python SDK plus offline fixtures for E3,
 without paid calls. See CURRENT_TASK and DEVLOG for scope and exact evidence.
-The E3 branch is stacked on PR #11 and contains only the offline OpenAI
-Responses usage parser foundation. SDK validation passed; no persisted
-metadata/UI contract or price basis has been approved or implemented. Keep
-the two review diffs separate and do not describe E3 as complete.
+The first E3 branch is stacked on PR #11 and contains only the offline OpenAI
+Responses usage parser foundation. On 2026-09-25 the user approved the narrow
+metadata/UI and indicative model-price path. A second stacked branch locally
+validates explicit Responses
+recording, generic Collector persistence, Dashboard provenance/subfields and a
+dated two-model text-token estimate. No provider call or bill reconciliation
+occurred. Review the PR stack and exact CI before merging or publishing.
 
 Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),

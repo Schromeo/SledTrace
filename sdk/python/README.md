@@ -129,6 +129,35 @@ task trace as an error. No agent/LLM is run by the SDK, no provider usage is
 captured automatically, and sensitive arguments or secrets should not be put
 in summaries.
 
+### Development branch: explicit OpenAI Responses usage
+
+The E3 draft branch adds `sledtrace.openai.record_response` for one completed,
+non-streaming OpenAI Python SDK Responses result. It is **not in published
+PyPI 0.7.0 or the v0.7.1 candidate**. Your application makes the provider call;
+the helper reads `response.model` and `response.usage` after the call and
+records an LLM span without storing prompts, output text, IDs, or credentials:
+
+```python
+from sledtrace import trace
+from sledtrace.openai import record_response
+
+# response = your_openai_client.responses.create(...)
+with trace("my-task") as t:
+    record_response(t, response)
+    # t.flush() when your local Collector is running
+```
+
+The OpenAI SDK is optional and not imported by SledTrace. Missing usage remains
+unknown; cached input and reasoning output are included in their parent counts,
+not added again. The Dashboard currently estimates Standard **text-token-only**
+USD cost for `gpt-4.1-mini` and `gpt-4o-mini` (including their documented
+snapshot IDs) using an official rate snapshot checked 2026-09-24. It leaves
+other models, missing cache counts, nonzero cache writes, and conflicted usage
+unpriced. This estimate is not a provider bill and excludes tools, alternate
+tiers, regional uplifts and other charges. Later model/rate overrides can be
+provided by a rate-card input in the Dashboard calculation; there is no user
+settings UI yet.
+
 ## Existing RAG usage
 
 This example uses the 0.7.1 candidate's `t.measure()` and `t.try_flush()`,

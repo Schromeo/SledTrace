@@ -25,7 +25,11 @@ export type LlmUsageCall = {
   outputTokens: TokenField;
   recordedTotalTokens: TokenField;
   total: CallTotal;
-  provenance: "unknown";
+  provenance: "unknown" | "openai_responses";
+  cachedInputTokens: TokenField;
+  cacheWriteTokens: TokenField;
+  reasoningOutputTokens: TokenField;
+  usageIssues: string[];
 };
 
 export type UsageLedger = {
@@ -85,6 +89,25 @@ function normalizeLlmUsage(
   const inputTokens = readTokenField(span.metadata, "input_tokens");
   const outputTokens = readTokenField(span.metadata, "output_tokens");
   const recordedTotalTokens = readTokenField(span.metadata, "total_tokens");
+  const provenance = span.metadata.usage_source === "openai_responses"
+    ? "openai_responses" : "unknown";
+  const cachedInputTokens = readTokenField(span.metadata, "cached_input_tokens");
+  const cacheWriteTokens = readTokenField(span.metadata, "cache_write_tokens");
+  const reasoningOutputTokens = readTokenField(span.metadata, "reasoning_output_tokens");
+  const usageIssues = provenance === "openai_responses" && Array.isArray(span.metadata.usage_issues)
+    ? span.metadata.usage_issues.filter((issue): issue is string => typeof issue === "string")
+    : [];
+  const providerInvalid = provenance === "openai_responses" && [
+    "input_tokens_state", "output_tokens_state", "total_tokens_state",
+    "cached_input_tokens_state", "cache_write_tokens_state", "reasoning_output_tokens_state",
+  ].some((key) => span.metadata[key] === "invalid");
+  const subfieldConflict = provenance === "openai_responses" && (
+    usageIssues.length > 0 ||
+    (inputTokens.kind === "known" && cachedInputTokens.kind === "known" && cachedInputTokens.value > inputTokens.value) ||
+    (outputTokens.kind === "known" && reasoningOutputTokens.kind === "known" && reasoningOutputTokens.value > outputTokens.value) ||
+    (inputTokens.kind === "known" && cacheWriteTokens.kind === "known" && cachedInputTokens.kind === "known" &&
+      cacheWriteTokens.value + cachedInputTokens.value > inputTokens.value)
+  );
 
   return {
     spanId: span.span_id,
@@ -96,12 +119,17 @@ function normalizeLlmUsage(
     inputTokens,
     outputTokens,
     recordedTotalTokens,
-    total: resolveCallTotal(
+    total: subfieldConflict ? { kind: "conflict", value: null, basis: null } : providerInvalid
+      ? { kind: "unknown", value: null, basis: null } : resolveCallTotal(
       inputTokens,
       outputTokens,
       recordedTotalTokens,
     ),
-    provenance: "unknown",
+    provenance,
+    cachedInputTokens,
+    cacheWriteTokens,
+    reasoningOutputTokens,
+    usageIssues,
   };
 }
 

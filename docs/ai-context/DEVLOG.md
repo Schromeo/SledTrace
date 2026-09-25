@@ -1,5 +1,43 @@
 # Devlog
 
+## 2026-09-25 — E3 explicit Responses usage and indicative text-token cost
+
+Built on the separate E3 parser PR branch, not on public `main`. A caller may
+pass one completed non-streaming OpenAI Responses object to
+`sledtrace.openai.record_response`; it stores only model and usage fields in an
+LLM span. It does not import the OpenAI client, execute an API call, or persist
+the prompt, generated content, response ID, or credentials. Existing Collector
+generic metadata storage needs no schema or route change.
+
+- The Dashboard ledger now distinguishes this explicitly recorded source from
+  unknown provenance and shows cached input, cache write and reasoning output
+  as subfields rather than additional totals. Inconsistent/malformed source
+  usage cannot enter the known subtotal or a cost estimate.
+- A dated 2026-09-24 official OpenAI Standard text-token rate snapshot covers
+  only exact `gpt-4.1-mini` and `gpt-4o-mini` IDs and their documented snapshots.
+  The estimate excludes tools, tiers, regional and other charges and is never
+  represented as a bill. The calculator takes a rate-card argument for a later
+  user-supplied-model/rate workflow; no settings UI was added.
+- Cross-stack profile passed: Python 77, Go all packages, Dashboard 31, Vite
+  production build and diff check. The first attempts hit Windows Go cache and
+  shared pytest-temp access denials; an isolated pytest temp path with permitted
+  execution passed. Python wheel/sdist build, wheel validator and independent-
+  app validator passed.
+- The final rebuilt wheel was installed in a separate clean temporary venv
+  outside the SDK directory; `from sledtrace.openai import record_response`
+  recorded and serialized expected usage without an OpenAI dependency.
+- An isolated local Collector/SQLite on 4327 stored the sanitized fixture and
+  returned exact source/count fields through GET. Real Dashboard on 5178 showed
+  the corrected `gpt-4.1-mini` trace with 120/80/200 tokens, cached 20,
+  cache-write 0, reasoning 0 and `$0.000170 USD` indicative cost. The initially
+  displayed fixture had an unrealistic reasoning count for that model; it was
+  superseded by a corrected second local trace. Neither made a provider call.
+- Local slice scope was otherwise clean but flagged the pre-existing unrelated
+  untracked `docs/demo/comprehensive_trace_example.json`; it was not staged.
+
+Real provider/cost-bill verification and user price settings remain open gates.
+This is development evidence, not publication or external-user validation.
+
 ## 2026-09-24 — E3 OpenAI Responses offline parser foundation
 
 On a branch stacked on the unmerged v0.7.1 candidate, added an internal pure

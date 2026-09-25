@@ -1,5 +1,31 @@
 # Architecture Decisions
 
+## 2026-09-25 — E3 uses explicit Responses recording and indicative rate snapshot
+
+- Keep the OpenAI client optional: a caller runs one non-streaming Responses
+  request and passes the returned object to `sledtrace.openai.record_response`.
+  Save only model and usage in the existing LLM span metadata. No Collector
+  schema or route change, automatic network interception, or raw content capture.
+- `usage_source=openai_responses` means copied from the caller-provided response
+  at that explicit boundary; it is not independently authenticated or complete
+  across hidden retries. Cache and reasoning fields are subsets of input and
+  output, not additions to the total. Conflicts/invalid fields exclude a
+  trustworthy subtotal and cost.
+- Use a versioned-in-code, dated official Standard text-token rate snapshot for
+  exact `gpt-4.1-mini` and `gpt-4o-mini` IDs only. Price is an estimate,
+  not an invoice. Unknown model/counts, nonzero cache write and unsupported
+  billing conditions remain unknown. The calculator accepts an alternate
+  rate card so a later explicit user-supplied choice can be built without
+  making a premature settings interface.
+- Preserve old caller-supplied usage behavior and legacy imports. Provider
+  total may now be passed as a keyword argument to `llm` rather than silently
+  replaced by input + output; old calls still derive their total as before.
+
+This implements the user-approved bounded E3 path, not a generic cost engine.
+Real model calls, publication and any broader pricing contract are separate.
+
+---
+
 ## 2026-09-24 — E2 uses one caller-instrumented tool span and explicit task result
 
 ### Decision

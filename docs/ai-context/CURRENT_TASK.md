@@ -3,15 +3,26 @@ slice_id: E3
 slice_status: complete
 components:
   - sdk
+  - dashboard
   - documentation
-validation_profile: sdk
-scope_base: 7fbdc0b
+validation_profile: cross-stack
+scope_base: a70fa0d
 allowed_paths:
   - sdk/python/sledtrace/_openai_usage.py
+  - sdk/python/sledtrace/openai.py
+  - sdk/python/raglens/trace.py
   - sdk/python/tests/test_openai_usage.py
+  - sdk/python/tests/test_openai_recording.py
   - sdk/python/tests/fixtures/openai_response_usage.json
+  - dashboard/web/src/utils/usage.ts
+  - dashboard/web/src/utils/pricing.ts
+  - dashboard/web/src/pages/TraceDetailPage.tsx
+  - dashboard/web/src/style.css
+  - dashboard/web/tests/usage.test.mjs
+  - sdk/python/README.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
+  - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
 human_gates:
@@ -23,7 +34,54 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — E3 OpenAI Responses offline usage extraction
+# Current Task — E3 OpenAI Responses usage ledger and indicative cost
+
+Updated: 2026-09-25. Status: **locally complete; review delivery pending**.
+
+The user approved a narrow persisted usage/UI contract and model-based cost
+estimate. Record a non-streaming OpenAI Responses result at an explicit Python
+call boundary, preserving provider model, token totals, cache/reasoning
+subfields, source and conflict state in existing LLM span metadata. No new
+Collector schema or route. Show those fields in the existing ledger and estimate
+text-token USD cost only for a small versioned official Standard-rate snapshot
+with unambiguous model, counts and cache treatment. Unknown/special conditions
+remain unknown, never zero or billed-fact claims. Keep price-rate injection
+possible in code; no settings UI yet.
+
+Acceptance: SDK offline fixture -> trace serialization -> Collector readback ->
+Dashboard ledger agrees field-for-field and avoids double counting. Test zero,
+missing, invalid/conflict, unknown model, cache and failed attempt. Run SDK,
+Go, Dashboard tests/build, package validators for the new public helper, and
+real local UI inspection. No network provider call, paid usage, merge, version,
+tag or publication. Branch is stacked on draft PR #12 and #11.
+
+Closeout: the new optional `sledtrace.openai.record_response` helper records
+only model and provider usage, never raw prompt/output content. Existing span
+metadata carries source and cache/reasoning details; the Collector schema and
+routes are unchanged. Dashboard shows per-call source and a dated Standard
+text-token-only estimate for exact `gpt-4.1-mini`/`gpt-4o-mini` IDs; other
+models and ambiguous usage show unknown. A rate-card argument leaves a future
+user-specified-model/rate path without adding a settings UI now.
+
+Evidence: SDK 77 tests, Go all packages, Dashboard 31 tests and build passed in
+the cross-stack profile using isolated pytest temp storage; wheel/sdist build,
+wheel validator and independent-app validator passed. A sanitized fixture was
+ingested into an isolated local Collector on 4327, read back with exact fields,
+and inspected in the real Dashboard on 5178. The visible card showed
+120 input / 80 output / 200 total, 20 cached input / 0 cache write /
+0 reasoning output, and `$0.000170 USD` indicative text-token cost. The first
+demo used an unrealistic nonzero reasoning subfield for this model; a corrected
+second trace is the visible acceptance record. Neither made a provider call.
+The pre-existing unrelated untracked demo JSON remains untouched and is the
+sole local slice-scope violation.
+The final rebuilt wheel also installed and exercised the new helper in a
+separate temporary venv outside the source tree.
+
+Next bounded decision: review this stacked diff and its CI before merge. Then
+choose whether an actual user-owned OpenAI workflow can validate one real
+response within an explicit paid-call budget, or proceed to a separate E4
+candidate while keeping E3's real-provider evidence gate open. Do not infer
+provider-wide capture or final billing accuracy from offline fixtures.
 
 Updated: 2026-09-24. Status: **offline parser locally complete; review pending**.
 

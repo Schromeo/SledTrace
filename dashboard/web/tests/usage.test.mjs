@@ -6,6 +6,53 @@ import {
   formatCallTotal,
   formatTokenField,
 } from "../src/utils/usage.ts";
+import { estimateOpenAITextCost, formatEstimatedUsd } from "../src/utils/pricing.ts";
+
+test("Responses usage and Standard text estimate retain cache and reasoning inclusion", () => {
+  const metadata = {
+    usage_source: "openai_responses", input_tokens: 120, output_tokens: 80,
+    total_tokens: 200, cached_input_tokens: 20, cache_write_tokens: 0,
+    reasoning_output_tokens: 0,
+  };
+  const call = buildUsageLedger([span({ model: "gpt-4.1-mini", metadata })]).calls[0];
+  assert.equal(call.provenance, "openai_responses");
+  assert.equal(call.total.value, 200);
+  assert.equal(call.cachedInputTokens.value, 20);
+  assert.equal(call.reasoningOutputTokens.value, 0);
+  assert.equal(estimateOpenAITextCost(call).usd, (100 * 0.4 + 20 * 0.1 + 80 * 1.6) / 1_000_000);
+});
+
+test("cost stays unknown for missing cache, unknown model, provider conflict or unsupported cache write", () => {
+  const base = { usage_source: "openai_responses", input_tokens: 10, output_tokens: 5,
+    total_tokens: 15, cached_input_tokens: 0, cache_write_tokens: 0 };
+  for (const [model, metadata] of [
+    ["gpt-4.1-mini", { ...base, cached_input_tokens: undefined }],
+    ["other-model", base],
+    ["gpt-4.1-mini", { ...base, total_tokens: 17 }],
+    ["gpt-4.1-mini", { ...base, cache_write_tokens: 1 }],
+  ]) {
+    const call = buildUsageLedger([span({ model, metadata })]).calls[0];
+    assert.equal(estimateOpenAITextCost(call), null);
+  }
+});
+
+test("explicit future rate-card input can price another model but rejects invalid rates", () => {
+  const call = buildUsageLedger([span({ model: "my-model", metadata: {
+    usage_source: "openai_responses", input_tokens: 1_000_000,
+    output_tokens: 0, total_tokens: 1_000_000,
+    cached_input_tokens: 0, cache_write_tokens: 0,
+  } })]).calls[0];
+  const card = { "my-model": { inputPerMillion: 2, cachedInputPerMillion: 1,
+    outputPerMillion: 3, sourceUrl: "https://example.invalid/rates" } };
+  assert.equal(estimateOpenAITextCost(call, card).usd, 2);
+  card["my-model"].inputPerMillion = Number.NaN;
+  assert.equal(estimateOpenAITextCost(call, card), null);
+});
+
+test("tiny positive estimated cost is not displayed as zero", () => {
+  assert.equal(formatEstimatedUsd(0), "$0.000000 USD");
+  assert.equal(formatEstimatedUsd(0.00000001), "<$0.000001 USD");
+});
 
 function span({
   id = "span-1",

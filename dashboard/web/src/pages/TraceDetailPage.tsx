@@ -28,6 +28,7 @@ import type {
   Warning,
 } from "../types";
 import type { CallTotal, LlmUsageCall, TokenField, UsageLedger } from "../utils/usage";
+import { estimateOpenAITextCost, formatEstimatedUsd } from "../utils/pricing";
 
 type Props = {
   traceId: string;
@@ -294,8 +295,8 @@ function UsageLedgerPanel({
           <h3 id="usage-ledger-heading">LLM usage ledger</h3>
           <p className="usage-help">
             Known subtotal covers only observed calls with a trustworthy total.
-            Usage source is not provider-verified, and uninstrumented calls may
-            exist outside this trace.
+            Source is shown per call. Only explicitly recorded Responses usage
+            is provider-reported; uninstrumented calls may exist outside this trace.
           </p>
         </div>
 
@@ -351,6 +352,7 @@ function UsageCallRow({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const estimatedCost = estimateOpenAITextCost(call);
   return (
     <button
       type="button"
@@ -378,9 +380,21 @@ function UsageCallRow({
 
       <div className="usage-metric">
         <span>Usage source</span>
-        <strong className="usage-unknown">Unknown</strong>
-        <small>not provider-verified</small>
+        <strong className={call.provenance === "unknown" ? "usage-unknown" : ""}>
+          {call.provenance === "openai_responses" ? "OpenAI Responses" : "Unknown"}
+        </strong>
+        <small>{call.provenance === "openai_responses" ? "provider response" : "not provider-verified"}</small>
       </div>
+      {call.provenance === "openai_responses" ? (
+        <div className="usage-call-extra">
+          <span>Cached input: {formatTokenField(call.cachedInputTokens)}</span>
+          <span>Cache write: {formatTokenField(call.cacheWriteTokens)}</span>
+          <span>Reasoning output: {formatTokenField(call.reasoningOutputTokens)}</span>
+          <span>Estimated text-token cost: {estimatedCost ?
+            formatEstimatedUsd(estimatedCost.usd) : "Unknown"}</span>
+          <small>Standard OpenAI rate snapshot (2026-09-24); not a bill. Excludes tools, tiers, regional uplifts and other charges.</small>
+        </div>
+      ) : null}
     </button>
   );
 }
