@@ -1,35 +1,18 @@
 ---
-slice_id: E2
+slice_id: X1
 slice_status: complete
 components:
   - sdk
-  - collector
-  - dashboard
   - documentation
-validation_profile: cross-stack
+validation_profile: sdk
 scope_base: origin/main
 allowed_paths:
-  - AGENTS.md
-  - sdk/python/raglens/trace.py
-  - sdk/python/tests/test_agent_tool_path.py
-  - sdk/python/examples/agent_tool_demo.py
-  - sdk/python/README.md
-  - sdk/python/scripts/validate-wheel.py
-  - sdk/python/scripts/validate-independent-app.py
-  - collector/go/internal/warnings/engine.go
-  - collector/go/internal/warnings/engine_test.go
-  - dashboard/web/src/pages/TraceDetailPage.tsx
-  - dashboard/web/src/App.tsx
-  - dashboard/web/src/components/SpanTimeline.tsx
-  - dashboard/web/src/utils/taskDisplay.ts
-  - dashboard/web/src/style.css
-  - dashboard/web/tests/agent_trace.test.mjs
+  - sdk/python/examples/external_federalist_rag.py
+  - docs/demo/EXTERNAL_FEDERALIST_RAG.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
-  - docs/ai-context/DECISIONS.md
-  - docs/assets/screenshots/agent-tool-path.png
 human_gates:
   - persisted_schema_or_data_contract_change
   - version_tag_release_or_publication
@@ -39,7 +22,43 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — E2 Python tool path
+# Current Task — X1 external RAG corpus exercise
+
+Updated: 2026-09-24. Status: **locally complete, review ready**.
+
+The user's 2026-09-24 request selected a bounded external RAG exercise. Harvard
+HBS's public RAG example supplies an authentic Federalist Papers PDF. The
+adapter builds a local SQLite FTS5 database, records real retrieval results
+through the existing SDK, and marks answer extraction as a simulation. It
+does not change the SledTrace SDK/API/schema, run Harvard's original Chroma
+stack, call a paid model, or start E3.
+
+Acceptance: a reproducible local index and query, Collector readback of
+retrieval and simulated-answer spans, one empty-result diagnostic case, and an
+explicit runbook. Local evidence and limits are in
+`docs/demo/EXTERNAL_FEDERALIST_RAG.md` and DEVLOG. Next decision remains whether
+to pursue E3 with a real provider usage source and an agreed call budget.
+
+## Post-closeout diagnostic regression evidence
+
+After X1, two additional local suites exercised the existing diagnostic path.
+`reference_rag_app all` completed nine realistic mixed-shape retrieval cases;
+`local_rag_demo trace-all` completed five deterministic warning cases. Together
+they produced all seven warning types through real Collector/API flow, and the
+fresh traces were visible in the Dashboard. This strengthens integration
+confidence but is not scale evidence and did not use a real provider call.
+
+The follow-up exposed one material reliability blocker for repeated or larger
+runs: some historical warning rows store `confidence` as the string
+`heuristic`, while current detail reads scan it as numeric and return HTTP 500.
+The next bounded decision should choose whether to prioritize compatibility
+read/migration and isolated validation databases before E3. Warning thresholds
+and lexical precision also need a small labeled cross-domain evaluation; no
+threshold retuning is authorized by this evidence alone.
+
+---
+
+## Previous task — E2 Python tool path
 
 Updated: 2026-09-24. Status: **E2 locally complete, PR #8 merge candidate**.
 

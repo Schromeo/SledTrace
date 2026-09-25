@@ -38,6 +38,18 @@ Future scope is not implemented capability or blanket authorization.
   Deterministic success, business failure and tool-recovery traces passed local
   API/UI checks; the new SDK contract passed clean-wheel validation. It is not
   released or externally validated; check its merge status live. E3 is the next candidate.
+- X1 external-corpus exercise is locally complete: a Harvard Federalist Papers
+  PDF was indexed into SQLite FTS5 and queried through an SledTrace-traced
+  adapter. This is integration evidence for existing retrieval diagnostics,
+  not a new product capability or a change to the E3 sequence.
+- Two follow-up local RAG suites also passed end-to-end: nine realistic
+  `reference_rag_app` cases and five deterministic `local_rag_demo` cases
+  exercised all seven warning types through Collector/API readback and
+  Dashboard visibility. This confirms small-scale integration behavior, not
+  throughput or production-scale reliability. The run exposed legacy warning
+  rows with string `confidence="heuristic"` that can make current detail reads
+  return HTTP 500; compatibility handling and isolated test databases should be
+  considered before larger repeated-run testing. No sequence change is made.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
