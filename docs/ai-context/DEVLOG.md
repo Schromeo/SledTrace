@@ -1,5 +1,18 @@
 # Devlog
 
+## 2026-09-25 — AG0 Agent-direction preparation
+
+- The user confirmed they have no current Agent workflow, then asked to
+  prepare that direction. Inspected the published E2 `llm`/`tool`/task-result
+  contract, the deterministic one-tool example, E4/E5 roadmap gates and the
+  separate unmerged E3 evidence candidate.
+- Defined a one-workflow A1 screen, technical-versus-value evidence levels,
+  E4 positive/counterexample requirements, and a stop rule in
+  `docs/product/AGENT_DIRECTION_PREP.md`. No runtime, API, schema, span type,
+  diagnostic rule, dependency or paid call was added. No public workflow has
+  yet been selected or run; E4 and v0.8 remain unvalidated candidates.
+
+
 ## 2026-09-25 — v0.7.1 published and release closure verified
 
 - Merged release-closure PR #14 as `33d2335b1f908588e46a1a003c574786735355ef`.

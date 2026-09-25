@@ -1,5 +1,21 @@
 # Architecture Decisions
 
+## 2026-09-25 — Prepare Agent evidence without inventing a user workflow
+
+- The user has no Agent application to instrument. Do not make the internal
+  deterministic E2 example, or the E3 public-corpus RAG call, stand in for
+  external Agent value evidence.
+- Before E4 implementation, time-box A1 to at most two public, single-process
+  Python candidates and one no-cost local run. Preserve the source workflow's
+  legitimate task and predeclare its outcome criterion; do not inject loops to
+  make a warning fire. A public candidate proves integration only.
+- Reuse released `llm`, `tool`, explicit task result and existing storage/UI
+  first. New span families, runtime, framework adapter, schema, paid provider
+  call, and release remain separate decisions. Missing comparison evidence
+  means no E4 duplicate judgment, not a forced heuristic.
+
+---
+
 ## 2026-09-25 — Close and publish the E3-inclusive v0.7.1 release
 
 - Protected release PR #14 merged as `33d2335`; immutable annotated tag

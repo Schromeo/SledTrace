@@ -1,20 +1,14 @@
 ---
-slice_id: POST071CLOSE
+slice_id: AG0
 slice_status: complete
 components:
-  - sdk
-  - dashboard
   - documentation
 validation_profile: docs
-scope_base: 33d2335
+scope_base: e342c1a
 allowed_paths:
-  - AGENTS.md
-  - README.md
-  - sdk/python/README.md
-  - docs/releases/V0_7_1.md
+  - docs/product/AGENT_DIRECTION_PREP.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
-  - docs/ai-context/NEXT_AGENT_BRIEF.md
   - docs/ai-context/ROADMAP.md
   - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
@@ -27,7 +21,30 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — Post v0.7.1 publication documentation closeout
+# Current Task — AG0: Agent direction preparation
+
+Updated: 2026-09-25. Status: **planning complete; review candidate**.
+
+The user wants to prepare the Agent direction but has no Agent workflow of
+their own. Existing E2 `agent_tool_demo.py` already validates the flat
+LLM/tool/result contract; rebuilding an Agent runtime or adding E4 rules now
+would not provide a genuine value test. This documentation-only slice defines
+the [A1 reference-workflow selection and E4 evidence gates](../product/AGENT_DIRECTION_PREP.md).
+
+Acceptance: distinguish a technical reference from genuine user use; require
+a real executed tool, observable task outcome, normal counterexamples, and a
+bounded candidate search. Keep paid calls, new API/schema/span contracts,
+Agent runtime, E4 rules, merge and release out of scope. Validate document
+links, factual consistency, slice scope and diff hygiene. No product build is
+needed because this slice changes no product code.
+
+Next decision: select and inspect at most two public Python workflow candidates
+under the A1 screen, then run only the first fit with no-cost local inputs.
+If none fits, report why and pause E4. PR #16 is a separate, unmerged E3
+evidence candidate; AG0 does not depend on its code or turn its RAG call into
+Agent evidence.
+
+## Previous task — Post v0.7.1 publication documentation closeout
 
 Updated: 2026-09-25. Status: **complete**.
 

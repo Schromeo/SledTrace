@@ -1,5 +1,16 @@
 # AI Handoff
 
+## 2026-09-25 AG0 Agent-direction preparation candidate
+
+The user does not currently operate an Agent workflow. AG0 records a bounded
+A1 reference-workflow screen and E4 evidence/stop gates in
+[AGENT_DIRECTION_PREP.md](../product/AGENT_DIRECTION_PREP.md). This is planning,
+not an Agent implementation or proof of developer value. E2's existing
+deterministic tool demo remains the only repository-native Agent-like fixture;
+the post-release E3 public Federalist probe is a separate draft PR #16, not
+an Agent run. See CURRENT_TASK before choosing the next slice.
+
+
 ## 2026-09-25 published v0.7.1 snapshot
 
 The latest release is **v0.7.1 — Trustworthy Local Tracing**. PRs #11–#13
