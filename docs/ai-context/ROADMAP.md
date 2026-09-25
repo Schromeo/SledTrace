@@ -51,10 +51,14 @@ Future scope is not implemented capability or blanket authorization.
   rows with string `confidence="heuristic"` that can make current detail reads
   return HTTP 500; compatibility handling and isolated test databases should be
   considered before larger repeated-run testing. No sequence change is made.
-- X2 fixes that historical-detail blocker locally in main-targeting PR #9:
+- X2 fixes that historical-detail blocker and merged through PR #9 as `92b27b9`:
   text-typed legacy confidence now reads as unknown without rewriting SQLite
-  rows; a persisted-database HTTP regression and all Go tests pass. This is
-  not merged or released. Use an isolated database for later validation.
+  rows; a persisted-database HTTP regression and all Go tests passed. It is
+  not yet released. Use an isolated database for later validation.
+- The exact-main v0.7.1 candidate closure is active. Its release notes and
+  package README must cover E1/E2 as well as reliability work; publication
+  remains a separate user decision. The E3 OpenAI-client slice may begin after
+  candidate closure with offline fixtures only.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
@@ -79,9 +83,8 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the local X2 boundary and records E3 as
-an unstarted candidate requiring a new decision card.
-It also records the completed X1/X2 follow-ups and their review dependency.
+[CURRENT_TASK](CURRENT_TASK.md) owns the active 0.7.1 candidate boundary and
+records E3 as the next separately bounded slice. X1/X2 are merged on `main`.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.

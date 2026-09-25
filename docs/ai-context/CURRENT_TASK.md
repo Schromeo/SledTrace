@@ -1,14 +1,17 @@
 ---
-slice_id: X2
-slice_status: complete
+slice_id: RC071
+slice_status: active
 components:
-  - collector
+  - sdk
+  - dashboard
   - documentation
-validation_profile: collector
-scope_base: 3ecf21f
+validation_profile: release
+scope_base: 92b27b9
 allowed_paths:
-  - collector/go/internal/storage/sqlite.go
-  - collector/go/internal/api/handlers_test.go
+  - AGENTS.md
+  - README.md
+  - sdk/python/README.md
+  - docs/releases/V0_7_1.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
@@ -22,7 +25,34 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — X2 legacy warning read compatibility
+# Current Task — RC071 exact-main release candidate closure
+
+Updated: 2026-09-24. Status: **active, candidate-only authorization**.
+
+X1 and X2 have merged into `main` through PRs #10 and #9. The source tree is
+already versioned 0.7.1, but release notes and READMEs still describe an
+earlier reliability-only tree and call E2 unmerged or absent. Prepare a truthful
+0.7.1 candidate from exact post-X2 `main`: align current/released claims,
+document the observed usage ledger, one synchronous tool path, and legacy
+warning read fix, then validate the distribution and affected real UI flow.
+
+Acceptance: full release validation profile, package metadata check,
+clean-wheel/independent-app boundary, exact-candidate local Collector/UI
+inspection, release-quality screenshot check, and a reviewable candidate PR.
+No tag, GitHub Release, TestPyPI/PyPI upload, paid model call, or E3 change.
+The user explicitly reserved final publication approval for a later turn.
+
+Local validation: the complete nine-step release profile passed (SDK 68,
+startup 18, Go all packages, Dashboard 27 plus build, package build/wheel and
+independent-app, diff check). Twine accepted wheel and sdist. The aggregate
+runner's initial attempts were interrupted after Windows sandbox/temp-path
+problems; the final run passed with an isolated forward-slash temporary path.
+An isolated Collector/SQLite/Dashboard fixture was
+checked in the browser. The unrelated untracked
+`docs/demo/comprehensive_trace_example.json` predates this slice and remains
+untouched; it causes the scope checker to flag one out-of-scope path.
+
+## Previous task — X2 legacy warning read compatibility
 
 Updated: 2026-09-24. Status: **locally complete; main-targeting review candidate**.
 

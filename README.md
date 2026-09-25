@@ -10,8 +10,9 @@ SledTrace is designed for local development first. The default local demo is det
 
 Latest published release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
 
-The **v0.7.1 — Trustworthy Local Tracing** source candidate is merged into
-`main`, but no v0.7.1 tag, package upload, or release has been published.
+The source tree is versioned **0.7.1 — Trustworthy Local Tracing**. Its final
+release candidate is under validation; no v0.7.1 tag, package upload, or
+release has been published. Production PyPI still serves 0.7.0.
 
 Install the Python SDK from PyPI:
 
@@ -85,6 +86,7 @@ The current local MVP supports:
 * Python SDK tracing
 * retrieval span logging
 * LLM span logging
+* one caller-instrumented synchronous `tool` span and explicit task result
 * local Go collector
 * SQLite persistence
 * React dashboard
@@ -101,6 +103,7 @@ Current implemented span types:
 
 * `retrieval`
 * `llm`
+* `tool` (source 0.7.1 candidate only; not in published PyPI 0.7.0)
 
 Current warning rules:
 
@@ -622,7 +625,8 @@ The default demo requires no external LLM API and no API key.
 
 Current scope limits:
 
-* only `retrieval` and `llm` spans are implemented
+* only `retrieval`, `llm`, and one synchronous `tool` span are implemented in source
+* provider usage is caller-supplied, not automatically captured or priced
 * onboarding path is local-first and repo-based
 * the SDK is distributed through PyPI, source checkout, or locally built wheel artifacts
 * `sledtrace serve` requires a SledTrace source checkout and is not a standalone wheel-installed runtime
@@ -643,9 +647,9 @@ SledTrace starts with RAG pipeline debugging because retrieval, context quality,
 
 The longer-term direction is to evolve the tracing core into a local-first observability layer for AI application harnesses: systems that manage context, tools, memory, model calls, verification, and feedback around foundation models.
 
-In that direction, SledTrace can grow beyond retrieval and LLM spans toward tool spans, memory spans, verification spans, human feedback spans, and richer diagnostics over AI application traces. Those remain future direction only and are not implemented in the current SDK.
+In that direction, SledTrace can grow beyond the current bounded retrieval, LLM, and tool records toward memory, verification, human feedback, and richer diagnostics over AI application traces. Those remain future direction and are not implemented in the current SDK.
 
-Future agent harness observability may also include running traces across multi-step executions, partial span ingestion, additional span types such as agent, tool, and retry spans, plus diagnostics for agent loops, oscillation, retry storms, and no-progress execution. These are not implemented in current SledTrace.
+Future agent harness observability may also include running-trace lifecycle handling, partial span ingestion, additional span types such as agent and retry, plus diagnostics for agent loops, oscillation, retry storms, and no-progress execution. These are not implemented in current SledTrace.
 
 Near-term focus after v0.7:
 

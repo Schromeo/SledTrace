@@ -2247,3 +2247,30 @@ The first target warning is conflicting_chunks for the refund policy demo.
 - This is a documentation-only change and does not affect runtime behavior.
 
 
+# 2026-09-24 — RC071 exact-main release-candidate validation
+
+X1 PR #10 and X2 PR #9 passed required CI and merged into `main` as `755c19c`
+and `92b27b9`. The user authorized a v0.7.1 release candidate only; tagging,
+GitHub Release, PyPI upload, paid calls, and E3 are separate gates. Candidate
+documentation now includes E1 observed usage, E2 one synchronous tool path,
+X1 source-only exercise, and X2 legacy warning read compatibility.
+
+Local validation from post-X2 main: SDK pytest 68 passed; startup unittest 18
+passed; `python -m build` produced 0.7.1 wheel/sdist; clean-wheel and
+independent-app scripts passed; Twine 7.0.0 checked both 0.7.1 artifacts;
+Go `go test ./... -count=1` passed; Dashboard `npm.cmd test` passed 27 tests and
+`npm.cmd run build` passed. `git diff --check` passed. Initial aggregate
+attempts were interrupted: default sandbox blocked Windows child-process
+cleanup, pytest default temp ACL, and Vite config traversal. A final complete
+`python scripts/dev/slice.py check` passed all nine release-profile steps with
+normal process permissions and an isolated forward-slash pytest temporary path.
+Do not infer remote CI from these local results.
+
+An isolated local stack used Collector 127.0.0.1:4327, Dashboard 5177, and a
+temporary SQLite file. The offline deterministic `tool-recovery` fixture stored
+trace `trace_9c99eb895dbf4f51b6ad621516800bf9`. In the real browser, its
+detail showed two observed LLM calls, 24 known tokens, unknown/unverified usage
+source, a tool error followed by a successful attempt, and the retained step
+error. No paid/provider call occurred. The preexisting untracked
+`docs/demo/comprehensive_trace_example.json` was not changed or staged; it
+causes the slice scope checker to report an out-of-scope path.
