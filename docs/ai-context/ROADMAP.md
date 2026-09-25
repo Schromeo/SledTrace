@@ -35,8 +35,17 @@ Future scope is not implemented capability or blanket authorization.
   now reads as unknown without rewriting SQLite rows.
 - E3 is an optional explicit mapping for caller-supplied completed,
   non-streaming OpenAI Responses results, with an indicative estimate for two
-  supported models. Evidence is sanitized offline fixture and local UI
-  readback, not a paid provider call, complete capture or billing comparison.
+  supported models. Published v0.7.1 evidence was sanitized offline fixture
+  and local UI readback, not a paid provider call, complete capture or billing
+  comparison; the later public-corpus probe is separate evidence below.
+- A post-release E3 evidence candidate now provides an opt-in, single-request
+  `gpt-4o-mini` example over the public Federalist FTS5 corpus. Offline fake
+  client and dry-run checks pass. The user executed one authorized provider
+  request; the local Collector read back 641 input / 59 output / 700 total
+  tokens on the same trace. The local Dashboard also showed that stored trace,
+  and the user accepted this one answer in conversation. This is not bill
+  reconciliation, an E4 agent waste signal, general answer-quality validation
+  or proof of a quality-preserving saving.
 - No independent external first-run or repeat-use evidence is recorded.
 - PRs #11–#13 and release-closure PR #14 merged in order. All v0.7.1 release
   gates are complete; see CURRENT_TASK and DEVLOG for evidence.
@@ -46,7 +55,9 @@ Future scope is not implemented capability or blanket authorization.
   within E3, not a roadmap sequence change or real-provider validation.
 - The release gate is closed. Product sequence remains unchanged; select the
   next bounded slice after deciding which genuine workflow and outcome measure
-  should ground E4.
+  should ground E4. The public-corpus provider probe narrows E3 uncertainty
+  but does not substitute for an actual agent workflow with a quality outcome.
+  No roadmap sequence change follows from this one successful provider call.
 
 ### Proposed post-v0.7 sequence
 

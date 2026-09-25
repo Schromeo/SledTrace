@@ -59,3 +59,52 @@ The answer is an extracted source sentence, not model generation or proof of
 answer quality. SledTrace's warnings are English-domain heuristics. No warning
 on the first query means only that no rule fired for that trace. The two SQLite
 databases are local exercise artifacts, outside the SledTrace Git repository.
+
+## Optional single-call OpenAI evidence path (development candidate)
+
+`examples.federalist_openai_evidence` uses the same public PDF and FTS5 index
+but can make one explicit, non-streaming `gpt-4o-mini` Responses request. It
+records provider-reported model/usage through `sledtrace.openai.record_response`
+without storing the provider response object or credentials. The retrieved
+public passages and generated answer still enter the local trace; do not adapt
+this example to private material without reviewing content controls first.
+
+Dry run, with no key, provider request or trace delivery:
+
+```powershell
+cd sdk/python
+python -m examples.federalist_openai_evidence `
+  --pdf '..\..\..\external\harvard-rag-example\source_documents\5008_Federalist Papers.pdf' `
+  --db '..\..\..\external\federalist_fts.db'
+```
+
+To opt in to the one paid request, separately install the optional `openai`
+Python client, set `OPENAI_API_KEY` locally without sharing it in chat, start
+the local Collector, and add `--paid-call --budget-usd 0.10 --collector-url
+http://127.0.0.1:4319`. The example disables client retries, caps output at
+256 tokens, sends no built-in tools, and requests `store=False`. It checks a
+conservative text-token estimate before calling; this is **not** an account
+spending cap or a guarantee that an external invoice matches the estimate.
+The existing trace stores a `quality_review=pending` marker. A human should
+check whether the answer identifies human nature as the cause and cites a
+retrieved page; a citation or zero warning does not prove factual correctness.
+There is no automatic quality grader, agent workflow or E4 waste detector.
+
+## One authorized provider run, 2026-09-25
+
+The user ran the opt-in command once from a Codex terminal. Trace
+`trace_92b0c5eb42f64bef883b88f29b064b0a` was delivered to an isolated
+local Collector, which returned retrieval and LLM spans. The LLM span recorded
+`usage_source=openai_responses`, 641 input, 59 output, 700 total and 0 cached
+input tokens, plus 2,773 ms measured latency. The answer cited pages 28 and
+29; the retrieved page text contains the human-nature and unequal-property
+passages. The trace's 0 heuristic warnings do not establish answer quality.
+At the dated Standard text-token rates, the indicative cost is `$0.00013155
+USD`; provider billing was not independently checked. The trace retains
+`quality_review=pending` in storage; the user subsequently accepted this
+specific answer in conversation, which does not alter the historical record.
+The existing production Dashboard build, served locally on port 5173, showed
+this trace's answer, retrieved pages, usage source, 641/59/700 token ledger,
+2.77 s duration, and `$0.000132 USD` rounded estimate. No additional model
+request was needed. This is one-answer review, not a diagnostic accuracy or
+quality-preserving savings result.

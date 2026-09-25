@@ -1,5 +1,27 @@
 # AI Handoff
 
+## 2026-09-25 post-release E3 probe candidate
+
+Branch `codex/e3-real-workflow-evidence` adds a separate, opt-in example using
+the authentic public Federalist PDF and local FTS5 index to prepare one
+`gpt-4o-mini` Responses request. Its default path is a no-network dry run;
+offline fake-client tests verify one request shape, recorded usage, no raw
+provider object/credential persistence, and missing-key/budget stops. The
+user subsequently ran exactly one authorized `gpt-4o-mini` request from a
+Codex terminal with a $0.10 preflight ceiling. The isolated local Collector
+read back trace `trace_92b0c5eb42f64bef883b88f29b064b0a`: 641 input,
+59 output and 700 total provider-reported tokens, with 0 cached input and
+2,773 ms LLM latency. The answer cited relevant public pages 28 and 29.
+The stored trace was subsequently read in the real local Dashboard, and the
+user accepted this one answer in conversation; the stored
+`quality_review=pending` marker was not rewritten. This is real
+provider-to-Collector/UI evidence, **not** invoice reconciliation, general
+answer-quality validation, agent execution, or proof of
+diagnostic effectiveness. Do not repeat the paid request. The original
+simulated example remains unchanged. See CURRENT_TASK/DEVLOG for scope and
+exact validation.
+
+
 ## 2026-09-25 published v0.7.1 snapshot
 
 The latest release is **v0.7.1 — Trustworthy Local Tracing**. PRs #11–#13

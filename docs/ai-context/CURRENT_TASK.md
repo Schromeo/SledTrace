@@ -1,17 +1,16 @@
 ---
-slice_id: POST071CLOSE
+slice_id: E3LIVE
 slice_status: complete
 components:
   - sdk
-  - dashboard
   - documentation
-validation_profile: docs
-scope_base: 33d2335
+validation_profile: sdk
+scope_base: e342c1a
 allowed_paths:
   - AGENTS.md
-  - README.md
-  - sdk/python/README.md
-  - docs/releases/V0_7_1.md
+  - sdk/python/examples/federalist_openai_evidence.py
+  - sdk/python/tests/test_federalist_openai_evidence.py
+  - docs/demo/EXTERNAL_FEDERALIST_RAG.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/NEXT_AGENT_BRIEF.md
@@ -27,7 +26,53 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — Post v0.7.1 publication documentation closeout
+# Current Task — E3LIVE: bounded real-workflow evidence
+
+Updated: 2026-09-25. Status: **one real call, Collector/Dashboard readback and one-answer user review complete; draft PR #16**.
+
+Decision card: use the existing public Federalist PDF + SQLite FTS5 RAG
+exercise to validate one explicit OpenAI Responses recording path against a
+genuine model answer. The blocker is that E3 has only sanitized offline
+fixtures, not a provider result; the corpus/retriever, SDK helper, local
+Collector and usage UI already exist. Add one optional, narrowly bounded
+example with a predeclared quality review criterion and offline fake-client
+tests. Do not change public API/schema, add agent runtime/E4 rules, claim
+diagnostic accuracy or bill reconciliation, or use private data. SDK tests,
+slice checks and a public-corpus dry run provide local evidence. A single paid
+call requires the user's $0.10 cap, a locally configured key, and preflight
+cost bound; if unavailable, leave provider validation explicitly pending.
+Stop after a review-ready slice, not E4, merge or release.
+
+Outcome: the opt-in example, documentation and offline fake-client tests are
+implemented. On the authentic local index, the dry run returned pages 28,
+29 and 85, with a 3,240-byte prompt and a `$0.000678` conservative text-token
+estimate. The SDK validation profile passed 82 tests and diff check. At the
+initial commit provider validation was pending. The user then securely
+configured a Codex terminal and ran **one** authorized `gpt-4o-mini` request
+under the $0.10 preflight ceiling. Trace
+`trace_92b0c5eb42f64bef883b88f29b064b0a` was delivered to the isolated
+local Collector: retrieval plus LLM spans, 641 input / 59 output / 700 total
+provider-reported tokens, 0 cached input, 2,773 ms LLM latency and 0
+heuristic warnings. The answer cites retrieved pages 28 and 29; those pages
+contain the human-nature and unequal-property passages. The calculated
+Standard text-token estimate is `$0.00013155 USD`, not an invoice.
+`quality_review=pending` remains in the persisted trace: the user subsequently
+accepted this specific answer in conversation, without rewriting trace data.
+The existing production Dashboard build was served locally on port 5173 after
+Vite dependencies proved unavailable/locked. Its real trace detail showed the
+retrieved pages, provider source, 641/59/700 tokens, 2.77 s timing, zero
+warnings, and `$0.000132 USD` rounded indicative cost. **Do not repeat the
+paid call.** The only scope-check violation is the pre-existing, untracked
+demo JSON, which remains untouched
+and excluded. No product SDK API, Collector, Dashboard, packaging, release or
+pricing implementation changed.
+
+Next decision card: choose a genuinely used agent workflow and predeclare
+its task ID, steps and pass/fail quality criterion before E4. UI readback of
+this RAG trace is complete. Do not infer general diagnostic accuracy, savings
+or genuine agent value from this RAG-only probe.
+
+## Previous task — Post v0.7.1 publication documentation closeout
 
 Updated: 2026-09-25. Status: **complete**.
 
