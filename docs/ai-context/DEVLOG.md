@@ -20,14 +20,20 @@ The previous lockfile audited at four fixable transitive advisories (one
 moderate, three high). A lockfile-only update within existing ranges now
 reports zero audit findings. `npm ci` in the live workspace could not unlink
 the esbuild binary held by the running Dashboard preview; the final closure
-must test a clean isolated checkout without stopping that preview.
+tested a clean isolated checkout without stopping that preview. In that
+checkout, `npm.cmd ci` installed 69 packages with zero audit findings; the
+nine-step release profile passed again (SDK 77, startup 18, Go all packages,
+Dashboard 33 and build, wheel/sdist, both installed-package validators and
+diff check). Slice scope passed for all ten intended files and the clone's
+Git status remained clean. The pre-existing untracked JSON stays only in the
+primary workspace and was not included in this release branch.
 
 An explicit, sanitized non-streaming Responses mapping was recorded through
 the local Collector and shown in the real Dashboard: 120 input, 80 output,
 200 total, 20 cached input, 1/1 coverage and `$0.000170 USD` indicative
 Standard text-token cost. A 1440×950 screenshot was saved for the README. No
 provider call, invoice comparison, secret, prompt or output content was used.
-Final-main package/clean-install, CI, protected publication and production
+PR CI with Twine metadata check, protected publication and production-index
 install remain pending; do not call this release complete yet.
 
 ---
