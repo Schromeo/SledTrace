@@ -1,5 +1,25 @@
 # Devlog
 
+## 2026-09-24 — E3 OpenAI Responses offline parser foundation
+
+On a branch stacked on the unmerged v0.7.1 candidate, added an internal pure
+parser for non-streaming OpenAI Responses usage. It distinguishes known zero
+from missing or invalid counts, retains provider input/output/total and cached
+input/reasoning output separately, and flags conflicting totals or subfield
+bounds. It makes no API call, does not add a core dependency, and does not
+write a persisted metadata convention or price estimate.
+
+- Six focused tests passed with a sanitized, prompt-free fixture; full SDK
+  profile passed with 74 tests and `git diff --check`.
+- The fixture was also validated offline against the installed official OpenAI
+  Python SDK 3.19.2 `ResponseUsage` type. No token or network use occurred.
+- Local slice scope reported only the pre-existing unrelated untracked
+  `docs/demo/comprehensive_trace_example.json`; it was preserved and excluded
+  from this change.
+- This is E3 groundwork, not the provider-to-Collector-to-Dashboard usage or
+  pricing feature. Persisted metadata/UI semantics require the pending human
+  contract decision; no release or merge is implied.
+
 ## 2026-09-24 — X2 legacy warning confidence read compatibility
 
 The post-X1 RAG suites exposed persisted warning rows with text

@@ -1,22 +1,19 @@
 ---
-slice_id: RC071
+slice_id: E3
 slice_status: complete
 components:
   - sdk
-  - dashboard
   - documentation
-validation_profile: release
-scope_base: 92b27b9
+validation_profile: sdk
+scope_base: 7fbdc0b
 allowed_paths:
-  - AGENTS.md
-  - README.md
-  - sdk/python/README.md
-  - docs/releases/V0_7_1.md
+  - sdk/python/sledtrace/_openai_usage.py
+  - sdk/python/tests/test_openai_usage.py
+  - sdk/python/tests/fixtures/openai_response_usage.json
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
-  - docs/ai-context/NEXT_AGENT_BRIEF.md
 human_gates:
   - persisted_schema_or_data_contract_change
   - version_tag_release_or_publication
@@ -26,7 +23,38 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — RC071 exact-main release candidate closure
+# Current Task — E3 OpenAI Responses offline usage extraction
+
+Updated: 2026-09-24. Status: **offline parser locally complete; review pending**.
+
+The user selected the official OpenAI Python SDK as E3's first source and
+sanitized offline fixtures rather than paid calls. PR #11 (RC071) is validated
+but unmerged; this branch is stacked on its latest commit `7fbdc0b` and must
+remain a separate review diff. The E3 metadata/UI contract decision is pending.
+
+Deliver the smallest independently useful foundation: parse one non-streaming
+Responses SDK object's usage into validated input, output, total, cached input,
+and reasoning output fields. Preserve zero versus missing/invalid and detect
+inconsistent totals/subfield bounds without double-counting. Do not persist a
+new metadata convention, change the public SDK API, add price estimates or UI,
+or call the provider until the human gate is resolved. Use a sanitized fixture
+and test the pure parser offline; core SDK dependencies remain empty.
+
+Acceptance: parser tests cover normal, zero, missing, malformed and conflicting
+usage, and the SDK profile passes. Record exactly what remains for the full E3
+source-to-Collector-to-UI/price path. This is not E3 milestone completion.
+
+Closeout: the internal, dependency-free parser and sanitized OpenAI Responses
+fixture cover those cases. Six focused tests and the full SDK profile (74 tests)
+passed; the fixture also validated against the installed OpenAI Python SDK
+3.19.2 response-usage type without a network call. The pre-existing untracked
+`docs/demo/comprehensive_trace_example.json` remains untouched and is the sole
+local scope-check violation. No public SDK API, persisted metadata, Collector,
+Dashboard, or pricing behavior changed. Next, obtain the explicit metadata/UI
+data-contract decision, then implement and verify the source-to-Collector-to-UI
+path as a separate bounded slice. Do not present this parser as E3 completion.
+
+## Previous task — RC071 exact-main release candidate closure
 
 Updated: 2026-09-24. Status: **locally complete, PR #11 draft/review-ready;
 candidate-only authorization**.

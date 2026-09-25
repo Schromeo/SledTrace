@@ -61,6 +61,10 @@ Future scope is not implemented capability or blanket authorization.
   remain pre-publication review items. Publication remains a separate user
   decision. E3 is the next bounded slice with OpenAI Python SDK offline
   fixtures only, after the PR review/merge decision.
+- E3's first offline-only foundation is locally complete on a separate branch
+  stacked on PR #11: an internal OpenAI Responses usage parser and sanitized
+  fixture have SDK tests, but no persistence, UI, price, provider call, or
+  released capability. The metadata/UI contract decision is still pending.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
@@ -85,8 +89,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the active 0.7.1 candidate boundary and
-records E3 as the next separately bounded slice. X1/X2 are merged on `main`.
+[CURRENT_TASK](CURRENT_TASK.md) owns the E3 offline parser closeout and records
+the next contract gate. The 0.7.1 candidate remains unmerged in PR #11;
+X1/X2 are merged on `main`.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.
