@@ -55,21 +55,16 @@ Future scope is not implemented capability or blanket authorization.
   text-typed legacy confidence now reads as unknown without rewriting SQLite
   rows; a persisted-database HTTP regression and all Go tests passed. It is
   not yet released. Use an isolated database for later validation.
-- The exact-main v0.7.1 candidate is locally validated in draft PR #11;
-  release notes cover E1/E2 as well as reliability work. Candidate browser
-  screenshots were checked; full-width README imagery and toolchain advisories
-  remain pre-publication review items. Publication remains a separate user
-  decision. E3 is the next bounded slice with OpenAI Python SDK offline
-  fixtures only, after the PR review/merge decision.
-- E3's first offline-only foundation is locally complete on a separate branch
-  stacked on PR #11: an internal OpenAI Responses usage parser and sanitized
-  fixture have SDK tests, but no persistence, UI, price, provider call, or
-  released capability in that first parser-only branch.
-- The user approved the narrow E3 metadata/UI and indicative-price direction.
-  A second stacked branch now locally completes an offline source-to-Collector-
-  to-Dashboard path and a dated two-model Standard text-token rate snapshot.
-  Real-provider and billing reconciliation evidence is still absent; E3's
-  product gate remains open until a user-owned workflow is validated.
+- The 0.7.1 candidate PR #11, E3 offline parser PR #12, and E3 integration
+  PR #13 merged in order after their required checks passed. The user chose
+  to include their combined scope in v0.7.1. A final release-closure slice
+  owns accurate package/README claims, dependency-lockfile audit, full-width
+  image, exact-tree distribution checks and protected publication. Until those
+  finish, v0.7.0 remains the latest confirmed published release.
+- E3's explicit non-streaming Responses helper and sanitized fixture reach the
+  existing SDK-to-Collector-to-Dashboard path with a dated two-model Standard
+  text-token estimate. This is local integration evidence, not a real provider
+  call or bill reconciliation. E3's real-workflow product gate remains open.
 - E3R corrects two Dashboard state labels found in PR #13 review: invalid
   provider usage is unknown, while true count contradictions remain conflicts;
   explicit invalid token fields remain invalid. This is a reliability follow-up
@@ -98,9 +93,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the E3 integration closeout and records
-the next real-workflow decision. The 0.7.1 candidate remains unmerged in PR #11;
-X1/X2 are merged on `main`.
+[CURRENT_TASK](CURRENT_TASK.md) owns the final E3-inclusive 0.7.1 release
+acceptance and publication gate. PRs #11–#13 are merged; product sequencing
+after release remains unchanged until a separate real-workflow decision.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.

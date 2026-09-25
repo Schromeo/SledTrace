@@ -1,5 +1,21 @@
 # Architecture Decisions
 
+## 2026-09-25 — Include bounded offline E3 in the v0.7.1 release scope
+
+The user chose to include merged PRs #11–#13 in v0.7.1, rather than publishing
+the earlier PR #11 reliability-only candidate. This authorizes final release
+acceptance and, only if it passes, a matching immutable tag, protected PyPI
+publication, clean production-index install and GitHub Release. It does not
+authorize a paid model request or turn offline fixture evidence into a billing
+or provider-wide capture claim.
+
+Keep E3's explicit non-streaming helper, dated two-model Standard text-token
+estimate and unknown/conflict handling visible in release docs. Close the
+four fixable Dashboard transitive-dependency advisories with a lockfile-only
+refresh and verify clean installation. Do not start E4 in the release slice.
+
+---
+
 ## 2026-09-25 — E3 uses explicit Responses recording and indicative rate snapshot
 
 - Keep the OpenAI client optional: a caller runs one non-streaming Responses

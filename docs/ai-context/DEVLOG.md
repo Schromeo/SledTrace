@@ -1,5 +1,37 @@
 # Devlog
 
+## 2026-09-25 — E3-inclusive v0.7.1 release acceptance in progress
+
+The user chose PRs #11–#13 together for 0.7.1. PR #11 squash-merged as
+`70e0342`, #12 as `36c00af`, and #13 as `7bcbeec` after each restacked
+layer's five CI checks passed. Required linear history was preserved; merge
+conflicts were resolved to trees identical to the already validated branch
+trees. No tag or package publication has occurred at this point.
+
+The combined `7bcbeec` tree passed the nine-step release profile: SDK 77,
+startup 18, Go packages, Dashboard 33 and build, wheel/sdist build,
+clean-wheel and copied independent-app validators, and diff check. An initial
+attempt was stopped because pytest's temporary directory was mistakenly
+inside the repository, causing the out-of-checkout CLI test to enter source
+startup; the rerun used a fresh external temp path and passed. The host has no
+Twine module; the PR Python CI runs `twine check` on both artifacts.
+
+The previous lockfile audited at four fixable transitive advisories (one
+moderate, three high). A lockfile-only update within existing ranges now
+reports zero audit findings. `npm ci` in the live workspace could not unlink
+the esbuild binary held by the running Dashboard preview; the final closure
+must test a clean isolated checkout without stopping that preview.
+
+An explicit, sanitized non-streaming Responses mapping was recorded through
+the local Collector and shown in the real Dashboard: 120 input, 80 output,
+200 total, 20 cached input, 1/1 coverage and `$0.000170 USD` indicative
+Standard text-token cost. A 1440×950 screenshot was saved for the README. No
+provider call, invoice comparison, secret, prompt or output content was used.
+Final-main package/clean-install, CI, protected publication and production
+install remain pending; do not call this release complete yet.
+
+---
+
 ## 2026-09-25 — E3R Dashboard usage-state review follow-up
 
 Review of draft PR #13 found two reproducible mislabels. The Dashboard treated
