@@ -1,5 +1,36 @@
 # Devlog
 
+## 2026-09-25 — One authorized E3 provider call observed in local Collector
+
+- The user securely configured a Codex terminal and ran the PR #16 example
+  exactly once with `--paid-call --budget-usd 0.10`. The initial prompt was
+  3,240 UTF-8 bytes; the script's preflight text-token estimate was
+  `$0.000678 USD`. Do not repeat the call under the same authorization.
+- Terminal reported `delivery: ok` for
+  `trace_92b0c5eb42f64bef883b88f29b064b0a`. Read-only Collector GET
+  returned trace status `ok`, one retrieval span and one LLM span. The LLM
+  span reported `usage_source=openai_responses`, 641 input / 59 output / 700
+  total, 0 cached input, 0 cache-write and 0 reasoning tokens, and 2,773 ms
+  measured latency. This is the first actual provider-to-Collector E3
+  evidence; it does not validate automatic capture or all provider cases.
+- The answer identifies human nature, differing opinions and unequal property
+  distribution, citing pages 28 and 29. Those propositions are present in
+  the two retrieved public pages. Collector emitted 0 heuristic warnings;
+  absence of warnings is not a quality score. `quality_review=pending`
+  remains stored until the user accepts the result.
+- Official dated `gpt-4o-mini` Standard text-token rates applied to the
+  returned usage yield `$0.00013155 USD` indicative cost. No invoice or
+  account usage record was reconciled. No additional paid call was made.
+- The Dashboard was not read back for this run: `vite` was unavailable in the
+  local dependency tree, and `npm.cmd ci` could not unlink a locked Rollup
+  binary (`EPERM`). No tracked files changed in that attempt. The stored trace
+  can be inspected later without another provider request.
+
+Next decision: user quality review of this one answer, then select a genuinely
+used agent workflow and observable task outcome before E4. This RAG probe
+alone does not demonstrate an agent-efficiency improvement.
+
+
 ## 2026-09-25 — E3 public-corpus provider probe prepared, paid validation pending
 
 - Added a separate opt-in OpenAI Responses example on the existing authentic

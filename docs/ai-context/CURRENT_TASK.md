@@ -7,11 +7,13 @@ components:
 validation_profile: sdk
 scope_base: e342c1a
 allowed_paths:
+  - AGENTS.md
   - sdk/python/examples/federalist_openai_evidence.py
   - sdk/python/tests/test_federalist_openai_evidence.py
   - docs/demo/EXTERNAL_FEDERALIST_RAG.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
+  - docs/ai-context/NEXT_AGENT_BRIEF.md
   - docs/ai-context/ROADMAP.md
   - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
@@ -26,7 +28,7 @@ auto_continue: false
 
 # Current Task — E3LIVE: bounded real-workflow evidence
 
-Updated: 2026-09-25. Status: **locally complete; real call pending**.
+Updated: 2026-09-25. Status: **one real call and Collector readback complete; draft PR #16**.
 
 Decision card: use the existing public Federalist PDF + SQLite FTS5 RAG
 exercise to validate one explicit OpenAI Responses recording path against a
@@ -44,19 +46,29 @@ Stop after a review-ready slice, not E4, merge or release.
 Outcome: the opt-in example, documentation and offline fake-client tests are
 implemented. On the authentic local index, the dry run returned pages 28,
 29 and 85, with a 3,240-byte prompt and a `$0.000678` conservative text-token
-estimate. The SDK validation profile passed 82 tests and diff check. There is
-no API key or optional OpenAI client in this environment, so **no paid call or
-live provider/UI validation happened**. The user's prior one-call authorization
-has a $0.10 ceiling; do not silently repeat a call. The only scope-check
+estimate. The SDK validation profile passed 82 tests and diff check. At the
+initial commit provider validation was pending. The user then securely
+configured a Codex terminal and ran **one** authorized `gpt-4o-mini` request
+under the $0.10 preflight ceiling. Trace
+`trace_92b0c5eb42f64bef883b88f29b064b0a` was delivered to the isolated
+local Collector: retrieval plus LLM spans, 641 input / 59 output / 700 total
+provider-reported tokens, 0 cached input, 2,773 ms LLM latency and 0
+heuristic warnings. The answer cites retrieved pages 28 and 29; those pages
+contain the human-nature and unequal-property passages. The calculated
+Standard text-token estimate is `$0.00013155 USD`, not an invoice.
+`quality_review=pending` remains correct until the user accepts the answer.
+No Dashboard readback was completed because local Vite dependencies were
+unavailable/locked. **Do not repeat the paid call.** The only scope-check
 violation is the pre-existing, untracked demo JSON, which remains untouched
-and excluded from this slice. No product SDK API, Collector, Dashboard,
-packaging, release or pricing implementation changed.
+and excluded. No product SDK API, Collector, Dashboard, packaging, release or
+pricing implementation changed.
 
-Next decision card: once the user securely configures a key, perform at most
-one bounded request, inspect provider usage versus local Collector/Dashboard
-readback, and ask for human review of the answer's support. If a real agent
-workflow is provided instead, specify its task ID, steps and pass/fail quality
-criterion before E4. Do not infer genuine agent value from this RAG-only probe.
+Next decision card: ask the user to review this specific answer against the
+source excerpts, then choose a genuinely used agent workflow and predeclare
+its task ID, steps and pass/fail quality criterion before E4. Optional UI
+readback can use this stored trace without a second provider call. Do not
+infer general diagnostic accuracy, savings or genuine agent value from this
+RAG-only probe.
 
 ## Previous task — Post v0.7.1 publication documentation closeout
 

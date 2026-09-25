@@ -13,10 +13,11 @@
   and the generated answer still enter the local trace. Keep quality review
   pending until a human checks the source-grounded answer. A single call is
   not agent instrumentation, diagnostic accuracy, or evidence of savings.
-- The user allowed one call with a $0.10 ceiling. The current host has neither
-  an API key nor the optional OpenAI client, so no paid call was made in this
-  development slice. E4 still needs a genuine bounded agent workflow and
-  a predeclared observable quality outcome.
+- The user allowed one call with a $0.10 ceiling. The first code commit used
+  offline evidence only; subsequently the user configured a Codex terminal
+  and executed that one call, with local Collector readback recorded in
+  DEVLOG. This does not authorize a repeat. E4 still needs a genuine bounded
+  agent workflow and a predeclared observable quality outcome.
 
 ---
 

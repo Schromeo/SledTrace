@@ -88,5 +88,19 @@ spending cap or a guarantee that an external invoice matches the estimate.
 The existing trace stores a `quality_review=pending` marker. A human should
 check whether the answer identifies human nature as the cause and cites a
 retrieved page; a citation or zero warning does not prove factual correctness.
-There is no automatic quality grader, agent workflow, E4 waste detector, or
-paid-provider validation result in this example as currently documented.
+There is no automatic quality grader, agent workflow or E4 waste detector.
+
+## One authorized provider run, 2026-09-25
+
+The user ran the opt-in command once from a Codex terminal. Trace
+`trace_92b0c5eb42f64bef883b88f29b064b0a` was delivered to an isolated
+local Collector, which returned retrieval and LLM spans. The LLM span recorded
+`usage_source=openai_responses`, 641 input, 59 output, 700 total and 0 cached
+input tokens, plus 2,773 ms measured latency. The answer cited pages 28 and
+29; the retrieved page text contains the human-nature and unequal-property
+passages. The trace's 0 heuristic warnings do not establish answer quality.
+At the dated Standard text-token rates, the indicative cost is `$0.00013155
+USD`; provider billing was not independently checked. The trace retains
+`quality_review=pending` until user review. No Dashboard readback was completed
+for this live call; its local Vite dependency was unavailable/locked. Do not
+run a second provider call just to inspect the stored trace.

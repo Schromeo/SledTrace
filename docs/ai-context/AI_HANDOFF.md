@@ -7,12 +7,16 @@ the authentic public Federalist PDF and local FTS5 index to prepare one
 `gpt-4o-mini` Responses request. Its default path is a no-network dry run;
 offline fake-client tests verify one request shape, recorded usage, no raw
 provider object/credential persistence, and missing-key/budget stops. The
-actual provider request remains **unrun**: `OPENAI_API_KEY` and the optional
-`openai` client are absent in this execution environment. The user authorized
-at most one request with a $0.10 ceiling, not repeated calls or an open-ended
-bill. Do not claim real provider or billing validation before a successful
-authorized run and local Collector readback. The original simulated example
-remains unchanged. See CURRENT_TASK/DEVLOG for scope and exact validation.
+user subsequently ran exactly one authorized `gpt-4o-mini` request from a
+Codex terminal with a $0.10 preflight ceiling. The isolated local Collector
+read back trace `trace_92b0c5eb42f64bef883b88f29b064b0a`: 641 input,
+59 output and 700 total provider-reported tokens, with 0 cached input and
+2,773 ms LLM latency. The answer cited relevant public pages 28 and 29.
+This is real provider-to-Collector evidence, **not** invoice reconciliation,
+Dashboard readback for this call, user acceptance, agent execution, or proof of
+diagnostic effectiveness. Do not repeat the paid request. The original
+simulated example remains unchanged. See CURRENT_TASK/DEVLOG for scope and
+exact validation.
 
 
 ## 2026-09-25 published v0.7.1 snapshot
