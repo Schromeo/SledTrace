@@ -2274,3 +2274,12 @@ source, a tool error followed by a successful attempt, and the retained step
 error. No paid/provider call occurred. The preexisting untracked
 `docs/demo/comprehensive_trace_example.json` was not changed or staged; it
 causes the slice scope checker to report an out-of-scope path.
+
+PR #11 was opened from candidate commit `cb0dfd0`; its Dashboard, Go,
+Python 3.9, Python 3.13, and Slice Contract checks passed. A clean temporary
+clone of that commit ran locked `npm ci` and `scripts/tests/smoke_startup.py`:
+real health/HTTP, SDK ingestion, CORS readback with two warnings, SIGINT
+cleanup, both ports released, and clean Git status. `npm audit` reported four
+fixable transitive toolchain advisories: baseline-browser-mapping (moderate),
+browserslist, nanoid, and postcss (high). These were not changed here; review
+the lockfile and exposure before any publication decision.

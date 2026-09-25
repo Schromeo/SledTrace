@@ -52,6 +52,12 @@ checked in the browser. The unrelated untracked
 `docs/demo/comprehensive_trace_example.json` predates this slice and remains
 untouched; it causes the scope checker to flag one out-of-scope path.
 
+Candidate PR #11 is open with five required CI checks passing. A clean clone
+of `cb0dfd0` passed locked `npm ci`, real startup/ingestion/CORS/shutdown smoke,
+and clean Git status. `npm audit` found four fixable transitive Dashboard
+toolchain advisories (one moderate, three high); review before publication.
+No merge or release is authorized by this local/CI evidence alone.
+
 ## Previous task — X2 legacy warning read compatibility
 
 Updated: 2026-09-24. Status: **locally complete; main-targeting review candidate**.
