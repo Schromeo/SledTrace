@@ -1,25 +1,27 @@
 # AI Handoff
 
-## 2026-09-25 final v0.7.1 acceptance snapshot
+## 2026-09-25 published v0.7.1 snapshot
 
-PRs #11, #12 and #13 merged in order under protected `main`; the combined
-product baseline is `7bcbeec`. Their final CI checks passed after each
-restack. The user selected E3's offline, explicit Responses usage path for
-v0.7.1 and authorized publication if final acceptance passes. No release newer
-than v0.7.0 is yet established. A separate RC071E3 release-closure branch
-updates the Dashboard dependency lockfile, README/release claims and image,
-then must pass exact-tree release/metadata/clean-install checks before an
-immutable tag and protected PyPI publishing.
+The latest release is **v0.7.1 — Trustworthy Local Tracing**. PRs #11–#13
+landed the reliability, E2 tool path and E3 usage work; release-closure PR #14
+merged as `33d2335`. Immutable annotated tag `v0.7.1` points to that commit.
+The protected PyPI workflow succeeded, publishing wheel and sdist; GitHub
+Release is available at
+https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1 . A clean virtual
+environment outside the source repository installed `sledtrace==0.7.1`,
+verified `sledtrace`, `raglens`, and `sledtrace.openai` imports, CLI version
+`0.7.1`, help, and the documented source-checkout serving boundary.
 
-The bounded E3 path records one caller-supplied, completed non-streaming
-OpenAI Responses result through the existing SDK/Collector/SQLite/Dashboard
-chain. A dated two-model Standard text-token estimate is indicative, not a
-provider bill. The E3R follow-up distinguishes invalid/malformed usage from
-real count conflicts. No paid provider call, automatic capture, bill
-reconciliation or broad agent diagnostic is established. See CURRENT_TASK and
-DEVLOG for the active gate and exact evidence.
+E3 records a caller-supplied completed non-streaming OpenAI Responses result
+through the existing SDK/Collector/SQLite/Dashboard path. Its dated two-model
+Standard text-token estimate is indicative. The release used sanitized offline
+fixtures and a real local Dashboard readback; no paid provider call or bill
+reconciliation was performed. Tool tracing is caller-instrumented and does not
+execute an agent. The wheel remains SDK/CLI only; `sledtrace serve` requires a
+source checkout. See CURRENT_TASK and DEVLOG for exact evidence and the next
+workflow decision.
 
-Last repository-history refresh: 2026-09-24. PRs
+Last repository-history refresh: 2026-09-25. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),
 [#5](https://github.com/Schromeo/SledTrace/pull/5), and
 [#6](https://github.com/Schromeo/SledTrace/pull/6) were squash-merged into
@@ -28,11 +30,11 @@ Last repository-history refresh: 2026-09-24. PRs
 `622ff69`. Cumulative PR
 [#4](https://github.com/Schromeo/SledTrace/pull/4) remains closed as superseded,
 and its branch is retained for provenance. E1 existing-usage visibility is
-mainline but has not been tagged or published. The latest confirmed release
-remains v0.7.0.
+included in the published v0.7.1 package.
 
-E2's synchronous one-tool Python path was merged through PR #8 as `0734e20`.
-It is on `main`, but it is not a released capability.
+E2's synchronous one-tool Python path was merged through PR #8 as `0734e20`
+and is included in v0.7.1. It is a tracing contract, not a general agent
+runtime.
 
 ## Read this first
 
@@ -50,7 +52,12 @@ Do not repeat the release setup, handover audit, or S1 implementation just becau
 
 SledTrace is a local-first visual debugger for RAG pipelines, formerly RAGLens.
 
-- current release: **v0.7.0 — External Developer Readiness**, published 2026-09-09
+- current release: **v0.7.1 — Trustworthy Local Tracing**, published 2026-09-25
+- immutable annotated release tag target: `33d2335b1f908588e46a1a003c574786735355ef`
+- [production PyPI](https://pypi.org/project/sledtrace/0.7.1/)
+- [GitHub Release](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1)
+- [successful protected publication workflow](https://github.com/Schromeo/SledTrace/actions/runs/36132895644)
+- release-closure PR [#14](https://github.com/Schromeo/SledTrace/pull/14)
 - immutable annotated release tag target: `58887907973aff3948d2cf3667681832f4305ec6`
 - subsequent documentation-closure commit: `906fd2999a86fac5abb538cb83ee16b79ce4cda8`
 - [production PyPI](https://pypi.org/project/sledtrace/0.7.0/)
@@ -60,7 +67,7 @@ SledTrace is a local-first visual debugger for RAG pipelines, formerly RAGLens.
 
 Do not move published tags or upload rebuilt artifacts under an existing version. Local commits and documentation text are not evidence of a merge or publication.
 
-Historical releases: v0.4.0 local/Docker release; v0.4.1 compatibility-preserving rebrand; v0.5.0 wheel/sdist readiness; v0.6.0 CLI/startup UX; v0.7.0 external-developer readiness and first production PyPI publication. Detailed evidence remains in DEVLOG and versioned release notes.
+Historical releases: v0.4.0 local/Docker release; v0.4.1 compatibility-preserving rebrand; v0.5.0 wheel/sdist readiness; v0.6.0 CLI/startup UX; v0.7.0 external-developer readiness; v0.7.1 trustworthy local tracing and explicit usage estimate. Detailed evidence remains in DEVLOG and versioned release notes.
 
 ## Implemented architecture and boundaries
 
@@ -75,19 +82,20 @@ Python trace() -> retrieval / llm / tool records -> explicit flush()
 - Preferred configuration is `SLEDTRACE_COLLECTOR_URL`, with temporary `RAGLENS_COLLECTOR_URL` fallback.
 - The wheel contains SDK/CLI only. `sledtrace serve` requires a source checkout; it does not install or bundle Collector/Dashboard runtime assets.
 - API routes: `GET /health`, `POST /api/traces`, `GET /api/traces`, `GET /api/traces/{trace_id}`.
-- Published v0.7.0 has `retrieval` and `llm` spans. Source 0.7.1 adds one
-  caller-instrumented `tool` span, not agent/memory/retry, streaming or partial
+- Published v0.7.1 has `retrieval`, `llm`, and one caller-instrumented
+  synchronous `tool` span. This is not agent/memory/retry, streaming or partial
   ingestion. E2 merged through PR #8.
 - `llm()` stores supplied input/output/total token metadata. E2 adds an
   explicit failed-attempt status/error while retaining supplied usage; only
   successful responses update the legacy trace answer until the application
-  sets an explicit task result. It still does not capture provider usage or
-  calculate complete cost.
-- The E1 Dashboard on `main` normalizes those existing token fields into a
+  sets an explicit task result. E3's optional `sledtrace.openai.record_response`
+  explicitly reads usage from a caller-supplied non-streaming Responses result;
+  it does not automatically capture calls or calculate a complete provider bill.
+- The Dashboard normalizes recorded token fields into a
   per-call ledger with a known subtotal and coverage. It distinguishes zero,
   missing, invalid, and conflicting values; usage provenance remains explicitly
-  unknown. This is presentation of recorded data, not automatic measurement or
-  provider billing truth.
+  unknown. E3 marks its explicit Responses source and estimates text-token cost
+  for two supported models; its estimate is not billing truth.
 - The wire/Go/SQLite model already has `parent_span_id`; current Python retrieval/LLM methods set it to None. Extend deliberately if a selected workflow needs nesting; do not invent a missing-storage-field migration.
 - E2's `tool()` returns its span ID and records only caller-provided summaries,
   status/error and measured/unknown timing. `log_task_result(result, accepted)`

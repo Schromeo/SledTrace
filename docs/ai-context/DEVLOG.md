@@ -1,5 +1,39 @@
 # Devlog
 
+## 2026-09-25 — v0.7.1 published and release closure verified
+
+- Merged release-closure PR #14 as `33d2335b1f908588e46a1a003c574786735355ef`.
+- Created and pushed immutable annotated tag `v0.7.1` at that exact commit.
+- Protected publication workflow
+  https://github.com/Schromeo/SledTrace/actions/runs/36132895644 succeeded:
+  built wheel and sdist, passed Twine check, and uploaded both to production
+  PyPI through the `pypi` environment. An initial run triggered from `main`
+  was rejected by the environment branch rule before upload; the successful
+  rerun used `v0.7.1` for both trigger and build refs.
+- PyPI JSON lists `sledtrace-0.7.1-py3-none-any.whl` and
+  `sledtrace-0.7.1.tar.gz`; `pip index versions sledtrace` reports 0.7.1 as
+  latest.
+- A new virtual environment under the system temp directory installed
+  `sledtrace==0.7.1` from production PyPI. `sledtrace version` printed
+  `0.7.1`; `--help`, `serve --help`, `sledtrace`, `raglens`, and
+  `sledtrace.openai` checks passed. Running `serve` outside a source checkout
+  exited 1 with the documented repository/Docker guidance.
+- Published GitHub Release:
+  https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1 . The release
+  checklist's package and release gates are complete.
+- PyPI's 0.7.1 JSON long description is the README embedded before publication
+  and still says "install from PyPI when available"; the published files are
+  immutable, so the source SDK README was corrected for the next build. Do not
+  rebuild or re-upload 0.7.1 to change display metadata.
+- E3 evidence remains a sanitized offline Responses fixture and local UI
+  readback. There was no paid provider request or invoice comparison.
+- The pre-existing untracked `docs/demo/comprehensive_trace_example.json`
+  remains untouched and excluded from the release.
+
+Next decision: select one genuine bounded workflow and an observable quality
+outcome before finalizing E4 scope. The v1.0 roadmap remains staged planning,
+not a mandate to implement every proposed capability.
+
 ## 2026-09-25 — E3-inclusive v0.7.1 release acceptance in progress
 
 The user chose PRs #11–#13 together for 0.7.1. PR #11 squash-merged as

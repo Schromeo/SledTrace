@@ -9,11 +9,11 @@ Former project name: RAGLens.
 
 Current stable project direction is SledTrace-first. Legacy RAGLens compatibility may remain temporarily where explicitly documented.
 
-Current released version: **v0.7.0 — External Developer Readiness**. It was published through the protected tag workflow and clean-install validated from production PyPI on 2026-09-09.
+Current released version: **v0.7.1 — Trustworthy Local Tracing**, published from immutable tag `v0.7.1` on 2026-09-25. The protected PyPI workflow succeeded, and the wheel was installed from production PyPI in a clean virtual environment outside the repository.
 
-Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. The v0.7.1 reliability work, B1/B2/H0 integration, D0 harness, E1 usage visibility, E2's single Python tool path, X1 external-corpus exercise, and X2 legacy-warning read fix are merged on `main`. The exact-main v0.7.1 release candidate is being prepared; publication remains separately gated. E3 and later compare/runtime capabilities are candidates, not implemented or authorized en masse. No newer publication than v0.7.0 is established here.
+Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. v0.7.1 includes the reliability work, B1/B2/H0 integration, D0 harness, E1 usage visibility, E2's single Python tool path, X1 external-corpus exercise, X2 legacy-warning read fix, and E3's explicit offline-validated OpenAI Responses usage helper with indicative pricing. The E3 helper has not been verified against a paid provider response or reconciled against billing. Later comparison/runtime capabilities remain candidates, not blanket authorization.
 
-The Python package is published on production PyPI as `sledtrace==0.7.0`; its wheel/sdist, preferred and legacy imports, installed CLI, and source-checkout serving boundary were clean-install validated outside the repository. `0.7.0rc1` remains on TestPyPI as the immutable publication candidate.
+The Python package is published on production PyPI as `sledtrace==0.7.1`; its wheel and sdist are available. A clean external virtual environment installed the wheel, imported `sledtrace`, `raglens`, and `sledtrace.openai`, and verified CLI version/help plus the documented nonzero out-of-checkout `serve` guidance. `0.7.0rc1` remains on TestPyPI as historical candidate provenance.
 
 ## Before Doing Meaningful Work
 
@@ -74,7 +74,7 @@ do not excuse skipping necessary safety checks or claiming unfinished work passe
 ```text
 Python SDK
   -> trace()
-  -> retrieval + llm spans (released); tool span (merged, unpublished)
+  -> retrieval + llm + caller-instrumented tool spans (released)
   -> flush()
   -> Go collector
   -> deterministic Warning Engine
@@ -86,7 +86,7 @@ Current implemented span types:
 
 - retrieval
 - llm
-- tool — E2 implementation on `main`, not in the published v0.7.0 package
+- tool — caller-instrumented synchronous span, published in v0.7.1; this does not execute an agent
 
 Current major components:
 
