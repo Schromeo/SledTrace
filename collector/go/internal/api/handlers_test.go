@@ -2,9 +2,11 @@ package api
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"testing"
 
 	"sledtrace-collector/internal/models"
@@ -129,6 +131,75 @@ func TestPostTraceGeneratesV3WarningAndGetTraceDetailReturnsWarningFields(t *tes
 
 	if len(signals) == 0 {
 		t.Fatalf("expected signals to be populated, got %#v", numericMismatch)
+	}
+}
+
+func TestGetTraceDetailReadsLegacyTextConfidence(t *testing.T) {
+	dbPath := filepath.Join(t.TempDir(), "legacy-warnings.db")
+	store, err := storage.NewStore(dbPath)
+	if err != nil {
+		t.Fatalf("create store: %v", err)
+	}
+
+	payload := apiTestNumericMismatchPayload()
+	postBody, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatalf("marshal trace payload: %v", err)
+	}
+	postReq := httptest.NewRequest(http.MethodPost, "/api/traces", bytes.NewReader(postBody))
+	postReq.Header.Set("Content-Type", "application/json")
+	postRec := httptest.NewRecorder()
+	NewServer(store).Routes().ServeHTTP(postRec, postReq)
+	if postRec.Code != http.StatusCreated {
+		t.Fatalf("post trace: status %d body=%s", postRec.Code, postRec.Body.String())
+	}
+	if err := store.Close(); err != nil {
+		t.Fatalf("close store: %v", err)
+	}
+
+	// SQLite permits a text value in this REAL column in a historical database.
+	db, err := sql.Open("sqlite", dbPath)
+	if err != nil {
+		t.Fatalf("open historical database: %v", err)
+	}
+	result, err := db.Exec(`UPDATE warnings SET confidence = 'heuristic' WHERE trace_id = ?`, payload.Trace.TraceID)
+	if err != nil {
+		t.Fatalf("set legacy confidence: %v", err)
+	}
+	changed, err := result.RowsAffected()
+	if err != nil || changed == 0 {
+		t.Fatalf("expected legacy warning rows, changed=%d err=%v", changed, err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatalf("close historical database: %v", err)
+	}
+
+	store, err = storage.NewStore(dbPath)
+	if err != nil {
+		t.Fatalf("reopen historical database: %v", err)
+	}
+	defer store.Close()
+	getReq := httptest.NewRequest(http.MethodGet, "/api/traces/"+payload.Trace.TraceID, nil)
+	getRec := httptest.NewRecorder()
+	NewServer(store).Routes().ServeHTTP(getRec, getReq)
+	if getRec.Code != http.StatusOK {
+		t.Fatalf("expected legacy detail status 200, got %d body=%s", getRec.Code, getRec.Body.String())
+	}
+
+	var detail models.TraceDetailResponse
+	if err := json.Unmarshal(getRec.Body.Bytes(), &detail); err != nil {
+		t.Fatalf("decode legacy detail: %v", err)
+	}
+	if len(detail.Warnings) == 0 {
+		t.Fatal("expected historical warnings")
+	}
+	for _, warning := range detail.Warnings {
+		if warning.Confidence != nil {
+			t.Fatalf("expected unknown confidence for %s, got %v", warning.Type, *warning.Confidence)
+		}
+		if warning.Type == "" || warning.Message == "" {
+			t.Fatalf("legacy warning lost its diagnostic fields: %#v", warning)
+		}
 	}
 }
 

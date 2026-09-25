@@ -1,5 +1,28 @@
 # Devlog
 
+## 2026-09-24 — X2 legacy warning confidence read compatibility
+
+The post-X1 RAG suites exposed persisted warning rows with text
+`confidence="heuristic"` that made historical trace detail return HTTP 500.
+X2 keeps the numeric-or-unknown API contract: the warning SELECT returns
+`NULL` for text-typed confidence while leaving the stored row untouched.
+Current numeric values and all other warning fields are read normally.
+
+- Added a persisted-file API regression: POST a trace, set its saved warning
+  confidence to the historical text value, reopen the store, then GET detail.
+  The response is HTTP 200 and retains readable warnings with unknown
+  confidence. Existing numeric API and storage round-trip tests still pass.
+- `go test ./internal/api ./internal/storage -count=1` passed with a temporary
+  Go build cache. Its first attempt did not run tests because the default
+  Windows Go cache returned `Access is denied`.
+- `python scripts/dev/slice.py status`, `scope`, and `check` passed on X2;
+  `check` ran `go test ./... -count=1` and `git diff --check`, both passing.
+- No schema, user database, diagnostic threshold, SDK, or Dashboard change;
+  no scale or provider-usage validation claim.
+
+X2 is stacked on X1 commit `3ecf21f`, which is not on `main`. Review/merge
+dependency remains explicit. E3 selection and any paid call remain separate.
+
 ## 2026-09-24 — Two-suite RAG diagnostic regression validation
 
 Ran two local end-to-end RAG suites against the source Collector on

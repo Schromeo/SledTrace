@@ -1,14 +1,14 @@
 ---
-slice_id: X1
+slice_id: X2
 slice_status: complete
 components:
-  - sdk
+  - collector
   - documentation
-validation_profile: sdk
-scope_base: origin/main
+validation_profile: collector
+scope_base: 3ecf21f
 allowed_paths:
-  - sdk/python/examples/external_federalist_rag.py
-  - docs/demo/EXTERNAL_FEDERALIST_RAG.md
+  - collector/go/internal/storage/sqlite.go
+  - collector/go/internal/api/handlers_test.go
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
@@ -22,7 +22,39 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — X1 external RAG corpus exercise
+# Current Task — X2 legacy warning read compatibility
+
+Updated: 2026-09-24. Status: **locally complete; main-targeting review candidate**.
+
+The two post-X1 RAG suites found historical SQLite warnings with text
+`confidence="heuristic"`. The detail reader expects a float, so those traces
+return HTTP 500. Preserve the existing numeric-or-unknown API contract: treat
+text-typed stored confidence as unknown on read, without rewriting database
+rows or changing the schema. Add a persisted-database regression through the
+Collector API; verify ordinary numeric confidence still reads correctly.
+
+Acceptance: the old trace detail returns HTTP 200 with its other warning
+evidence intact; numeric confidence remains numeric; Go tests and slice scope
+checks pass. Do not retune RAG rules, migrate user data, run load tests, or
+start E3. X1 merged through PR #10 as `755c19c`; X2 keeps its original
+commits and merges that mainline tree before PR #9 retargets to `main`.
+Release, publication, and paid provider calls remain separate decisions.
+
+Closeout: `getWarnings` now returns SQL `NULL` for text-typed historical
+confidence, preserving numeric values and other warning fields. A regression
+test writes `heuristic` into a persisted SQLite file, reopens the Collector
+store, and checks HTTP 200 plus readable warnings. The existing numeric API
+and storage round-trip tests remain green. Go full-suite and `git diff --check`
+passed with a temporary Go build cache after the default Windows cache
+returned access denied. No user database was changed; no scale claim follows.
+
+Next decision: E3 remains the planned next product slice, but needs one actual
+provider/client and an explicit call-cost budget before paid validation. A
+small labeled diagnostic-quality baseline belongs before E4 rule expansion;
+the recent two suites alone do not justify threshold changes. Review and land
+X2 only after its retargeted CI passes.
+
+## Previous task — X1 external RAG corpus exercise
 
 Updated: 2026-09-24. Status: **locally complete, review ready**.
 

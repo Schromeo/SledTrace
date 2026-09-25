@@ -1,5 +1,16 @@
 # AI Handoff
 
+## 2026-09-24 local follow-up snapshot
+
+`origin/main` currently points to `755c19c`: X1 PR #10 was squash-merged after
+its five checks passed. No release newer than v0.7.0 is established. X2's
+narrow legacy-warning read fix remains a review candidate in PR #9, not merged
+or released. X2 makes historical text `confidence="heuristic"`
+read as unknown rather than fail trace detail with HTTP 500. The persisted
+SQLite/API regression and all Go tests passed; user databases were not
+rewritten. See CURRENT_TASK and DEVLOG for scope and exact evidence. E3 and
+paid-provider validation remain unstarted decisions.
+
 Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),
 [#5](https://github.com/Schromeo/SledTrace/pull/5), and
@@ -12,9 +23,8 @@ and its branch is retained for provenance. E1 existing-usage visibility is
 mainline but has not been tagged or published. The latest confirmed release
 remains v0.7.0.
 
-E2's synchronous one-tool Python path is locally complete on
-`codex/e2-python-tool-path`; PR #8 targets `main` after a tree-equivalent
-restack. Check its merge state live. It is not a released capability.
+E2's synchronous one-tool Python path was merged through PR #8 as `0734e20`.
+It is on `main`, but it is not a released capability.
 
 ## Read this first
 

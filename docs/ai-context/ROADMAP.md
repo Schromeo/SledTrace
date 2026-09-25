@@ -20,8 +20,9 @@ Future scope is not implemented capability or blanket authorization.
 - B1 source startup, B2 independent-app integration and H0 honest diagnostic
   presentation: merged through PR #5 as `e8b034d` after its four required checks
   passed on 2026-09-20.
-- The published SDK records retrieval and llm spans; E2 adds one
-  caller-instrumented tool span, with mainline status determined by PR #8.
+- The published SDK records retrieval and llm spans; E2's
+  caller-instrumented tool span is on `main` through PR #8 (`0734e20`), but
+  remains unpublished.
   Token metadata is caller-supplied;
   E1 can summarize observed records but does not make capture complete or
   provider-verified. The wheel still does not contain a standalone runtime.
@@ -34,11 +35,11 @@ Future scope is not implemented capability or blanket authorization.
   known subtotal and coverage, measured/unknown timing, explicit conflict and
   provenance states, focused tests, production build, and real-browser evidence.
   It remains untagged and unpublished.
-- E2 single Python tool path is locally complete in PR #8, retargeted to `main`.
+- E2 single Python tool path was merged through PR #8 as `0734e20`.
   Deterministic success, business failure and tool-recovery traces passed local
   API/UI checks; the new SDK contract passed clean-wheel validation. It is not
-  released or externally validated; check its merge status live. E3 is the next candidate.
-- X1 external-corpus exercise is locally complete: a Harvard Federalist Papers
+  released or externally validated. E3 is the next candidate.
+- X1 external-corpus exercise merged through PR #10 as `755c19c`: a Harvard Federalist Papers
   PDF was indexed into SQLite FTS5 and queried through an SledTrace-traced
   adapter. This is integration evidence for existing retrieval diagnostics,
   not a new product capability or a change to the E3 sequence.
@@ -50,6 +51,10 @@ Future scope is not implemented capability or blanket authorization.
   rows with string `confidence="heuristic"` that can make current detail reads
   return HTTP 500; compatibility handling and isolated test databases should be
   considered before larger repeated-run testing. No sequence change is made.
+- X2 fixes that historical-detail blocker locally in main-targeting PR #9:
+  text-typed legacy confidence now reads as unknown without rewriting SQLite
+  rows; a persisted-database HTTP regression and all Go tests pass. This is
+  not merged or released. Use an isolated database for later validation.
 - These merges did not change the public release state. Sequence remains unchanged.
 
 ### Proposed post-v0.7 sequence
@@ -62,7 +67,7 @@ defer broad RAG-rule expansion and bring the efficiency/comparison loop forward.
 | --- | --- | --- | --- |
 | M0 — H0 locally complete | Honest warning presentation; existing release cleanup remains separate | UI, compatibility tests, build and real-browser checks passed | v0.7.1 remains a separate release decision |
 | M1 — locally complete | E1: existing LLM usage and measured/unknown timing, per call and known subtotal | A user can identify where observed tokens/time went | v0.8 development |
-| M2 — E2 local candidate | E2: one Python agent/tool path locally complete; E3: one usage source and explicit pricing basis remains a candidate | Real workflow and provider usage/price basis still need evidence | v0.8 development |
+| M2 — E2 mainline, unpublished | E2: one Python agent/tool path merged; E3: one usage source and explicit pricing basis remains a candidate | Real workflow and provider usage/price basis still need evidence | v0.8 development |
 | M3 | E4: two conservative waste signals; E5: outcome-aware A/B comparison | One real, reviewable improvement or useful regression finding; no fabricated savings | v0.8 candidate, subject to product gate |
 | M4 | U1: checkout-free runtime; U2: find/detail/compare; U3: content/data controls; U4: external onboarding | Supported install path and two genuine first uses | v0.9 candidate |
 | M5 | R1: storage/delivery contract; R2: compatibility; R3: supported-platform verification | Frozen, reliable supported scope | v1.0.0rc candidate |
@@ -74,8 +79,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) owns the locally completed E2 boundary and
-records E3 as an unstarted candidate requiring a new decision card.
+[CURRENT_TASK](CURRENT_TASK.md) owns the local X2 boundary and records E3 as
+an unstarted candidate requiring a new decision card.
+It also records the completed X1/X2 follow-ups and their review dependency.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.
