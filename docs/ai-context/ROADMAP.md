@@ -15,6 +15,12 @@ Future scope is not implemented capability or blanket authorization.
 
 ### Current facts
 
+- AG0 is a documentation-only Agent-direction preparation candidate. The user
+  has no current Agent workflow; [the A1 screen](../product/AGENT_DIRECTION_PREP.md)
+  separates a public reference workflow from real adoption. E4 rule work
+  waits for observable steps, task outcome and counterexamples; this does not
+  change the M3 product-value gate or claim Agent support beyond E2.
+
 - Latest release: v0.7.1 — Trustworthy Local Tracing, published 2026-09-25
   from immutable annotated tag `v0.7.1` at `33d2335`. Protected PyPI upload,
   clean install outside the repository, and GitHub Release all succeeded.
@@ -44,9 +50,9 @@ Future scope is not implemented capability or blanket authorization.
   provider usage is unknown, while true count contradictions remain conflicts;
   explicit invalid token fields remain invalid. This is a reliability follow-up
   within E3, not a roadmap sequence change or real-provider validation.
-- The release gate is closed. Product sequence remains unchanged; select the
-  next bounded slice after deciding which genuine workflow and outcome measure
-  should ground E4.
+- The release gate is closed. Product sequence remains unchanged; A1 first
+  screens one public reference workflow because no user-owned Agent run is
+  available. Its technical result cannot close E4/E5 product-value gates.
 
 ### Proposed post-v0.7 sequence
 
@@ -70,10 +76,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) records the completed v0.7.1 release closure
-and the next decision: pick a genuine, bounded workflow and quality outcome
-before selecting E4 implementation scope. PRs #11–#14 are merged; E3's offline
-validation is not external workflow evidence.
+[CURRENT_TASK](CURRENT_TASK.md) records AG0's bounded preparation and the A1
+selection gate. PRs #11–#14 are merged; E3's offline validation and the
+separate draft PR #16 public-corpus probe are not Agent workflow evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.
