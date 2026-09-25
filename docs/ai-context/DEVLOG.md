@@ -2247,3 +2247,52 @@ The first target warning is conflicting_chunks for the refund policy demo.
 - This is a documentation-only change and does not affect runtime behavior.
 
 
+# 2026-09-24 — RC071 exact-main release-candidate validation
+
+X1 PR #10 and X2 PR #9 passed required CI and merged into `main` as `755c19c`
+and `92b27b9`. The user authorized a v0.7.1 release candidate only; tagging,
+GitHub Release, PyPI upload, paid calls, and E3 are separate gates. Candidate
+documentation now includes E1 observed usage, E2 one synchronous tool path,
+X1 source-only exercise, and X2 legacy warning read compatibility.
+
+Local validation from post-X2 main: SDK pytest 68 passed; startup unittest 18
+passed; `python -m build` produced 0.7.1 wheel/sdist; clean-wheel and
+independent-app scripts passed; Twine 7.0.0 checked both 0.7.1 artifacts;
+Go `go test ./... -count=1` passed; Dashboard `npm.cmd test` passed 27 tests and
+`npm.cmd run build` passed. `git diff --check` passed. Initial aggregate
+attempts were interrupted: default sandbox blocked Windows child-process
+cleanup, pytest default temp ACL, and Vite config traversal. A final complete
+`python scripts/dev/slice.py check` passed all nine release-profile steps with
+normal process permissions and an isolated forward-slash pytest temporary path.
+Do not infer remote CI from these local results.
+
+An isolated local stack used Collector 127.0.0.1:4327, Dashboard 5177, and a
+temporary SQLite file. The offline deterministic `tool-recovery` fixture stored
+trace `trace_9c99eb895dbf4f51b6ad621516800bf9`. In the real browser, its
+detail showed two observed LLM calls, 24 known tokens, unknown/unverified usage
+source, a tool error followed by a successful attempt, and the retained step
+error. No paid/provider call occurred. The preexisting untracked
+`docs/demo/comprehensive_trace_example.json` was not changed or staged; it
+causes the slice scope checker to report an out-of-scope path.
+
+PR #11 was opened from candidate commit `cb0dfd0`; its Dashboard, Go,
+Python 3.9, Python 3.13, and Slice Contract checks passed. A clean temporary
+clone of that commit ran locked `npm ci` and `scripts/tests/smoke_startup.py`:
+real health/HTTP, SDK ingestion, CORS readback with two warnings, SIGINT
+cleanup, both ports released, and clean Git status. `npm audit` reported four
+fixable transitive toolchain advisories: baseline-browser-mapping (moderate),
+browserslist, nanoid, and postcss (high). These were not changed here; review
+the lockfile and exposure before any publication decision.
+
+RC071 review closeout: corrected `NEXT_AGENT_BRIEF.md`'s stale span inventory.
+Captured three real-browser conversation screenshots of the sanitized
+tool-recovery fixture at the trace header, usage/steps, and selected failed
+tool detail. Checked legibility, error/provenance/no-warning wording, and
+absence of secrets/private user data. These are narrow-view candidate evidence,
+not a new full-width README screenshot. PR #11 remains a draft; no merge, tag,
+PyPI upload, or GitHub Release occurred. E3 remains the next separate slice.
+The RC071 `release` validation profile was rerun after these documentation
+changes and passed all nine steps (SDK 68, startup 18, Go suite, Dashboard 27,
+build/wheel/independent-app, and diff check). Local `scope` still reports only
+the preexisting untracked `docs/demo/comprehensive_trace_example.json`; it is
+not included in the PR. Confirm the clean PR scope through Slice Contract CI.

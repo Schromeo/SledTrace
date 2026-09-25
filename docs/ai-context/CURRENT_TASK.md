@@ -1,18 +1,22 @@
 ---
-slice_id: X2
+slice_id: RC071
 slice_status: complete
 components:
-  - collector
+  - sdk
+  - dashboard
   - documentation
-validation_profile: collector
-scope_base: 3ecf21f
+validation_profile: release
+scope_base: 92b27b9
 allowed_paths:
-  - collector/go/internal/storage/sqlite.go
-  - collector/go/internal/api/handlers_test.go
+  - AGENTS.md
+  - README.md
+  - sdk/python/README.md
+  - docs/releases/V0_7_1.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
+  - docs/ai-context/NEXT_AGENT_BRIEF.md
 human_gates:
   - persisted_schema_or_data_contract_change
   - version_tag_release_or_publication
@@ -22,7 +26,59 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — X2 legacy warning read compatibility
+# Current Task — RC071 exact-main release candidate closure
+
+Updated: 2026-09-24. Status: **locally complete, PR #11 draft/review-ready;
+candidate-only authorization**.
+
+X1 and X2 have merged into `main` through PRs #10 and #9. The source tree is
+already versioned 0.7.1, but release notes and READMEs still describe an
+earlier reliability-only tree and call E2 unmerged or absent. Prepare a truthful
+0.7.1 candidate from exact post-X2 `main`: align current/released claims,
+document the observed usage ledger, one synchronous tool path, and legacy
+warning read fix, then validate the distribution and affected real UI flow.
+
+Acceptance: full release validation profile, package metadata check,
+clean-wheel/independent-app boundary, exact-candidate local Collector/UI
+inspection, release-quality screenshot check, and a reviewable candidate PR.
+No tag, GitHub Release, TestPyPI/PyPI upload, paid model call, or E3 change.
+The user explicitly reserved final publication approval for a later turn.
+
+Local validation: the complete nine-step release profile passed (SDK 68,
+startup 18, Go all packages, Dashboard 27 plus build, package build/wheel and
+independent-app, diff check). Twine accepted wheel and sdist. The aggregate
+runner's initial attempts were interrupted after Windows sandbox/temp-path
+problems; the final run passed with an isolated forward-slash temporary path.
+An isolated Collector/SQLite/Dashboard fixture was
+checked in the browser. The unrelated untracked
+`docs/demo/comprehensive_trace_example.json` predates this slice and remains
+untouched; it causes the scope checker to flag one out-of-scope path.
+
+Candidate PR #11 is open with five required CI checks passing. A clean clone
+of `cb0dfd0` passed locked `npm ci`, real startup/ingestion/CORS/shutdown smoke,
+and clean Git status. `npm audit` found four fixable transitive Dashboard
+toolchain advisories (one moderate, three high); review before publication.
+No merge or release is authorized by this local/CI evidence alone.
+
+Review follow-up: the handoff entry now distinguishes published v0.7.0's
+`retrieval`/`llm` from the source-only E2 `tool` path. Three real-browser
+candidate screenshots checked the trace header, usage/steps, and selected tool
+error detail using the sanitized offline fixture; text was legible, no secrets
+or private user data appeared, and the unknown provenance and no-warning caveat
+remained visible. The in-app browser is narrow, so these are conversation
+evidence rather than a new full-width README asset. The README's older
+full-width usage screenshot is explicitly labeled as earlier candidate; refresh
+full-width release imagery before publication.
+
+Next bounded decision — E3: after PR #11 review/merge decision, select one
+OpenAI Python SDK Responses non-streaming call boundary and an offline sanitized
+fixture. Preserve the provider's input/output totals and cached/reasoning
+subfields without double-counting. Keep OpenAI as an optional integration, not a
+core SDK dependency. Do not call a paid API, add broad adapters or stream
+ingestion, or claim provider-verified coverage beyond this explicit boundary.
+Any persisted wire-contract change requires the recorded human gate.
+
+## Previous task — X2 legacy warning read compatibility
 
 Updated: 2026-09-24. Status: **locally complete; main-targeting review candidate**.
 

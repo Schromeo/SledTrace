@@ -1,15 +1,16 @@
 # AI Handoff
 
-## 2026-09-24 local follow-up snapshot
+## 2026-09-24 current candidate snapshot
 
-`origin/main` currently points to `755c19c`: X1 PR #10 was squash-merged after
-its five checks passed. No release newer than v0.7.0 is established. X2's
-narrow legacy-warning read fix remains a review candidate in PR #9, not merged
-or released. X2 makes historical text `confidence="heuristic"`
+`origin/main` currently points to `92b27b9`: X1 PR #10 and X2 PR #9 were
+squash-merged after their required checks passed. No release newer than v0.7.0
+is established; 0.7.1 exact-main candidate validation is locally complete in
+draft PR #11, with publication separately gated. X2 makes historical text
+`confidence="heuristic"`
 read as unknown rather than fail trace detail with HTTP 500. The persisted
 SQLite/API regression and all Go tests passed; user databases were not
-rewritten. See CURRENT_TASK and DEVLOG for scope and exact evidence. E3 and
-paid-provider validation remain unstarted decisions.
+rewritten. The user selected OpenAI Python SDK plus offline fixtures for E3,
+without paid calls. See CURRENT_TASK and DEVLOG for scope and exact evidence.
 
 Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),
@@ -57,7 +58,7 @@ Historical releases: v0.4.0 local/Docker release; v0.4.1 compatibility-preservin
 ## Implemented architecture and boundaries
 
 ```text
-Python trace() -> retrieval / llm records -> explicit flush()
+Python trace() -> retrieval / llm / tool records -> explicit flush()
   -> POST /api/traces -> Go Collector -> deterministic warnings
   -> SQLite -> React/TypeScript Dashboard
 ```
@@ -67,15 +68,15 @@ Python trace() -> retrieval / llm records -> explicit flush()
 - Preferred configuration is `SLEDTRACE_COLLECTOR_URL`, with temporary `RAGLENS_COLLECTOR_URL` fallback.
 - The wheel contains SDK/CLI only. `sledtrace serve` requires a source checkout; it does not install or bundle Collector/Dashboard runtime assets.
 - API routes: `GET /health`, `POST /api/traces`, `GET /api/traces`, `GET /api/traces/{trace_id}`.
-- The published release has `retrieval` and `llm` spans. E2 adds one
+- Published v0.7.0 has `retrieval` and `llm` spans. Source 0.7.1 adds one
   caller-instrumented `tool` span, not agent/memory/retry, streaming or partial
-  ingestion. Check PR #8 for its mainline status.
+  ingestion. E2 merged through PR #8.
 - `llm()` stores supplied input/output/total token metadata. E2 adds an
   explicit failed-attempt status/error while retaining supplied usage; only
   successful responses update the legacy trace answer until the application
   sets an explicit task result. It still does not capture provider usage or
   calculate complete cost.
-- The E1 Dashboard candidate normalizes those existing token fields into a
+- The E1 Dashboard on `main` normalizes those existing token fields into a
   per-call ledger with a known subtotal and coverage. It distinguishes zero,
   missing, invalid, and conflicting values; usage provenance remains explicitly
   unknown. This is presentation of recorded data, not automatic measurement or

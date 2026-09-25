@@ -3,7 +3,8 @@
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
 This checkout's source and package metadata are the **0.7.1 — Trustworthy Local
-Tracing** release candidate, which is not yet merged, tagged, or published.
+Tracing** release candidate. The underlying E1/E2/X1/X2 development is merged;
+final candidate validation is in progress. It is not tagged or published.
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
@@ -22,7 +23,7 @@ python -m pip install sledtrace==0.7.1
 ```
 
 Until then, use "Install from source for development" below to run the 0.7.1
-candidate APIs (such as `t.measure()` and `try_flush()`) documented further down
+candidate APIs (such as `t.measure()`, `try_flush()`, and `t.tool()`) documented further down
 in this README.
 
 The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
@@ -87,11 +88,11 @@ checkout's editable package or built wheel before running its examples.
 
 ## Basic usage
 
-### E2 development candidate: one Python tool path
+### Source candidate: one Python tool path
 
-The unmerged E2 branch adds a synchronous, caller-instrumented `tool` span and
-explicit task result. These APIs are **not in production PyPI 0.7.0**. From this
-checkout, run the standard-library, deterministic example without a paid model:
+E2 added a synchronous, caller-instrumented `tool` span and explicit task
+result to this source tree. These APIs are **not in production PyPI 0.7.0**.
+From this checkout, run the deterministic example without a paid model:
 
 ```bash
 cd sdk/python
