@@ -42,8 +42,10 @@ Future scope is not implemented capability or blanket authorization.
   `gpt-4o-mini` example over the public Federalist FTS5 corpus. Offline fake
   client and dry-run checks pass. The user executed one authorized provider
   request; the local Collector read back 641 input / 59 output / 700 total
-  tokens on the same trace. This is not bill reconciliation, user quality
-  acceptance, an E4 agent waste signal or proof of a quality-preserving saving.
+  tokens on the same trace. The local Dashboard also showed that stored trace,
+  and the user accepted this one answer in conversation. This is not bill
+  reconciliation, an E4 agent waste signal, general answer-quality validation
+  or proof of a quality-preserving saving.
 - No independent external first-run or repeat-use evidence is recorded.
 - PRs #11–#13 and release-closure PR #14 merged in order. All v0.7.1 release
   gates are complete; see CURRENT_TASK and DEVLOG for evidence.

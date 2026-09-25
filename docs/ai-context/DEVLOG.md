@@ -1,5 +1,20 @@
 # Devlog
 
+## 2026-09-25 — E3 live-trace Dashboard and one-answer review closeout
+
+- Served the existing production Dashboard build on loopback port 5173 and
+  selected stored trace `trace_92b0c5eb42f64bef883b88f29b064b0a`; no
+  second provider request or product-code change was made.
+- The real UI displayed retrieved PDF pages 28/29, the generated answer,
+  `OpenAI Responses` provenance, 641 input / 59 output / 700 total tokens,
+  2.77 s call timing and a rounded `$0.000132 USD` indicative text-token
+  estimate. It showed 0 heuristic warnings with the explicit caveat that this
+  does not confirm correctness. The user accepted this specific answer in
+  conversation. Persisted `quality_review=pending` remains unchanged.
+- This closes the UI/readback and one-answer review gaps for draft PR #16,
+  not general accuracy, account billing, agent waste detection or E4. The
+  next decision is which genuine agent workflow and task outcome to observe.
+
 ## 2026-09-25 — One authorized E3 provider call observed in local Collector
 
 - The user securely configured a Codex terminal and ran the PR #16 example

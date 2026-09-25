@@ -28,7 +28,7 @@ auto_continue: false
 
 # Current Task — E3LIVE: bounded real-workflow evidence
 
-Updated: 2026-09-25. Status: **one real call and Collector readback complete; draft PR #16**.
+Updated: 2026-09-25. Status: **one real call, Collector/Dashboard readback and one-answer user review complete; draft PR #16**.
 
 Decision card: use the existing public Federalist PDF + SQLite FTS5 RAG
 exercise to validate one explicit OpenAI Responses recording path against a
@@ -56,19 +56,21 @@ provider-reported tokens, 0 cached input, 2,773 ms LLM latency and 0
 heuristic warnings. The answer cites retrieved pages 28 and 29; those pages
 contain the human-nature and unequal-property passages. The calculated
 Standard text-token estimate is `$0.00013155 USD`, not an invoice.
-`quality_review=pending` remains correct until the user accepts the answer.
-No Dashboard readback was completed because local Vite dependencies were
-unavailable/locked. **Do not repeat the paid call.** The only scope-check
-violation is the pre-existing, untracked demo JSON, which remains untouched
+`quality_review=pending` remains in the persisted trace: the user subsequently
+accepted this specific answer in conversation, without rewriting trace data.
+The existing production Dashboard build was served locally on port 5173 after
+Vite dependencies proved unavailable/locked. Its real trace detail showed the
+retrieved pages, provider source, 641/59/700 tokens, 2.77 s timing, zero
+warnings, and `$0.000132 USD` rounded indicative cost. **Do not repeat the
+paid call.** The only scope-check violation is the pre-existing, untracked
+demo JSON, which remains untouched
 and excluded. No product SDK API, Collector, Dashboard, packaging, release or
 pricing implementation changed.
 
-Next decision card: ask the user to review this specific answer against the
-source excerpts, then choose a genuinely used agent workflow and predeclare
-its task ID, steps and pass/fail quality criterion before E4. Optional UI
-readback can use this stored trace without a second provider call. Do not
-infer general diagnostic accuracy, savings or genuine agent value from this
-RAG-only probe.
+Next decision card: choose a genuinely used agent workflow and predeclare
+its task ID, steps and pass/fail quality criterion before E4. UI readback of
+this RAG trace is complete. Do not infer general diagnostic accuracy, savings
+or genuine agent value from this RAG-only probe.
 
 ## Previous task — Post v0.7.1 publication documentation closeout
 

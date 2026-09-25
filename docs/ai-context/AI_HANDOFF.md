@@ -12,8 +12,11 @@ Codex terminal with a $0.10 preflight ceiling. The isolated local Collector
 read back trace `trace_92b0c5eb42f64bef883b88f29b064b0a`: 641 input,
 59 output and 700 total provider-reported tokens, with 0 cached input and
 2,773 ms LLM latency. The answer cited relevant public pages 28 and 29.
-This is real provider-to-Collector evidence, **not** invoice reconciliation,
-Dashboard readback for this call, user acceptance, agent execution, or proof of
+The stored trace was subsequently read in the real local Dashboard, and the
+user accepted this one answer in conversation; the stored
+`quality_review=pending` marker was not rewritten. This is real
+provider-to-Collector/UI evidence, **not** invoice reconciliation, general
+answer-quality validation, agent execution, or proof of
 diagnostic effectiveness. Do not repeat the paid request. The original
 simulated example remains unchanged. See CURRENT_TASK/DEVLOG for scope and
 exact validation.

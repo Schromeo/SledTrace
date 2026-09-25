@@ -101,6 +101,10 @@ input tokens, plus 2,773 ms measured latency. The answer cited pages 28 and
 passages. The trace's 0 heuristic warnings do not establish answer quality.
 At the dated Standard text-token rates, the indicative cost is `$0.00013155
 USD`; provider billing was not independently checked. The trace retains
-`quality_review=pending` until user review. No Dashboard readback was completed
-for this live call; its local Vite dependency was unavailable/locked. Do not
-run a second provider call just to inspect the stored trace.
+`quality_review=pending` in storage; the user subsequently accepted this
+specific answer in conversation, which does not alter the historical record.
+The existing production Dashboard build, served locally on port 5173, showed
+this trace's answer, retrieved pages, usage source, 641/59/700 token ledger,
+2.77 s duration, and `$0.000132 USD` rounded estimate. No additional model
+request was needed. This is one-answer review, not a diagnostic accuracy or
+quality-preserving savings result.

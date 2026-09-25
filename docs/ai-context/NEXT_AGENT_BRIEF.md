@@ -28,7 +28,7 @@
 - 相关变更做相关测试；发布候选才做完整分发/全栈验证。不得跳过受影响的必要检查。
 - 每片结束必须自检、记录 DEVLOG、更新 CURRENT_TASK 与 ROADMAP 进度；CURRENT_TASK 保持短，历史证据不复制进七个文件。
 - 已知 Docker/WSL 环境限制不要反复重试；不要为 SDK/UI 工作擅改用户系统。
-- 正式 v0.7.1 的 E3 验收只有脱敏离线 fixture 与本地 Dashboard 证据。后续草稿 PR #16 的公开 Federalist RAG 示例已由用户执行一次真实 Responses 调用，并通过本地 Collector 回读用量；尚未做账单对账、Dashboard 本次回读或用户质量验收，也不是 agent 工作流。选择 E4 前先明确真实 agent 工作流和可观测的质量结果；roadmap 不是全量授权。
+- 正式 v0.7.1 的 E3 验收只有脱敏离线 fixture 与本地 Dashboard 证据。后续草稿 PR #16 的公开 Federalist RAG 示例已由用户执行一次真实 Responses 调用，本地 Collector 与 Dashboard 均已回读；用户在对话中认可这一条回答，但存储的 `quality_review=pending` 未改写。尚未做账单对账、普遍质量验证，也不是 agent 工作流。选择 E4 前先明确真实 agent 工作流和可观测的质量结果；roadmap 不是全量授权。
 - PyPI 当前 0.7.1 页面使用的是不可变发行包中内嵌的旧 SDK README，仍有“when available”等发布前措辞；仓库 README 已改正。不要重传同一版本，后续发行应带上已更正的描述。
 
 最后：1.0 的目标是别人能独立、反复完成一次有用的诊断与验证，不是实现全部 roadmap 名词。
