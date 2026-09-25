@@ -37,6 +37,10 @@ Future scope is not implemented capability or blanket authorization.
   non-streaming OpenAI Responses results, with an indicative estimate for two
   supported models. Evidence is sanitized offline fixture and local UI
   readback, not a paid provider call, complete capture or billing comparison.
+- A post-release E3 evidence candidate now provides an opt-in, single-request
+  `gpt-4o-mini` example over the public Federalist FTS5 corpus. Offline fake
+  client and dry-run checks pass; no provider response has yet been observed.
+  This is not an E4 agent waste signal or proof of a quality-preserving saving.
 - No independent external first-run or repeat-use evidence is recorded.
 - PRs #11–#13 and release-closure PR #14 merged in order. All v0.7.1 release
   gates are complete; see CURRENT_TASK and DEVLOG for evidence.
@@ -46,7 +50,8 @@ Future scope is not implemented capability or blanket authorization.
   within E3, not a roadmap sequence change or real-provider validation.
 - The release gate is closed. Product sequence remains unchanged; select the
   next bounded slice after deciding which genuine workflow and outcome measure
-  should ground E4.
+  should ground E4. The public-corpus provider probe narrows E3 uncertainty
+  but does not substitute for an actual agent workflow with a quality outcome.
 
 ### Proposed post-v0.7 sequence
 

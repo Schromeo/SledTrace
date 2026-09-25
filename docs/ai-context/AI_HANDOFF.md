@@ -1,5 +1,20 @@
 # AI Handoff
 
+## 2026-09-25 post-release E3 probe candidate
+
+Branch `codex/e3-real-workflow-evidence` adds a separate, opt-in example using
+the authentic public Federalist PDF and local FTS5 index to prepare one
+`gpt-4o-mini` Responses request. Its default path is a no-network dry run;
+offline fake-client tests verify one request shape, recorded usage, no raw
+provider object/credential persistence, and missing-key/budget stops. The
+actual provider request remains **unrun**: `OPENAI_API_KEY` and the optional
+`openai` client are absent in this execution environment. The user authorized
+at most one request with a $0.10 ceiling, not repeated calls or an open-ended
+bill. Do not claim real provider or billing validation before a successful
+authorized run and local Collector readback. The original simulated example
+remains unchanged. See CURRENT_TASK/DEVLOG for scope and exact validation.
+
+
 ## 2026-09-25 published v0.7.1 snapshot
 
 The latest release is **v0.7.1 — Trustworthy Local Tracing**. PRs #11–#13

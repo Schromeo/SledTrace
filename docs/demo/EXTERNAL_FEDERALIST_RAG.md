@@ -59,3 +59,34 @@ The answer is an extracted source sentence, not model generation or proof of
 answer quality. SledTrace's warnings are English-domain heuristics. No warning
 on the first query means only that no rule fired for that trace. The two SQLite
 databases are local exercise artifacts, outside the SledTrace Git repository.
+
+## Optional single-call OpenAI evidence path (development candidate)
+
+`examples.federalist_openai_evidence` uses the same public PDF and FTS5 index
+but can make one explicit, non-streaming `gpt-4o-mini` Responses request. It
+records provider-reported model/usage through `sledtrace.openai.record_response`
+without storing the provider response object or credentials. The retrieved
+public passages and generated answer still enter the local trace; do not adapt
+this example to private material without reviewing content controls first.
+
+Dry run, with no key, provider request or trace delivery:
+
+```powershell
+cd sdk/python
+python -m examples.federalist_openai_evidence `
+  --pdf '..\..\..\external\harvard-rag-example\source_documents\5008_Federalist Papers.pdf' `
+  --db '..\..\..\external\federalist_fts.db'
+```
+
+To opt in to the one paid request, separately install the optional `openai`
+Python client, set `OPENAI_API_KEY` locally without sharing it in chat, start
+the local Collector, and add `--paid-call --budget-usd 0.10 --collector-url
+http://127.0.0.1:4319`. The example disables client retries, caps output at
+256 tokens, sends no built-in tools, and requests `store=False`. It checks a
+conservative text-token estimate before calling; this is **not** an account
+spending cap or a guarantee that an external invoice matches the estimate.
+The existing trace stores a `quality_review=pending` marker. A human should
+check whether the answer identifies human nature as the cause and cites a
+retrieved page; a citation or zero warning does not prove factual correctness.
+There is no automatic quality grader, agent workflow, E4 waste detector, or
+paid-provider validation result in this example as currently documented.

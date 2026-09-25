@@ -1,5 +1,38 @@
 # Devlog
 
+## 2026-09-25 — E3 public-corpus provider probe prepared, paid validation pending
+
+- Added a separate opt-in OpenAI Responses example on the existing authentic
+  Harvard Federalist PDF + SQLite FTS5 path. Default is a dry run; a paid run
+  requires `--paid-call`, a budget no greater than the user's $0.10 ceiling,
+  and a local API key. The request uses `gpt-4o-mini`, no tools, `store=False`,
+  256 maximum output tokens and zero SDK retries. The existing SledTrace
+  `record_response` helper records the returned model and usage; generated
+  text and retrieved public passages remain in the local trace. Human quality
+  review remains pending.
+- Authentic local index dry run returned pages 28/29/85. The bounded prompt
+  contained 3,240 UTF-8 bytes and the script estimated a conservative
+  text-token bound of `$0.000678 USD`, below $0.10. This estimate is not an
+  account-enforced spending cap or bill verification. No provider request or
+  trace delivery occurred in the dry run.
+- Offline fake-client tests prove a single no-tool request shape and the
+  provider-object/credential non-retention boundary. Targeted tests passed
+  5/5; `python scripts/dev/slice.py check` passed the SDK profile with 82
+  tests and `git diff --check`. The pre-existing untracked
+  `docs/demo/comprehensive_trace_example.json` alone makes local
+  `python scripts/dev/slice.py scope` fail; it remains untouched and excluded
+  from this branch's intended commit.
+- `OPENAI_API_KEY` and the optional `openai` package were absent here. The
+  user's one-call authorization with a $0.10 ceiling was therefore not
+  exercised. Real provider usage/UI readback, human answer review, and any
+  billing comparison are still unverified; this does not start E4.
+
+Next decision: if the user supplies a key securely in the execution
+environment, perform at most one bounded call and inspect the Collector/UI
+readback. Otherwise choose a genuinely used agent workflow and predeclare its
+quality outcome before implementing E4 waste signals.
+
+
 ## 2026-09-25 — v0.7.1 published and release closure verified
 
 - Merged release-closure PR #14 as `33d2335b1f908588e46a1a003c574786735355ef`.

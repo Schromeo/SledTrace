@@ -1,20 +1,17 @@
 ---
-slice_id: POST071CLOSE
+slice_id: E3LIVE
 slice_status: complete
 components:
   - sdk
-  - dashboard
   - documentation
-validation_profile: docs
-scope_base: 33d2335
+validation_profile: sdk
+scope_base: e342c1a
 allowed_paths:
-  - AGENTS.md
-  - README.md
-  - sdk/python/README.md
-  - docs/releases/V0_7_1.md
+  - sdk/python/examples/federalist_openai_evidence.py
+  - sdk/python/tests/test_federalist_openai_evidence.py
+  - docs/demo/EXTERNAL_FEDERALIST_RAG.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
-  - docs/ai-context/NEXT_AGENT_BRIEF.md
   - docs/ai-context/ROADMAP.md
   - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
@@ -27,7 +24,41 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — Post v0.7.1 publication documentation closeout
+# Current Task — E3LIVE: bounded real-workflow evidence
+
+Updated: 2026-09-25. Status: **locally complete; real call pending**.
+
+Decision card: use the existing public Federalist PDF + SQLite FTS5 RAG
+exercise to validate one explicit OpenAI Responses recording path against a
+genuine model answer. The blocker is that E3 has only sanitized offline
+fixtures, not a provider result; the corpus/retriever, SDK helper, local
+Collector and usage UI already exist. Add one optional, narrowly bounded
+example with a predeclared quality review criterion and offline fake-client
+tests. Do not change public API/schema, add agent runtime/E4 rules, claim
+diagnostic accuracy or bill reconciliation, or use private data. SDK tests,
+slice checks and a public-corpus dry run provide local evidence. A single paid
+call requires the user's $0.10 cap, a locally configured key, and preflight
+cost bound; if unavailable, leave provider validation explicitly pending.
+Stop after a review-ready slice, not E4, merge or release.
+
+Outcome: the opt-in example, documentation and offline fake-client tests are
+implemented. On the authentic local index, the dry run returned pages 28,
+29 and 85, with a 3,240-byte prompt and a `$0.000678` conservative text-token
+estimate. The SDK validation profile passed 82 tests and diff check. There is
+no API key or optional OpenAI client in this environment, so **no paid call or
+live provider/UI validation happened**. The user's prior one-call authorization
+has a $0.10 ceiling; do not silently repeat a call. The only scope-check
+violation is the pre-existing, untracked demo JSON, which remains untouched
+and excluded from this slice. No product SDK API, Collector, Dashboard,
+packaging, release or pricing implementation changed.
+
+Next decision card: once the user securely configures a key, perform at most
+one bounded request, inspect provider usage versus local Collector/Dashboard
+readback, and ask for human review of the answer's support. If a real agent
+workflow is provided instead, specify its task ID, steps and pass/fail quality
+criterion before E4. Do not infer genuine agent value from this RAG-only probe.
+
+## Previous task — Post v0.7.1 publication documentation closeout
 
 Updated: 2026-09-25. Status: **complete**.
 

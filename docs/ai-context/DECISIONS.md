@@ -1,5 +1,25 @@
 # Architecture Decisions
 
+## 2026-09-25 — Probe E3 with one public-corpus Responses request, not E4
+
+- Use the existing authentic Federalist PDF/SQLite FTS5 path for a bounded
+  provider integration check. Keep the original simulated example unchanged;
+  the optional new example defaults to no network request.
+- If the user runs the paid path, require an explicit flag and budget, use
+  `gpt-4o-mini` with a short prompt, a 256-token output limit, no tools,
+  `store=False`, and zero SDK retries. The cost preflight is a conservative
+  text-token estimate, not an account-enforced spending cap or bill match.
+- Record only model/usage from the provider object; retrieved public passages
+  and the generated answer still enter the local trace. Keep quality review
+  pending until a human checks the source-grounded answer. A single call is
+  not agent instrumentation, diagnostic accuracy, or evidence of savings.
+- The user allowed one call with a $0.10 ceiling. The current host has neither
+  an API key nor the optional OpenAI client, so no paid call was made in this
+  development slice. E4 still needs a genuine bounded agent workflow and
+  a predeclared observable quality outcome.
+
+---
+
 ## 2026-09-25 — Close and publish the E3-inclusive v0.7.1 release
 
 - Protected release PR #14 merged as `33d2335`; immutable annotated tag
