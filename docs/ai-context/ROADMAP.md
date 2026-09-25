@@ -20,7 +20,13 @@ Future scope is not implemented capability or blanket authorization.
   separates a public reference workflow from real adoption. E4 rule work
   waits for observable steps, task outcome and counterexamples; this does not
   change the M3 product-value gate or claim Agent support beyond E2.
-
+- A1 locally ran the pinned public PydanticAI bank-support sample with its
+  synthetic in-memory SQLite data and no-cost TestModel. Its real tool calls
+  and scripted model attempts appeared in Collector/Dashboard with missing
+  token usage shown as unknown; a missing customer produced a visible tool
+  and task failure. This is L1 integration evidence, not provider execution,
+  user value, or E4 duplicate-rule validation. See the A1 runbook and
+  CURRENT_TASK; AG0/A1 are not a released milestone.
 - Latest release: v0.7.1 — Trustworthy Local Tracing, published 2026-09-25
   from immutable annotated tag `v0.7.1` at `33d2335`. Protected PyPI upload,
   clean install outside the repository, and GitHub Release all succeeded.
@@ -50,9 +56,9 @@ Future scope is not implemented capability or blanket authorization.
   provider usage is unknown, while true count contradictions remain conflicts;
   explicit invalid token fields remain invalid. This is a reliability follow-up
   within E3, not a roadmap sequence change or real-provider validation.
-- The release gate is closed. Product sequence remains unchanged; A1 first
-  screens one public reference workflow because no user-owned Agent run is
-  available. Its technical result cannot close E4/E5 product-value gates.
+- The release gate is closed. Product sequence remains unchanged; A1's public
+  reference run is complete locally, but no user-owned Agent run is available.
+  Its technical result cannot close E4/E5 product-value gates.
 
 ### Proposed post-v0.7 sequence
 
@@ -76,9 +82,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) records AG0's bounded preparation and the A1
-selection gate. PRs #11–#14 are merged; E3's offline validation and the
-separate draft PR #16 public-corpus probe are not Agent workflow evidence.
+[CURRENT_TASK](CURRENT_TASK.md) records A1's bounded integration result and
+the remaining E4 evidence gate. PRs #11–#14 are merged; E3's offline validation
+and the separate draft PR #16 public-corpus probe are not Agent evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part
 of the proposed 1.0.

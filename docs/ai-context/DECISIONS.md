@@ -1,5 +1,20 @@
 # Architecture Decisions
 
+## 2026-09-25 — A1 imports a pinned public example without a framework API
+
+- Use the PydanticAI bank-support example only as an L1 technical reference.
+  Keep its code in a separate checkout at commit `92e0b457bd1628d17e959f9b12d74568946a2709`;
+  pin its source-file hash and optional `pydantic-ai-slim[openai]==2.50.0`.
+- Instrument its actual SQLite methods and local `TestModel` requests using
+  existing SledTrace `tool` and `llm` methods. Force a dummy import-time key
+  and loopback fallback because upstream constructs an OpenAI Agent before
+  test-model override. Do not add PydanticAI to SledTrace core dependencies.
+- A scripted result may pass structural checks, but do not call it a
+  quality-accepted task in the Dashboard. Leave provider tokens unknown.
+  The example does not authorize E4 rules, real model calls or release.
+
+---
+
 ## 2026-09-25 — Prepare Agent evidence without inventing a user workflow
 
 - The user has no Agent application to instrument. Do not make the internal
