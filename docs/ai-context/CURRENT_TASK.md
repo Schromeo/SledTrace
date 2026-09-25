@@ -1,18 +1,24 @@
 ---
-slice_id: E3R
-slice_status: complete
+slice_id: RC071E3
+slice_status: active
 components:
+  - sdk
   - dashboard
   - documentation
-validation_profile: dashboard
-scope_base: a9ae1cd
+validation_profile: release
+scope_base: 7bcbeec
 allowed_paths:
-  - dashboard/web/src/utils/usage.ts
-  - dashboard/web/tests/usage.test.mjs
+  - dashboard/web/package-lock.json
+  - docs/assets/screenshots/*
+  - README.md
+  - sdk/python/README.md
+  - docs/releases/V0_7_1.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/DEVLOG.md
   - docs/ai-context/ROADMAP.md
+  - docs/ai-context/DECISIONS.md
+  - AGENTS.md
 human_gates:
   - persisted_schema_or_data_contract_change
   - version_tag_release_or_publication
@@ -22,7 +28,34 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — E3R usage-state review fix
+# Current Task — RC071E3 final release acceptance
+
+Updated: 2026-09-25. Status: **active; no tag or publication yet**.
+
+The user chose to include the offline E3 work from PRs #12–#13 in v0.7.1 and
+authorized publication only if final acceptance passes. PRs #11, #12 and #13
+have merged in order; final mainline baseline is `7bcbeec`. This release does
+not claim provider-wide capture, a real-provider run, or bill reconciliation.
+
+Decision card: user value is a truthful, installable 0.7.1 with visible usage
+and bounded estimated cost. The blocker is release material that predates E3,
+four fixable Dashboard lockfile advisories, and the absence of final-main
+distribution/visual evidence. Reuse the existing SDK/Collector/Dashboard,
+offline fixture, protected CI and trusted-publishing workflow. Make only a
+lockfile refresh plus release/status/screenshot updates; no E4, paid API call,
+schema change or runtime redesign. Verify the exact final tree with the full
+release profile, metadata and clean install, audit, local UI inspection,
+required PR CI, then publish from an immutable matching tag. Stop if any gate
+fails or the protected PyPI approval is unavailable.
+
+Acceptance: accurately describe E3's explicit non-streaming boundary and
+indicative two-model text-token estimate; zero current audit findings after a
+lockfile-only fix; clean release tests and package metadata; an honest
+full-width Dashboard image; protected merge, tag, PyPI clean install and
+GitHub Release from the same final commit. Keep the pre-existing untracked
+`docs/demo/comprehensive_trace_example.json` untouched.
+
+## Previous task — E3R usage-state review fix
 
 Updated: 2026-09-25. Status: **locally complete, PR #13 update pending**.
 

@@ -8,11 +8,9 @@ It helps developers inspect why a RAG application produced a bad answer by showi
 
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
-Latest published release: [SledTrace v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
-
-The source tree is versioned **0.7.1 — Trustworthy Local Tracing**. Its final
-release candidate is under validation; no v0.7.1 tag, package upload, or
-release has been published. Production PyPI still serves 0.7.0.
+Release history: [GitHub Releases](https://github.com/Schromeo/SledTrace/releases).
+This source tree is versioned **0.7.1 — Trustworthy Local Tracing**; see
+[PyPI](https://pypi.org/project/sledtrace/) for published package availability.
 
 Install the Python SDK from PyPI:
 
@@ -55,9 +53,15 @@ SledTrace shows local RAG traces with warning counts and demo case labels.
 The trace detail view shows recorded token usage and timing for each observed
 LLM call. Its known subtotal counts only calls with a trustworthy recorded or
 derived total, reports coverage separately, and labels unavailable values as
-unknown rather than zero. Usage provenance is not provider-verified.
+unknown rather than zero. Caller-recorded usage has unknown provenance;
+explicitly copied OpenAI Responses usage is labeled per call. The optional
+text-token price estimate is limited to supported model IDs and is not a bill.
 
-![Observed per-call LLM usage ledger](docs/assets/screenshots/llm-usage-ledger.png)
+The offline, sanitized example below shows 200 recorded tokens with 1/1
+coverage and a $0.000170 indicative text-token estimate. No provider request
+was made for this screenshot.
+
+![SledTrace 0.7.1 explicit Responses usage and indicative cost](docs/assets/screenshots/openai-responses-usage.jpg)
 
 ### Conflicting retrieved context
 
@@ -95,6 +99,8 @@ The current local MVP supports:
 * retrieved chunks viewer
 * LLM prompt / response viewer
 * per-call observed LLM usage, known subtotal, coverage, and timing gaps
+* explicit non-streaming OpenAI Responses usage recording and a bounded,
+  indicative Standard text-token cost estimate for supported models
 * evidence-backed warning cards
 * diagnostic signals, evidence items, and recommended actions
 * numeric value comparison blocks for grounding diagnostics
@@ -103,7 +109,7 @@ Current implemented span types:
 
 * `retrieval`
 * `llm`
-* `tool` (source 0.7.1 candidate only; not in published PyPI 0.7.0)
+* `tool` (introduced in the 0.7.1 source and package)
 
 Current warning rules:
 
@@ -320,12 +326,9 @@ file can be copied outside this repository and run anywhere that the built
 
 4. Instrument your own request path with the Python SDK:
 
-`t.measure()` and `t.try_flush()` below are part of the **v0.7.1** release
-candidate and are not in the published `sledtrace==0.7.0` package. To use them
-now, install from source (`pip install -e sdk/python`) or a locally built
-0.7.1 wheel instead of the published `pip install sledtrace` above. Against
-published 0.7.0, drop `t.measure()`, pass explicit `duration_ms`/`latency_ms`
-if known, and use the existing strict `t.flush()` instead of `t.try_flush()`.
+`t.measure()` and `t.try_flush()` below were introduced in **v0.7.1**. They
+are absent from `sledtrace==0.7.0`; for that older package, pass explicit
+`duration_ms`/`latency_ms` if known and use strict `t.flush()` instead.
 
 ```python
 from sledtrace import trace
@@ -567,7 +570,7 @@ Milestone snapshot:
 * v0.5.0 Python SDK distribution / packaging readiness: complete
 * v0.6.0 local CLI / startup UX: complete
 * v0.7.0 external developer readiness: complete
-* v0.7.1 trustworthy local tracing: release candidate; not yet published
+* v0.7.1 trustworthy local tracing and explicit Responses usage: release scope
 
 Published releases:
 
@@ -578,7 +581,7 @@ Published releases:
 Current source version:
 
 ```text
-v0.7.1 - Trustworthy Local Tracing (release candidate)
+v0.7.1 - Trustworthy Local Tracing
 ```
 
 Completed:
@@ -625,8 +628,11 @@ The default demo requires no external LLM API and no API key.
 
 Current scope limits:
 
-* only `retrieval`, `llm`, and one synchronous `tool` span are implemented in source
-* provider usage is caller-supplied, not automatically captured or priced
+* only `retrieval`, `llm`, and one synchronous `tool` span are implemented
+* provider usage requires an explicit caller boundary; there is no automatic
+  interception, provider-wide coverage, or billing reconciliation
+* price estimates cover Standard text tokens for a small, dated model list;
+  unsupported or ambiguous conditions remain unpriced
 * onboarding path is local-first and repo-based
 * the SDK is distributed through PyPI, source checkout, or locally built wheel artifacts
 * `sledtrace serve` requires a SledTrace source checkout and is not a standalone wheel-installed runtime
@@ -656,7 +662,7 @@ Near-term focus after v0.7:
 * collect evidence from external first-run attempts
 * convert real onboarding blockers into a small public issue backlog
 * automate Docker smoke validation when the maintenance cost is justified
-* deliberately review the Dashboard dependency advisory baseline
+* validate the explicit provider-usage path in a real, user-owned workflow
 * preserve deterministic-first warning generation and stable trace contracts
 
 The TestPyPI candidate and production PyPI paths use OIDC Trusted Publishing. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope; the next product milestone will be selected from external-use evidence.

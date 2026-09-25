@@ -1,26 +1,23 @@
 # AI Handoff
 
-## 2026-09-24 current candidate snapshot
+## 2026-09-25 final v0.7.1 acceptance snapshot
 
-`origin/main` currently points to `92b27b9`: X1 PR #10 and X2 PR #9 were
-squash-merged after their required checks passed. No release newer than v0.7.0
-is established; 0.7.1 exact-main candidate validation is locally complete in
-draft PR #11, with publication separately gated. X2 makes historical text
-`confidence="heuristic"`
-read as unknown rather than fail trace detail with HTTP 500. The persisted
-SQLite/API regression and all Go tests passed; user databases were not
-rewritten. The user selected OpenAI Python SDK plus offline fixtures for E3,
-without paid calls. See CURRENT_TASK and DEVLOG for scope and exact evidence.
-The first E3 branch is stacked on PR #11 and contains only the offline OpenAI
-Responses usage parser foundation. On 2026-09-25 the user approved the narrow
-metadata/UI and indicative model-price path. A second stacked branch locally
-validates explicit Responses
-recording, generic Collector persistence, Dashboard provenance/subfields and a
-dated two-model text-token estimate. No provider call or bill reconciliation
-occurred. Review the PR stack and exact CI before merging or publishing.
-An E3R follow-up on PR #13 corrects the reviewed unknown/invalid/conflict
-Dashboard labels. No schema or rate change was needed; check its latest CI
-before declaring the review finding closed.
+PRs #11, #12 and #13 merged in order under protected `main`; the combined
+product baseline is `7bcbeec`. Their final CI checks passed after each
+restack. The user selected E3's offline, explicit Responses usage path for
+v0.7.1 and authorized publication if final acceptance passes. No release newer
+than v0.7.0 is yet established. A separate RC071E3 release-closure branch
+updates the Dashboard dependency lockfile, README/release claims and image,
+then must pass exact-tree release/metadata/clean-install checks before an
+immutable tag and protected PyPI publishing.
+
+The bounded E3 path records one caller-supplied, completed non-streaming
+OpenAI Responses result through the existing SDK/Collector/SQLite/Dashboard
+chain. A dated two-model Standard text-token estimate is indicative, not a
+provider bill. The E3R follow-up distinguishes invalid/malformed usage from
+real count conflicts. No paid provider call, automatic capture, bill
+reconciliation or broad agent diagnostic is established. See CURRENT_TASK and
+DEVLOG for the active gate and exact evidence.
 
 Last repository-history refresh: 2026-09-24. PRs
 [#3](https://github.com/Schromeo/SledTrace/pull/3),

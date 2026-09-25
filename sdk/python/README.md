@@ -2,29 +2,22 @@
 
 SledTrace is a local-first observability and debugging SDK for RAG pipelines.
 
-This checkout's source and package metadata are the **0.7.1 — Trustworthy Local
-Tracing** release candidate. The underlying E1/E2/X1/X2 development is merged;
-final candidate validation is in progress. It is not tagged or published.
+This package documents **0.7.1 — Trustworthy Local Tracing**, including one
+explicit, non-streaming OpenAI Responses usage-recording path. It does not
+automatically intercept model calls or reconcile a provider bill.
 
 Project and visual overview: [github.com/Schromeo/SledTrace](https://github.com/Schromeo/SledTrace)
 
 ## Distribution status
 
-Production PyPI currently publishes **sledtrace 0.7.0**:
-
-```bash
-python -m pip install sledtrace==0.7.0
-```
-
-After the 0.7.1 candidate described in this README is published, install it with:
+For this version, install from PyPI when available:
 
 ```bash
 python -m pip install sledtrace==0.7.1
 ```
 
-Until then, use "Install from source for development" below to run the 0.7.1
-candidate APIs (such as `t.measure()`, `try_flush()`, and `t.tool()`) documented further down
-in this README.
+Before publication, or when testing source changes, use the editable install
+or locally built wheel below. The preceding production version is 0.7.0.
 
 The immutable `0.7.0rc1` publication candidate remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) for release-history purposes.
 
@@ -62,7 +55,7 @@ sledtrace serve --help
 sledtrace version
 ```
 
-`sledtrace version` reports `0.7.1` when installed from this source checkout's candidate; production PyPI currently reports `0.7.0`.
+`sledtrace version` reports `0.7.1` for this source tree and its built wheel.
 
 `sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
 
@@ -88,10 +81,10 @@ checkout's editable package or built wheel before running its examples.
 
 ## Basic usage
 
-### Source candidate: one Python tool path
+### One Python tool path
 
 E2 added a synchronous, caller-instrumented `tool` span and explicit task
-result to this source tree. These APIs are **not in production PyPI 0.7.0**.
+result in 0.7.1. These APIs are absent from production PyPI 0.7.0.
 From this checkout, run the deterministic example without a paid model:
 
 ```bash
@@ -129,11 +122,10 @@ task trace as an error. No agent/LLM is run by the SDK, no provider usage is
 captured automatically, and sensitive arguments or secrets should not be put
 in summaries.
 
-### Development branch: explicit OpenAI Responses usage
+### Explicit OpenAI Responses usage
 
-The E3 draft branch adds `sledtrace.openai.record_response` for one completed,
-non-streaming OpenAI Python SDK Responses result. It is **not in published
-PyPI 0.7.0 or the v0.7.1 candidate**. Your application makes the provider call;
+Version 0.7.1 adds `sledtrace.openai.record_response` for one completed,
+non-streaming OpenAI Python SDK Responses result. Your application makes the provider call;
 the helper reads `response.model` and `response.usage` after the call and
 records an LLM span without storing prompts, output text, IDs, or credentials:
 
@@ -160,9 +152,8 @@ settings UI yet.
 
 ## Existing RAG usage
 
-This example uses the 0.7.1 candidate's `t.measure()` and `t.try_flush()`,
-available from source or after 0.7.1 publication (see "Distribution status"
-above). Against the published `sledtrace==0.7.0` package, omit `t.measure()`
+This example uses 0.7.1's `t.measure()` and `t.try_flush()`.
+Against the published `sledtrace==0.7.0` package, omit `t.measure()`
 and pass explicit `duration_ms`/`latency_ms` (or leave timing unset).
 
 ```python
