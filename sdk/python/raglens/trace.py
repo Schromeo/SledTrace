@@ -214,6 +214,7 @@ class RAGLensTrace:
         *,
         status: str = "ok",
         error: Optional[str] = None,
+        total_tokens: Optional[int] = None,
     ) -> None:
         """
         Record an LLM span.
@@ -232,6 +233,8 @@ class RAGLensTrace:
             timing: Completed measurement returned by ``t.measure()``.
             status: ``ok`` or ``error`` for this attempt, not the whole task.
             error: Error summary for a failed attempt; do not include secrets.
+            total_tokens: Provider-reported total when available. If omitted,
+                a total is derived from supplied input and output counts.
         """
         _validate_step_result(status, error)
         started_at, ended_at, resolved_duration_ms = _resolve_span_timing(
@@ -268,7 +271,9 @@ class RAGLensTrace:
         if output_tokens is not None:
             span_metadata["output_tokens"] = output_tokens
 
-        if input_tokens is not None and output_tokens is not None:
+        if total_tokens is not None:
+            span_metadata["total_tokens"] = total_tokens
+        elif input_tokens is not None and output_tokens is not None:
             span_metadata["total_tokens"] = input_tokens + output_tokens
 
         if latency_ms is not None:

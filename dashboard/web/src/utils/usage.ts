@@ -25,7 +25,11 @@ export type LlmUsageCall = {
   outputTokens: TokenField;
   recordedTotalTokens: TokenField;
   total: CallTotal;
-  provenance: "unknown";
+  provenance: "unknown" | "openai_responses";
+  cachedInputTokens: TokenField;
+  cacheWriteTokens: TokenField;
+  reasoningOutputTokens: TokenField;
+  usageIssues: string[];
 };
 
 export type UsageLedger = {
@@ -82,9 +86,34 @@ function normalizeLlmUsage(
   order: number,
   durationMs: number | null,
 ): LlmUsageCall {
-  const inputTokens = readTokenField(span.metadata, "input_tokens");
-  const outputTokens = readTokenField(span.metadata, "output_tokens");
-  const recordedTotalTokens = readTokenField(span.metadata, "total_tokens");
+  const provenance = span.metadata.usage_source === "openai_responses"
+    ? "openai_responses" : "unknown";
+  const providerRecord = provenance === "openai_responses";
+  const inputTokens = readTokenField(span.metadata, "input_tokens", providerRecord);
+  const outputTokens = readTokenField(span.metadata, "output_tokens", providerRecord);
+  const recordedTotalTokens = readTokenField(span.metadata, "total_tokens", providerRecord);
+  const cachedInputTokens = readTokenField(span.metadata, "cached_input_tokens", providerRecord);
+  const cacheWriteTokens = readTokenField(span.metadata, "cache_write_tokens", providerRecord);
+  const reasoningOutputTokens = readTokenField(span.metadata, "reasoning_output_tokens", providerRecord);
+  const usageIssues = provenance === "openai_responses" && Array.isArray(span.metadata.usage_issues)
+    ? span.metadata.usage_issues.filter((issue): issue is string => typeof issue === "string")
+    : [];
+  const conflictIssues = new Set([
+    "total_mismatch", "cached_exceeds_input", "cache_subfields_exceed_input",
+    "reasoning_exceeds_output",
+  ]);
+  const providerInvalid = providerRecord && (
+    [inputTokens, outputTokens, recordedTotalTokens, cachedInputTokens,
+      cacheWriteTokens, reasoningOutputTokens].some((field) => field.kind === "invalid") ||
+    usageIssues.some((issue) => !conflictIssues.has(issue))
+  );
+  const subfieldConflict = provenance === "openai_responses" && (
+    usageIssues.some((issue) => conflictIssues.has(issue)) ||
+    (inputTokens.kind === "known" && cachedInputTokens.kind === "known" && cachedInputTokens.value > inputTokens.value) ||
+    (outputTokens.kind === "known" && reasoningOutputTokens.kind === "known" && reasoningOutputTokens.value > outputTokens.value) ||
+    (inputTokens.kind === "known" && cacheWriteTokens.kind === "known" && cachedInputTokens.kind === "known" &&
+      cacheWriteTokens.value + cachedInputTokens.value > inputTokens.value)
+  );
 
   return {
     spanId: span.span_id,
@@ -96,16 +125,24 @@ function normalizeLlmUsage(
     inputTokens,
     outputTokens,
     recordedTotalTokens,
-    total: resolveCallTotal(
+    total: subfieldConflict ? { kind: "conflict", value: null, basis: null } : providerInvalid
+      ? { kind: "unknown", value: null, basis: null } : resolveCallTotal(
       inputTokens,
       outputTokens,
       recordedTotalTokens,
     ),
-    provenance: "unknown",
+    provenance,
+    cachedInputTokens,
+    cacheWriteTokens,
+    reasoningOutputTokens,
+    usageIssues,
   };
 }
 
-function readTokenField(metadata: JsonObject, key: string): TokenField {
+function readTokenField(metadata: JsonObject, key: string, providerRecord = false): TokenField {
+  if (providerRecord && metadata[`${key}_state`] === "invalid") {
+    return { kind: "invalid", value: null };
+  }
   if (
     !Object.prototype.hasOwnProperty.call(metadata, key) ||
     metadata[key] === null

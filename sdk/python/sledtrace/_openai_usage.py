@@ -81,6 +81,13 @@ def extract_response_usage(response: Any) -> OpenAIResponseUsage:
     ):
         issues.append("cached_exceeds_input")
     if (
+        input_tokens.kind == "known"
+        and cache_write_tokens.kind == "known"
+        and cached_input_tokens.kind == "known"
+        and cache_write_tokens.value + cached_input_tokens.value > input_tokens.value
+    ):
+        issues.append("cache_subfields_exceed_input")
+    if (
         output_tokens.kind == "known"
         and reasoning_output_tokens.kind == "known"
         and reasoning_output_tokens.value > output_tokens.value

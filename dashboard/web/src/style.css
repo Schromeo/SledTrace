@@ -569,6 +569,22 @@ button {
   cursor: pointer;
 }
 
+.usage-call-extra {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  border-top: 1px solid #dbeafe;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #334155;
+}
+
+.usage-call-extra small {
+  flex-basis: 100%;
+  color: #64748b;
+}
+
 .usage-call:hover {
   border-color: #60a5fa;
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
