@@ -1,5 +1,35 @@
 # Devlog
 
+## 2026-09-25 — A1 pinned public Agent-reference integration
+
+- Cloned PydanticAI into a separate workspace checkout at
+  `92e0b457bd1628d17e959f9b12d74568946a2709`; verified its MIT license
+  and bank-support file SHA-256. Installed optional
+  `pydantic-ai-slim[openai]==2.50.0` in a separate venv. The first import
+  attempts exposed two upstream coupling points: the OpenAI client/key is
+  required at import, and database methods use a module-global cursor. The
+  adapter confines these to the optional example; no SledTrace core changes.
+- A balance case executed SQLite lookups and two `TestModel` requests; an
+  unknown customer naturally raised `Customer not found`. The first browser
+  pass revealed that `accepted=true` misleadingly presented a scripted
+  output as quality-approved, so the final success trace omits acceptance
+  and records `structural_pass=true`, `quality_review=not_assessed` instead.
+- Final local Collector/API/Dashboard evidence: balance trace
+  `trace_e886bef4c629428284c44cd8e1731ad0` has five spans and unknown
+  tokens (`0/2` coverage); missing-customer trace
+  `trace_d571f67e64834f04b7a5943f2ec50d07` has three spans, including
+  a visible tool error, and unknown tokens (`0/1`). Both have 0 existing RAG
+  warnings, which is not Agent-efficiency evidence. No paid or network model
+  call occurred; the optional test blocked external connections and passed
+  3/3 locally. Earlier local traces remain historical; they were not edited.
+- This proves one independent public example can be traced manually, not that
+  a user saved cost or that E4 fingerprints/counterexamples are ready.
+- Final SDK slice profile passed: 79 tests passed, 1 optional external check
+  skipped in the default environment; diff check passed. In the isolated
+  optional-dependency venv with the pinned upstream path, all 3 A1 tests
+  passed. The skipped default check is not presented as CI validation of the
+  external app; the separate local run is the integration evidence.
+
 ## 2026-09-25 — AG0 Agent-direction preparation
 
 - The user confirmed they have no current Agent workflow, then asked to

@@ -1,11 +1,15 @@
 ---
-slice_id: AG0
+slice_id: A1
 slice_status: complete
 components:
+  - sdk
   - documentation
-validation_profile: docs
-scope_base: e342c1a
+validation_profile: sdk
+scope_base: 3316083
 allowed_paths:
+  - sdk/python/examples/pydantic_ai_bank_support.py
+  - sdk/python/tests/test_pydantic_ai_bank_support.py
+  - docs/demo/PYDANTIC_AI_BANK_SUPPORT.md
   - docs/product/AGENT_DIRECTION_PREP.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
@@ -21,7 +25,46 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — AG0: Agent direction preparation
+# Current Task — A1: one public Agent reference workflow
+
+Updated: 2026-09-25. Status: **locally validated; stacked review candidate**.
+
+Decision card: a genuine user-owned Agent workflow is unavailable. The
+published E2 contract already records explicit LLM/tool attempts and task
+results; the blocker is independent, faithful execution evidence. Use the
+MIT-licensed PydanticAI `bank_support.py` example at pinned upstream commit
+`92e0b457bd1628d17e959f9b12d74568946a2709` with its synthetic in-memory
+SQLite data and local `TestModel`. Add one optional example adapter that
+records actual tool execution and ordered model responses through existing
+SledTrace APIs, plus no-network tests and a reproducible runbook. Do not add
+SDK/Collector schema or public API, a framework-wide adapter, E4 warnings,
+private bank data, paid calls, merge or release.
+
+Acceptance: one complete no-cost task and a naturally failing task are
+observed in SDK payload, Collector API and Dashboard. Show actual tool
+execution, final outcome and **unknown** provider tokens (never fabricated
+zeros). Pin source/dependency versions, source license, case IDs, and a
+structural pass/fail criterion before running. The `TestModel` cannot prove
+answer quality or user value. Run targeted tests, SDK profile, scope and diff
+checks; stop after review-ready A1 evidence, before E4.
+
+Outcome: the pinned upstream file ran in a separate checkout under
+`pydantic-ai-slim[openai]==2.50.0` and an explicit `TestModel` override. The
+adapter records actual SQLite lookups, two scripted model responses on the
+success case and a natural missing-customer tool failure. Local Collector API
+and Dashboard readback agree on five successful-path and three failure-path
+spans, with unknown tokens. The final success trace does **not** mark the
+scripted answer accepted; it records only `structural_pass=true` and
+`quality_review=not_assessed`. Exact trace IDs, source hash, validation and
+limits are in [the A1 runbook](../demo/PYDANTIC_AI_BANK_SUPPORT.md).
+
+Next decision: the public sample is L1 integration evidence, not a user-owned
+workflow. Before E4, require stable, safe comparison fields and normal
+counterexamples for the two proposed rules; otherwise continue toward a
+real user task or narrow SledTrace to execution analysis. No E4 rule, merge,
+paid call or release is authorized by A1.
+
+## Previous task — AG0: Agent direction preparation
 
 Updated: 2026-09-25. Status: **planning complete; review candidate**.
 

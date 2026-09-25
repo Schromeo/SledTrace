@@ -1,5 +1,19 @@
 # AI Handoff
 
+## 2026-09-25 A1 public Agent-reference run (local candidate)
+
+A1 uses an optional adapter for PydanticAI's pinned MIT bank-support example,
+not a new SledTrace framework API. The upstream sample's synthetic SQLite
+data and local `TestModel` generated one successful structural task and one
+natural missing-customer failure. Actual database calls and scripted model
+attempts were read in Collector and Dashboard; token totals stayed unknown.
+No provider request was made. The scripted success answer was **not** marked
+quality-accepted. See [the runbook](../demo/PYDANTIC_AI_BANK_SUPPORT.md) and
+CURRENT_TASK for exact evidence. This is an L1 technical reference, not a
+user-owned Agent workflow or E4 diagnostic-value proof. The branch is stacked
+on unmerged AG0 draft PR #17; keep the review dependency explicit.
+
+
 ## 2026-09-25 AG0 Agent-direction preparation candidate
 
 The user does not currently operate an Agent workflow. AG0 records a bounded
