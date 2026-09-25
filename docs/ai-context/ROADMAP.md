@@ -39,7 +39,7 @@ Future scope is not implemented capability or blanket authorization.
   Deterministic success, business failure and tool-recovery traces passed local
   API/UI checks; the new SDK contract passed clean-wheel validation. It is not
   released or externally validated. E3 is the next candidate.
-- X1 external-corpus exercise is locally complete: a Harvard Federalist Papers
+- X1 external-corpus exercise merged through PR #10 as `755c19c`: a Harvard Federalist Papers
   PDF was indexed into SQLite FTS5 and queried through an SledTrace-traced
   adapter. This is integration evidence for existing retrieval diagnostics,
   not a new product capability or a change to the E3 sequence.
@@ -51,7 +51,7 @@ Future scope is not implemented capability or blanket authorization.
   rows with string `confidence="heuristic"` that can make current detail reads
   return HTTP 500; compatibility handling and isolated test databases should be
   considered before larger repeated-run testing. No sequence change is made.
-- X2 fixes that historical-detail blocker locally on an X1-dependent branch:
+- X2 fixes that historical-detail blocker locally in main-targeting PR #9:
   text-typed legacy confidence now reads as unknown without rewriting SQLite
   rows; a persisted-database HTTP regression and all Go tests pass. This is
   not merged or released. Use an isolated database for later validation.

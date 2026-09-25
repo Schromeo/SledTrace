@@ -2,11 +2,10 @@
 
 ## 2026-09-24 local follow-up snapshot
 
-`main`/`origin/main` currently points to `0734e20`: E2 PR #8 is merged, but
-no release newer than v0.7.0 is established. X1 external-corpus validation is
-on `codex/x1-external-rag-validation` at `3ecf21f`, outside `main`. X2's narrow
-legacy-warning read fix is locally complete on a branch stacked on X1; it is
-not merged or released. X2 makes historical text `confidence="heuristic"`
+`origin/main` currently points to `755c19c`: X1 PR #10 was squash-merged after
+its five checks passed. No release newer than v0.7.0 is established. X2's
+narrow legacy-warning read fix remains a review candidate in PR #9, not merged
+or released. X2 makes historical text `confidence="heuristic"`
 read as unknown rather than fail trace detail with HTTP 500. The persisted
 SQLite/API regression and all Go tests passed; user databases were not
 rewritten. See CURRENT_TASK and DEVLOG for scope and exact evidence. E3 and
