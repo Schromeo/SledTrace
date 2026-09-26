@@ -1,5 +1,18 @@
 # AI Handoff
 
+## 2026-09-26 E4C warning-coverage copy candidate
+
+This branch stacks on E4P's unmerged draft PR #20 (and A2 #19, A1 #18,
+AG0 #17). Dashboard warning guidance now distinguishes tool-only traces from
+mixed tool+retrieval traces: no retrieval span means retrieval-grounding checks
+do not apply, and no Agent repeat/efficiency check is implemented. Mixed
+traces explicitly limit RAG findings to their coverage; zero warnings is
+styled neutrally. Retrieval-only guidance and warning generation are
+unchanged. Local Dashboard tests/build and browser inspection of tool-only,
+mixed and retrieval-only cases passed. This is a presentation correction,
+not E4 diagnosis or a released capability. The E4 evidence gate remains open;
+see CURRENT_TASK and DEVLOG.
+
 ## 2026-09-26 E4P repeat-evidence candidate
 
 The current branch stacks on A2's unmerged draft PR #19 (and therefore A1

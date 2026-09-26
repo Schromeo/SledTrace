@@ -15,6 +15,11 @@ Future scope is not implemented capability or blanket authorization.
 
 ### Current facts
 
+- E4C is a locally validated Dashboard copy candidate stacked after E4P. It
+  makes tool-only and mixed trace warning coverage explicit and removes the
+  positive styling from a zero-warning count. No Agent warning rule, public
+  contract, provider call or release is added. This does not satisfy the E4
+  evidence gate or alter the M2-to-M3 sequence.
 - E4P has a locally validated six-case offline evidence baseline: two
   suspected-repeat hypotheses and four normal/indeterminate counterexamples.
   Their labels are hand-authored fixtures, not Collector warnings or measured
@@ -95,8 +100,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) records E4P's labeled, offline evidence result and
-the remaining real-workflow/false-positive gate. PRs #11–#14 are merged; E3's offline validation
+[CURRENT_TASK](CURRENT_TASK.md) records E4C's honest coverage presentation,
+E4P's labeled offline evidence and the remaining real-workflow/false-positive
+gate. PRs #11–#14 are merged; E3's offline validation
 and the separate draft PR #16 public-corpus probe are not Agent evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part

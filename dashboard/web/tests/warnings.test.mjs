@@ -6,6 +6,7 @@ import {
   normalizeWarning,
   NO_WARNINGS_MESSAGE,
   WARNING_GUIDANCE,
+  warningGuidanceForSpans,
 } from "../src/utils/warnings.ts";
 
 const legacy = {
@@ -86,4 +87,23 @@ test("warning guidance states applicability without claiming correctness", () =>
   assert.match(WARNING_GUIDANCE, /English patterns and limited domain assumptions/);
   assert.match(NO_WARNINGS_MESSAGE, /does not confirm that the answer is correct/);
   assert.doesNotMatch(WARNING_GUIDANCE, /\d+%|high confidence/i);
+});
+
+test("tool-only warning guidance discloses absent Agent checks", () => {
+  const text = warningGuidanceForSpans([{ type: "llm" }, { type: "tool" }]);
+  assert.match(text, /no retrieval span/i);
+  assert.match(text, /Agent repeat and efficiency checks are not implemented/);
+  assert.match(text, /zero warnings is not a health verdict/);
+});
+
+test("mixed workflow does not extend RAG findings to tools", () => {
+  const text = warningGuidanceForSpans([{ type: "retrieval" }, { type: "tool" }]);
+  assert.match(text, /Heuristic checks/);
+  assert.match(text, /do not evaluate tool repetition or Agent efficiency/);
+  assert.doesNotMatch(text, /no retrieval span/i);
+});
+
+test("retrieval-only and old empty traces retain existing guidance", () => {
+  assert.equal(warningGuidanceForSpans([{ type: "retrieval" }]), WARNING_GUIDANCE);
+  assert.equal(warningGuidanceForSpans([]), WARNING_GUIDANCE);
 });

@@ -18,7 +18,7 @@ import {
   hasEnhancedWarning,
   normalizeWarning,
   NO_WARNINGS_MESSAGE,
-  WARNING_GUIDANCE,
+  warningGuidanceForSpans,
 } from "../utils/warnings";
 import type {
   Chunk,
@@ -115,8 +115,7 @@ export default function TraceDetailPage({ traceId }: Props) {
   const finalResult = taskDisplay(detail.trace.output);
   const hasTool = detail.spans.some((span) => span.type === "tool");
   const warningCount = detail.warnings.length;
-  const warningCountClass =
-    warningCount > 0 ? "summary-value-danger" : "summary-value-ok";
+  const warningCountClass = warningCount > 0 ? "summary-value-danger" : "";
 
   return (
     <div className="trace-detail-page">
@@ -200,7 +199,7 @@ export default function TraceDetailPage({ traceId }: Props) {
           />
 
           <h3>Warnings</h3>
-          <p className="warning-help">{WARNING_GUIDANCE}</p>
+          <p className="warning-help">{warningGuidanceForSpans(detail.spans)}</p>
           {detail.warnings.length === 0 ? (
             <div className="empty-card compact">
               {NO_WARNINGS_MESSAGE}

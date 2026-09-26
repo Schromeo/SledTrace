@@ -1,15 +1,15 @@
 ---
-slice_id: E4P
+slice_id: E4C
 slice_status: complete
 components:
-  - sdk
+  - dashboard
   - documentation
-validation_profile: sdk
-scope_base: 9984d44
+validation_profile: dashboard
+scope_base: cdda3b7
 allowed_paths:
-  - sdk/python/examples/agent_repeat_evidence.py
-  - sdk/python/tests/test_agent_repeat_evidence.py
-  - docs/demo/AGENT_REPEAT_EVIDENCE.md
+  - dashboard/web/src/utils/warnings.ts
+  - dashboard/web/src/pages/TraceDetailPage.tsx
+  - dashboard/web/tests/warnings.test.mjs
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/ROADMAP.md
@@ -23,7 +23,44 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — E4P: labeled Agent-repeat evidence baseline
+# Current Task — E4C: honest warning coverage for tool traces
+
+Updated: 2026-09-26. Status: **locally validated; stacked review candidate**.
+
+Decision card: the user's recent question and E4P browser review exposed a
+specific UI gap: a tool-only trace shows `0 warnings` and generic RAG warning
+copy without saying no Agent repeat/efficiency rule ran. Reuse the existing
+span types and warning list; make the zero count visually neutral and show
+coverage guidance based on whether `tool` and `retrieval` spans are present.
+This small honesty follow-up does not advance E4 diagnostic eligibility or
+change the roadmap sequence.
+
+Acceptance: tool-only traces clearly state that RAG retrieval checks are
+inapplicable and Agent repeat/efficiency checks are not implemented; mixed
+tool+retrieval traces state that any RAG findings do not cover Agent behavior;
+retrieval-only traces retain their existing guidance. Zero warnings is never
+styled as a health verdict. Test old/missing span lists and both applicable
+cases; run Dashboard tests/build/scope and inspect the affected local page.
+No warning rule, Collector/SDK/API/schema change, paid call, merge or release.
+
+Outcome: tool-only traces now disclose that retrieval-grounding checks do not
+apply without a retrieval span and that Agent repeat/efficiency checks have not
+been implemented. Mixed tool+retrieval traces limit retrieval findings to
+their actual coverage; retrieval-only and old empty-span guidance is
+unchanged. The zero-warning count is visually neutral. Dashboard tests and
+build passed locally. In the local browser, tool-only, mixed and retrieval-only
+traces displayed the intended copy; the existing numeric-mismatch RAG warning
+remained visible. This changes presentation only, not warning production or
+diagnostic eligibility. See DEVLOG for commands and environment caveats.
+
+Next decision card: review the E4P evidence and one genuinely bounded workflow
+for safe comparable fields, state-change evidence and normal-repeat
+counterexamples. Only consider a first conservative E4 signal if that evidence
+can be held out and a useful low-false-positive finding is demonstrated.
+Otherwise retain observed steps/usage with no Agent warning. Do not infer a
+rule, public metadata schema, paid call, merge or release from E4C.
+
+## Previous task — E4P: labeled Agent-repeat evidence baseline
 
 Updated: 2026-09-26. Status: **locally validated; review candidate**.
 

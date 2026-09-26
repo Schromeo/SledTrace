@@ -1,5 +1,30 @@
 # Devlog
 
+## 2026-09-26 — E4C Dashboard warning-coverage honesty
+
+- Reviewed E4P's tool-only trace presentation: `0 warnings` used positive
+  styling while generic RAG guidance did not disclose missing Agent checks.
+  Kept warning production, Collector/SDK/API/schema and roadmap gates intact.
+- Added span-aware guidance for tool-only and mixed tool+retrieval traces,
+  leaving retrieval-only and old empty-span guidance unchanged. The zero
+  count is now visually neutral; no Agent diagnosis was added.
+- `npm.cmd test` passed 36/36. `npm.cmd run build` passed after restoring
+  this worktree's missing frontend dependencies with `npm.cmd ci`; no package
+  manifest or lockfile was changed. An initial build lacked `tsc`, and a
+  sandboxed Vite run hit an esbuild access-denied error; the completed build
+  used the same installed dependencies with elevated filesystem access.
+- Local browser inspection of tool-only
+  `trace_36661c9eee6a47a28d1f828cbb5c1195` confirmed no false health
+  verdict, while mixed `trace_1574b75d1cc147f888a5329de76714b1` showed
+  the added Agent-coverage boundary. Retrieval-only
+  `trace_7bc9ebba21b6462f8c2e1c4e6b34e8b3` retained the existing guidance
+  and numeric-mismatch warning. Mixed/retrieval records used synthetic local
+  inputs and no provider request. These are UI checks, not diagnostic-value
+  evidence.
+- Final `python scripts/dev/slice.py scope` passed for seven allowed paths;
+  `python scripts/dev/slice.py check` passed Dashboard tests (36/36), build
+  and `git diff --check`. The latter reported only Git's LF-to-CRLF notices.
+
 ## 2026-09-26 — E4P offline Agent-repeat evidence baseline
 
 - Reviewed A2 draft PR #19 against its acceptance and scope: five remote CI
