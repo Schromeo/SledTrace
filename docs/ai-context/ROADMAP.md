@@ -15,6 +15,13 @@ Future scope is not implemented capability or blanket authorization.
 
 ### Current facts
 
+- E4R adds one executed, example-only normal-repeat counterexample to the
+  locally validated Agent reference. Its second name lookup matched the first
+  in synthetic arguments/results but was legitimately re-run by dynamic
+  instructions. No raw values or generic fingerprint contract were stored;
+  no Agent warning or useful-waste finding followed. E4 still lacks a
+  genuine user workflow, adequate positive/negative holdout and product-value
+  evidence. The M2-to-M3 sequence and release state are unchanged.
 - E4C is a locally validated Dashboard copy candidate stacked after E4P. It
   makes tool-only and mixed trace warning coverage explicit and removes the
   positive styling from a zero-warning count. No Agent warning rule, public
@@ -100,9 +107,9 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) records E4C's honest coverage presentation,
-E4P's labeled offline evidence and the remaining real-workflow/false-positive
-gate. PRs #11–#14 are merged; E3's offline validation
+[CURRENT_TASK](CURRENT_TASK.md) records E4R's executed normal-repeat case,
+E4C's honest coverage presentation, E4P's labeled offline evidence and the
+remaining real-workflow/false-positive gate. PRs #11–#14 are merged; E3's offline validation
 and the separate draft PR #16 public-corpus probe are not Agent evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part

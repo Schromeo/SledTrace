@@ -61,6 +61,18 @@ measured；成功样本不显示“Acceptance: passed”。`same_result_stable`
 这是一个**真实执行的工具重复**，却不能仅凭名称重复称作浪费；该模型
 步骤为离线 TestModel，不是真实 provider 调用。
 
+2026-09-26 E4R 把这个反例变成可核对的**执行观察**，不是新规则：
+默认离线 `balance` run 的第二次姓名查询在进程内比较实际 ID 和返回值，
+只记录 `same_customer_id=true`、`same_return_value=true`、第一次调用的
+`previous_span_id`，以及 `dynamic_instructions_reevaluated` 的上下文。
+示例的 SQLite 在建表后只读，故 `fixture_state` 明确限于这个合成内存
+fixture。原始 ID 和姓名不进入这组比较元数据；它不是通用指纹格式，
+也没有自动证明第二次调用是浪费。新离线 trace
+`trace_10e071d881fd4fef8ab4a4cc843eded8` 经 Collector 回读为 ok、
+5 spans、0 现有 RAG 警告；Dashboard 的第二个 `customer_name_lookup`
+详情显示前一个 span 引用与上述布尔值，LLM 用量仍是 Unknown `0/2`。
+单次成功的公开参考示例仍不能替代用户工作流、正例或留出集。
+
 下一门槛：这六个手写样本还没有达到 E4 每条约 8–12 个正反/边界样本、
 留出测试集与真实用户场景的要求。先判断接入是否能提供安全、可信的
 参数/结果可比性与状态证据，再决定是否实现第一条保守提示。缺字段时

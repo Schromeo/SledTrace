@@ -1,15 +1,16 @@
 ---
-slice_id: E4C
+slice_id: E4R
 slice_status: complete
 components:
-  - dashboard
+  - sdk
   - documentation
-validation_profile: dashboard
-scope_base: cdda3b7
+validation_profile: sdk
+scope_base: a2ba7b0
 allowed_paths:
-  - dashboard/web/src/utils/warnings.ts
-  - dashboard/web/src/pages/TraceDetailPage.tsx
-  - dashboard/web/tests/warnings.test.mjs
+  - sdk/python/examples/pydantic_ai_bank_support.py
+  - sdk/python/tests/test_pydantic_ai_bank_support.py
+  - docs/demo/AGENT_REPEAT_EVIDENCE.md
+  - docs/demo/PYDANTIC_AI_BANK_SUPPORT.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/ROADMAP.md
@@ -23,7 +24,44 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — E4C: honest warning coverage for tool traces
+# Current Task — E4R: executed normal-repeat counterexample
+
+Updated: 2026-09-26. Status: **locally validated; stacked review candidate**.
+
+Decision card: E4P's hand-authored comparison keys do not show whether an
+executed Agent workflow can provide safe, relevant comparison evidence. Reuse
+the pinned A1/A2 bank-support reference and its actual database reads. Within
+that optional example only, compare the second dynamic-instruction name lookup
+to the first in memory and record booleans plus the prior span ID, without
+persisting raw arguments/results or introducing a public fingerprint schema.
+This tests a normal-repeat counterexample, not a suspected-waste trigger.
+
+Acceptance: the default offline balance run records two actually executed name
+lookups; the second references the first and reports same argument/result in
+the unchanged synthetic SQLite fixture, while identifying upstream dynamic
+instruction re-evaluation as the reason repetition may be necessary. The
+missing-customer path has no fabricated pair. Optional pinned-upstream tests
+block external connections and assert no raw lookup data or secret leaks in
+the new metadata. Inspect Collector readback and the real Dashboard; run SDK
+scope/check. Stop after one counterexample. No warning rule, public data
+contract, new span, paid call, merge or release.
+
+Outcome: the pinned upstream `balance` run produced two actual name lookups;
+the second references the first and records same ID/result in this read-only
+synthetic fixture while disclosing dynamic-instruction re-evaluation. The
+`missing-customer` run did not invent a pair. Optional no-network tests passed
+7/7; the default SDK profile passed 89 with four optional skips. Collector
+readback and local Dashboard showed the new evidence, Unknown model usage and
+no Agent warning. The new metadata contains no raw lookup values or hash.
+This establishes one normal-repeat counterexample only; details are in DEVLOG
+and the E4 evidence runbook.
+
+Next decision gate: this single public reference counterexample cannot prove
+an Agent repeat warning useful. Compare the observed fields with E4P's
+suspected cases and identify remaining genuine-workflow evidence or holdout
+gaps. Do not turn the booleans into a generic duplicate verdict.
+
+## Previous task — E4C: honest warning coverage for tool traces
 
 Updated: 2026-09-26. Status: **locally validated; stacked review candidate**.
 

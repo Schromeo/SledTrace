@@ -1,5 +1,19 @@
 # AI Handoff
 
+## 2026-09-26 E4R executed normal-repeat counterexample
+
+This branch stacks after E4C draft PR #21, itself after E4P #20, A2 #19,
+A1 #18 and AG0 #17. In the optional pinned PydanticAI bank-support example,
+the second actually executed `customer_name_lookup` now records an in-process
+same-argument/same-result comparison, a prior span reference and its dynamic-
+instruction context. No raw lookup values or hash are persisted in this new
+example-only metadata; no public fingerprint contract or Agent warning exists.
+An offline TestModel run reached the Collector and Dashboard, showing the
+normal-repeat counterexample with unknown tokens and 0 existing RAG warnings.
+This strengthens a false-positive case, not positive diagnostic utility;
+E4's real-workflow and held-out evidence gates remain open. See CURRENT_TASK,
+the E4 evidence runbook and DEVLOG.
+
 ## 2026-09-26 E4C warning-coverage copy candidate
 
 This branch stacks on E4P's unmerged draft PR #20 (and A2 #19, A1 #18,

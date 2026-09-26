@@ -79,6 +79,7 @@ def run(
 
     customer_id = 123 if case == "balance" else 999
     observed: dict[str, Any] = {"name": None, "balance": None}
+    previous_name_lookup: tuple[int, str | None, str] | None = None
     task = trace(
         "pydantic-ai-bank-support-reference",
         query=LIVE_PROMPT if live_openai else "What is my balance?",
@@ -183,16 +184,31 @@ def run(
 
     class ObservedDatabase(upstream.DatabaseConn):
         async def customer_name(self, *, id: int) -> str | None:
+            nonlocal previous_name_lookup
             with task.measure() as timing:
                 name = await super().customer_name(id=id)
             observed["name"] = name
-            task.tool(
+            metadata: dict[str, Any] = {"execution_origin": "dynamic_instructions"}
+            if previous_name_lookup is not None:
+                prior_id, prior_name, prior_span_id = previous_name_lookup
+                same_argument = prior_id == id
+                # Compare actual values only in process. The trace receives
+                # booleans and a span reference, never the lookup values.
+                metadata["example_repeat_observation"] = {
+                    "previous_span_id": prior_span_id,
+                    "same_customer_id": same_argument,
+                    "same_return_value": prior_name == name if same_argument else None,
+                    "fixture_state": "read_only_in_memory_sqlite",
+                    "repeat_context": "dynamic_instructions_reevaluated",
+                }
+            span_id = task.tool(
                 "customer_name_lookup",
                 input_summary="synthetic customer ID lookup",
                 output_summary="customer found" if name is not None else "customer missing",
-                metadata={"execution_origin": "dynamic_instructions"},
+                metadata=metadata,
                 timing=timing,
             )
+            previous_name_lookup = (id, name, span_id)
             return name
 
         async def customer_balance(self, *, id: int) -> float:

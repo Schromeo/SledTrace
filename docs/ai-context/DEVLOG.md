@@ -1,5 +1,29 @@
 # Devlog
 
+## 2026-09-26 — E4R executed normal-repeat counterexample
+
+- Reused the pinned public PydanticAI bank-support workflow, rather than
+  making another scripted duplicate. The example compares actual name-lookup
+  arguments/results in process and records only booleans, the prior span ID,
+  the fixture-only read-only state and dynamic-instruction context on the
+  second lookup. No SDK contract, schema or warning rule changed.
+- Optional pinned-upstream test with external network blocked passed 7/7
+  using `agent-a1-venv`; it asserted the actual span linkage, same-value
+  observations, no raw name in new metadata, and no fabricated pair in the
+  missing-customer run. Two dependency deprecation warnings remained.
+- Default offline `TestModel` balance run (no `--live-openai`, process key
+  cleared) flushed `trace_10e071d881fd4fef8ab4a4cc843eded8` to the local
+  Collector. API readback showed `ok`, five spans, zero existing RAG warnings
+  and the second lookup's reference to the first. Dashboard inspection showed
+  both tool steps, the second step's comparison metadata, unknown `0/2` LLM
+  usage and the E4C warning-coverage disclaimer. This is a normal-repeat
+  counterexample, not a proven cost saving or provider execution.
+- Final `python scripts/dev/slice.py scope` passed for eight allowed paths;
+  `python scripts/dev/slice.py check` passed the default SDK profile
+  (89 passed, four optional skips) and `git diff --check`. Only Git's
+  LF-to-CRLF notices appeared in the diff step. Review found no blocker;
+  the remaining limit is a single public reference, not real-user value.
+
 ## 2026-09-26 — E4C Dashboard warning-coverage honesty
 
 - Reviewed E4P's tool-only trace presentation: `0 warnings` used positive

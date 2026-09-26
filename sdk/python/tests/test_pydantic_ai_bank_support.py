@@ -69,6 +69,16 @@ def test_real_upstream_workflow_stays_offline_and_preserves_unknown_usage(
     assert all("total_tokens" not in span["metadata"] for span in success["spans"])
     assert success["spans"][0]["metadata"]["execution_origin"] == "dynamic_instructions"
     assert success["spans"][2]["metadata"]["execution_origin"] == "agent_tool"
+    assert "example_repeat_observation" not in success["spans"][0]["metadata"]
+    repeat = success["spans"][3]["metadata"]["example_repeat_observation"]
+    assert repeat == {
+        "previous_span_id": success["spans"][0]["span_id"],
+        "same_customer_id": True,
+        "same_return_value": True,
+        "fixture_state": "read_only_in_memory_sqlite",
+        "repeat_context": "dynamic_instructions_reevaluated",
+    }
+    assert "John" not in json.dumps(repeat)
     assert "a1-preexisting-key-must-not-be-used" not in json.dumps(success)
 
     failure = run("missing-customer", upstream_examples)
@@ -79,6 +89,7 @@ def test_real_upstream_workflow_stays_offline_and_preserves_unknown_usage(
     ]
     assert failure["spans"][-1]["error"] == {"message": "Customer not found"}
     assert failure["spans"][-1]["metadata"]["execution_origin"] == "agent_tool"
+    assert "example_repeat_observation" not in failure["spans"][0]["metadata"]
     assert all("total_tokens" not in span["metadata"] for span in failure["spans"])
 
 

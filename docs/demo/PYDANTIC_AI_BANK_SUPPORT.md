@@ -112,10 +112,19 @@ a structural check, not a customer-advice quality verdict.
   check; after browser review, the adapter was corrected and the trace above
   is the final success record. Historical local traces were not rewritten.
 
+E4R later added example-only in-process comparison of the naturally repeated
+name lookup: the second call records booleans for matching synthetic customer
+ID and returned value, a reference to the first span, and the dynamic-
+instruction context. No raw ID/name or derived hash is added to that metadata.
+The separate [E4 evidence runbook](AGENT_REPEAT_EVIDENCE.md) records the new
+offline trace and its limits. This is one normal-repeat counterexample, not a
+public fingerprint contract or a useful-waste finding.
+
 Next gate: this independent public example establishes basic integration
 only. It does not show that an actual developer found useful waste, nor give
-the stable parameter/result fingerprints and changing-state evidence E4 needs.
-Do not implement E4 rules or claim v0.8 readiness from this run alone.
+general safe comparison/state evidence across workflows or a held-out E4
+evaluation set. Do not implement E4 rules or claim v0.8 readiness from this
+run alone.
 
 ## Historical real-model evidence and A2 boundary
 
