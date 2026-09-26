@@ -15,6 +15,13 @@ Future scope is not implemented capability or blanket authorization.
 
 ### Current facts
 
+- E4P has a locally validated six-case offline evidence baseline: two
+  suspected-repeat hypotheses and four normal/indeterminate counterexamples.
+  Their labels are hand-authored fixtures, not Collector warnings or measured
+  rule accuracy. The existing Dashboard showed steps and unknown usage; no
+  provider call, schema change or Agent diagnostic was added. The sequence is
+  unchanged: decide whether safe comparison/state evidence from a genuine
+  workflow warrants the first E4 rule before implementing it.
 - A2 adds an optional, bounded live-model mode to the same public example.
   The default remains no-cost and scripted. Its local tests stub the provider;
   the earlier authorized real-model trace came from an external temporary
@@ -88,8 +95,8 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) records A2's bounded optional live-mode result and
-the remaining E4 evidence gate. PRs #11–#14 are merged; E3's offline validation
+[CURRENT_TASK](CURRENT_TASK.md) records E4P's labeled, offline evidence result and
+the remaining real-workflow/false-positive gate. PRs #11–#14 are merged; E3's offline validation
 and the separate draft PR #16 public-corpus probe are not Agent evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
 optimizer, cloud/auth, broad adapter catalog, or live partial-trace system is part

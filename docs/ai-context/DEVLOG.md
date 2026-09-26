@@ -1,5 +1,30 @@
 # Devlog
 
+## 2026-09-26 — E4P offline Agent-repeat evidence baseline
+
+- Reviewed A2 draft PR #19 against its acceptance and scope: five remote CI
+  checks passed; no actionable code blocker or review comment was found. The
+  in-repo paid path still lacks a successful paid run and was not called here.
+- Added six scripted `llm`/`tool` sequences: two suspected-repeat hypotheses,
+  normal polling, unknown-state confirmation, recovered retry and corrected
+  parameter. Each has safe hand-authored comparison labels, not private-data
+  hashes or a public metadata contract. They are rule-design fixtures, not
+  shipped Agent warnings or real developer-value evidence.
+- Targeted test: `python -B -m pytest -q tests/test_agent_repeat_evidence.py`
+  passed 9/9. Corrected traces were flushed to the isolated local Collector;
+  API returned three spans and 0 existing RAG warnings per trace. Five tasks
+  were `ok`, one repeated-error task `error`. Dashboard inspection showed
+  ordered steps, Unknown `0/1` model-usage coverage, and the error state.
+- The first UI pass exposed a misleading `accepted=true` on scripted success:
+  Dashboard rendered “Acceptance: passed” despite no quality review. Removed
+  it from successful cases and repeated tests, ingestion and page inspection.
+  The six earlier local records remain in the isolated DB as superseded trial
+  data. The corrected IDs and limitations are in AGENT_REPEAT_EVIDENCE.md.
+- Final `python scripts/dev/slice.py scope` passed with seven allowed paths;
+  `python scripts/dev/slice.py check` passed with 89 Python tests, four
+  optional skips and `git diff --check`. No Collector, Dashboard,
+  public SDK contract, diagnostic rule, paid API, merge or release change.
+
 ## 2026-09-26 — A2 optional live Agent probe, offline closeout
 
 - Promoted the separate one-off PydanticAI live probe into A1's optional

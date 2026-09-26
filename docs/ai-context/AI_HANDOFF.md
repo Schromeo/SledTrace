@@ -1,5 +1,20 @@
 # AI Handoff
 
+## 2026-09-26 E4P repeat-evidence candidate
+
+The current branch stacks on A2's unmerged draft PR #19 (and therefore A1
+#18 and AG0 #17). E4P adds six offline, hand-labeled tool-repeat traces and a
+runbook, not an Agent warning. It distinguishes two suspected cases from
+polling, unknown-state confirmation, successful retry and corrected-parameter
+counterexamples. The comparison keys are synthetic fixture metadata, not a
+public schema or safe hashing guidance. Corrected local traces reached the
+Collector and existing Dashboard with unknown model usage; 0 RAG warnings is
+not a clean bill of Agent health. UI review removed misleading
+`accepted=true` from scripted success before final readback. See
+[AGENT_REPEAT_EVIDENCE.md](../demo/AGENT_REPEAT_EVIDENCE.md) and CURRENT_TASK.
+The next E4 rule remains conditional on more labeled evidence and a genuinely
+actionable workflow; no real Agent-efficiency value has been established.
+
 ## 2026-09-26 A2 optional real-model example candidate
 
 The pinned public PydanticAI bank-support example now has an explicit paid

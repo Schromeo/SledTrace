@@ -1,19 +1,18 @@
 ---
-slice_id: A2
+slice_id: E4P
 slice_status: complete
 components:
   - sdk
   - documentation
 validation_profile: sdk
-scope_base: b822e73
+scope_base: 9984d44
 allowed_paths:
-  - sdk/python/examples/pydantic_ai_bank_support.py
-  - sdk/python/tests/test_pydantic_ai_bank_support.py
-  - docs/demo/PYDANTIC_AI_BANK_SUPPORT.md
+  - sdk/python/examples/agent_repeat_evidence.py
+  - sdk/python/tests/test_agent_repeat_evidence.py
+  - docs/demo/AGENT_REPEAT_EVIDENCE.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/ROADMAP.md
-  - docs/ai-context/DECISIONS.md
   - docs/ai-context/DEVLOG.md
 human_gates:
   - persisted_schema_or_data_contract_change
@@ -24,7 +23,51 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — A2: reproducible opt-in real-model Agent probe
+# Current Task — E4P: labeled Agent-repeat evidence baseline
+
+Updated: 2026-09-26. Status: **locally validated; review candidate**.
+
+Decision card: the user-visible result is a small set of repeat-behavior traces
+with explicit suspected/normal/indeterminate labels that can be inspected in
+the existing Dashboard. The current blocker is missing safe comparable fields
+and normal-repeat counterexamples, not a missing warning count. Reuse the E2
+`llm`/`tool` contract and A1's naturally repeated dynamic-instruction lookup.
+Add only an offline, scripted sample matrix and tests; no SDK/Collector/UI
+contract change. The synthetic comparison keys are fixture-only, not hashes
+of private arguments or a proposed public metadata schema.
+
+Acceptance: a fixed matrix shows two suspected cases, normal polling, a
+recovered retry, a corrected parameter and an unknown-state confirmation.
+Trace status, task outcome and unknown token usage stay distinct. The
+Collector and Dashboard show the ordered attempts and at least one positive,
+one normal and one indeterminate case; no RAG warning is fabricated for
+tool-only traces. The runbook distinguishes fixture labels from shipped
+diagnosis and records the natural A1 repeat as a counterexample. Run SDK
+profile, scope/check, and inspect the actual page. Stop after review-ready
+evidence; no E4 rule, paid call, schema/API change, merge or release.
+
+Outcome: six hand-labeled, fully offline cases now generate ordered scripted
+LLM/tool traces. Nine targeted tests passed; the SDK profile, scope and diff
+checks are recorded in DEVLOG. Collector API readback of the corrected six
+records showed three spans and zero current RAG warnings each, with five `ok`
+and one `error` task. The existing Dashboard showed the duplicate-result,
+polling, unknown-state and repeated-error cases; usage stayed Unknown. UI
+review caught that `accepted=true` on a scripted success misleadingly showed
+“Acceptance: passed”; it was removed before final validation. Initial local
+records remain as superseded trial data, identified in the runbook. This is
+fixture coverage, not proof that an Agent warning is useful or accurate.
+
+Next decision card: assess whether one genuine bounded workflow can supply
+safe argument/result comparison keys and state-change evidence, including
+normal-repeat counterexamples. Reuse the A1 reference's naturally repeated
+dynamic-instruction lookup and this labeled baseline. A first conservative
+E4 signal is conditional on expanding/holding out the evidence set and
+demonstrating a useful, low-false-positive finding; absent that evidence,
+keep warnings off and narrow the product to observed execution/usage. No
+automatic move to rule implementation, new public metadata contract, another
+paid call, merge or release. Stop after this review-ready E4P slice.
+
+## Previous task — A2: reproducible opt-in real-model Agent probe
 
 Updated: 2026-09-26. Status: **locally validated; stacked review candidate**.
 
