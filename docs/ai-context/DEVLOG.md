@@ -1,5 +1,42 @@
 # Devlog
 
+## 2026-09-26 — A2 optional live Agent probe, offline closeout
+
+- Promoted the separate one-off PydanticAI live probe into A1's optional
+  example as a **paid opt-in**, leaving `TestModel` as the default and core
+  dependencies/contracts untouched. The live path uses the pinned official
+  `gpt-4o-mini-2024-07-18` snapshot, synthetic customer data, at most two
+  model requests, 300 output tokens/request, no SDK retries, 25-second timeout
+  and a context-growth guard. These are request controls, not an account
+  spending cap. Framework-parsed counts use `usage_capture`, not the direct
+  OpenAI Responses `usage_source` marker.
+- Historical L2 evidence from the earlier external script, **not this code**:
+  `trace_8630bf7c3b5444a6b673af2655ff621f` showed two real-model requests,
+  one actual `customer_balance` Agent-tool execution, 254 input/60 output
+  tokens, five ordered steps and a structurally correct synthetic balance.
+  The temporary script's unrecognized `usage_source=provider` displayed as
+  Unknown in Dashboard; A2 avoids claiming direct-Responses provenance.
+- A live CLI guard-check was mistakenly invoked without first verifying that
+  the current process had inherited an API key. It attempted one request,
+  exited nonzero with `ModelAPIError`, captured no provider token usage and
+  flushed no trace. Whether the account incurred a charge is unknown. No
+  retry or additional paid test followed; validation then stayed offline.
+- Optional pinned-upstream suite: 7 passed under a separate venv, including
+  no-network live-model stub, key/acknowledgement checks and repeated-tool
+  request ceiling. Default SDK profile: 80 passed, 4 optional checks skipped.
+- A fresh offline run from the changed example delivered
+  `trace_53efb0fcf50c4f75bc634c1a17d094da` to an isolated Collector DB;
+  API and an existing prebuilt Dashboard showed five ordered spans, unknown
+  usage (0/2), and `quality_review=not_assessed`. The new worktree lacked
+  Dashboard dependencies; source-stack startup stopped at preflight and
+  `npm ci --offline` hit npm-cache EPERM. There was no Dashboard source change
+  and no claim of a fresh frontend build. Go also needed an isolated build
+  cache because the default cache was access-denied.
+- This remains a public synthetic integration reference. E4 counterexamples,
+  a real user workflow, billing reconciliation and the first paid run of the
+  in-repo A2 code are still open.
+
+
 ## 2026-09-25 — A1 pinned public Agent-reference integration
 
 - Cloned PydanticAI into a separate workspace checkout at

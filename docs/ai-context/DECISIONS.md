@@ -1,5 +1,24 @@
 # Architecture Decisions
 
+## 2026-09-26 — A2 keeps framework usage distinct from direct Responses usage
+
+- Add a paid, explicitly opt-in mode only to the pinned public example. Keep
+  `TestModel` as the default, PydanticAI outside core SDK dependencies, and
+  the existing Collector/span/metadata contract unchanged.
+- Bound the example's model requests, output size, context growth, timeout and
+  retries, but do not call those local guards an account-level spending cap.
+  Only the synthetic balance case may use the live mode.
+- PydanticAI's parsed `ModelResponse.usage` is framework-reported evidence.
+  Record those supplied counts with `usage_capture=pydantic_ai_model_response`;
+  do not set the E3 `usage_source=openai_responses` marker, which belongs to
+  `sledtrace.openai.record_response` on an actual completed Responses object.
+  The current Dashboard intentionally labels other provenance Unknown.
+- The previous one-off live probe proves one L2 integration path, not that this
+  in-repo A2 implementation has had a paid provider run, or that E4 waste
+  rules and product value are validated.
+
+---
+
 ## 2026-09-25 — A1 imports a pinned public example without a framework API
 
 - Use the PydanticAI bank-support example only as an L1 technical reference.

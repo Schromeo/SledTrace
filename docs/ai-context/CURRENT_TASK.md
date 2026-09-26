@@ -1,16 +1,15 @@
 ---
-slice_id: A1
+slice_id: A2
 slice_status: complete
 components:
   - sdk
   - documentation
 validation_profile: sdk
-scope_base: 3316083
+scope_base: b822e73
 allowed_paths:
   - sdk/python/examples/pydantic_ai_bank_support.py
   - sdk/python/tests/test_pydantic_ai_bank_support.py
   - docs/demo/PYDANTIC_AI_BANK_SUPPORT.md
-  - docs/product/AGENT_DIRECTION_PREP.md
   - docs/ai-context/CURRENT_TASK.md
   - docs/ai-context/AI_HANDOFF.md
   - docs/ai-context/ROADMAP.md
@@ -25,7 +24,53 @@ human_gates:
 auto_continue: false
 ---
 
-# Current Task — A1: one public Agent reference workflow
+# Current Task — A2: reproducible opt-in real-model Agent probe
+
+Updated: 2026-09-26. Status: **locally validated; stacked review candidate**.
+
+Decision card: the user-visible value is a repeatable real-model Agent trace,
+not a one-off script outside Git. The blocker found in the L2 run is that the
+temporary probe is not reproducible from the repository and its generic
+`usage_source=provider` is intentionally not recognized as a verified OpenAI
+Responses record. Reuse A1's pinned public source, synthetic SQLite customer,
+existing `llm`/`tool` SDK calls, and the prior live trace. Add an explicitly
+opt-in, bounded OpenAI Responses model mode to the optional example, with no
+core dependency or contract change. Keep framework-reported usage provenance
+honest; do not label it as direct `sledtrace.openai.record_response` evidence.
+
+Acceptance: default A1 runs remain offline with unknown tokens; a keyless live
+attempt fails before a request; local tests exercise the live wrapper with a
+stub model, request ceiling and structural tool path without network. The
+CLI/runbook explain that the request/output guard is not an account spending
+cap. Record prior authorized live trace `trace_8630bf7c3b5444a6b673af2655ff621f`
+as historical L2 evidence, not as a fresh run of the new code. Run SDK profile,
+slice scope/check, diff hygiene, and inspect a fresh offline trace in the
+Collector/Dashboard. No paid rerun, E4 rules, schema/API, merge or release.
+
+Outcome: the same optional example now supports an explicitly acknowledged
+OpenAI mode with synthetic data and bounded requests, while default runs stay
+offline. Seven pinned-upstream tests passed with external network blocked;
+the default SDK profile passed 80 tests with four optional checks skipped. A
+fresh default trace `trace_53efb0fcf50c4f75bc634c1a17d094da` was read from
+an isolated Collector and inspected in a prebuilt Dashboard, with five spans,
+unknown provider usage and no quality-acceptance claim. The new live mode was
+tested with a stub, **not** a new paid successful call. An accidental live
+guard-check encountered a process key and attempted one request before
+`ModelAPIError`; no usage was captured, no trace was flushed, and billing is
+unknown. See DEVLOG and the runbook. No core contract or E4 rule changed.
+
+Next decision card: user value is a useful suspected-waste finding on a real
+task, not more instrumented examples. The blocker is missing stable safe
+parameter/result fingerprints, normal-repeat counterexamples and a user-owned
+workflow. Reuse existing steps and task results; first review A2's stacked PR
+and establish a small labeled E4 evidence set, or narrow the product to the
+execution ledger if no actionable case emerges. Non-goals remain new Agent
+runtime/span families, broad heuristics, another paid call, merge or release.
+Validation for that later decision must distinguish fixture precision from
+real-user value and show accepted/failed outcomes in the Dashboard. Stop here
+after A2 is review-ready; do not begin E4 automatically.
+
+## Previous task — A1: one public Agent reference workflow
 
 Updated: 2026-09-25. Status: **locally validated; stacked review candidate**.
 

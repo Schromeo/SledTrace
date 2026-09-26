@@ -1,5 +1,20 @@
 # AI Handoff
 
+## 2026-09-26 A2 optional real-model example candidate
+
+The pinned public PydanticAI bank-support example now has an explicit paid
+OpenAI mode alongside its offline default. It reuses the synthetic customer,
+records framework-reported model usage and the real tool method, and never
+labels those counts as E3 direct-Responses provenance. A previous external
+probe produced one real-model trace (`trace_8630bf7c3b5444a6b673af2655ff621f`),
+but this new in-repo mode has only no-network stub validation. The 2026-09-26
+accidental guard-check found a process key, attempted one request and failed
+with `ModelAPIError`; captured usage is absent and account charge unknown.
+No retry was made. See the runbook and DEVLOG before claiming a new live run.
+This A2 branch is stacked on A1's unmerged PR #18, which itself depends on
+AG0 PR #17. It does not implement E4 or change the released package.
+
+
 ## 2026-09-25 A1 public Agent-reference run (local candidate)
 
 A1 uses an optional adapter for PydanticAI's pinned MIT bank-support example,

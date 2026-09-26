@@ -15,6 +15,12 @@ Future scope is not implemented capability or blanket authorization.
 
 ### Current facts
 
+- A2 adds an optional, bounded live-model mode to the same public example.
+  The default remains no-cost and scripted. Its local tests stub the provider;
+  the earlier authorized real-model trace came from an external temporary
+  probe, not the new implementation. Framework-reported usage is not labeled
+  as direct E3 Responses provenance. This advances repeatable M2 integration
+  evidence, not E4 diagnostic accuracy, real-user adoption, or a release.
 - AG0 is a documentation-only Agent-direction preparation candidate. The user
   has no current Agent workflow; [the A1 screen](../product/AGENT_DIRECTION_PREP.md)
   separates a public reference workflow from real adoption. E4 rule work
@@ -82,7 +88,7 @@ bounded slice, not authorize parallel feature expansion.
 
 ### Next action and scope
 
-[CURRENT_TASK](CURRENT_TASK.md) records A1's bounded integration result and
+[CURRENT_TASK](CURRENT_TASK.md) records A2's bounded optional live-mode result and
 the remaining E4 evidence gate. PRs #11–#14 are merged; E3's offline validation
 and the separate draft PR #16 public-corpus probe are not Agent evidence.
 H0 has been handed off; do not reopen it for cosmetic optimization. No automatic
