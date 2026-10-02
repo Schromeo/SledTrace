@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"sledtrace-collector/internal/api"
 	"sledtrace-collector/internal/storage"
@@ -22,12 +24,31 @@ func main() {
 
 	server := api.NewServer(store)
 
+	if dashboardDir := os.Getenv("SLEDTRACE_DASHBOARD_DIR"); dashboardDir != "" {
+		if err := checkDashboardDir(dashboardDir); err != nil {
+			log.Fatalf("invalid SLEDTRACE_DASHBOARD_DIR: %v", err)
+		}
+		server.WithDashboard(dashboardDir)
+		log.Printf("Serving Dashboard from %s", dashboardDir)
+	}
+
 	log.Printf("SledTrace collector listening on %s", addr)
 	log.Printf("SQLite database: %s", dbPath)
 
 	if err := http.ListenAndServe(addr, server.Routes()); err != nil {
 		log.Fatalf("collector stopped: %v", err)
 	}
+}
+
+func checkDashboardDir(dir string) error {
+	info, err := os.Stat(filepath.Join(dir, "index.html"))
+	if err != nil {
+		return fmt.Errorf("%s does not contain a built Dashboard index.html: %w", dir, err)
+	}
+	if info.IsDir() {
+		return fmt.Errorf("%s/index.html is a directory", dir)
+	}
+	return nil
 }
 
 func collectorAddr() string {

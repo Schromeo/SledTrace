@@ -24,6 +24,7 @@ build/
 node_modules/
 dashboard/web/node_modules/
 dashboard/web/dist/
+sdk/python/sledtrace/_bundle/
 dashboard/web/.vite/
 npm-debug.log*
 yarn-debug.log*

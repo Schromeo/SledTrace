@@ -15,13 +15,21 @@ import (
 )
 
 type Server struct {
-	store *storage.Store
+	store        *storage.Store
+	dashboardDir string
 }
 
 func NewServer(store *storage.Store) *Server {
 	return &Server{
 		store: store,
 	}
+}
+
+// WithDashboard serves the built Dashboard from dir on the collector's own
+// address, so a packaged install needs only one process and one port.
+func (s *Server) WithDashboard(dir string) *Server {
+	s.dashboardDir = dir
+	return s
 }
 
 func (s *Server) Routes() http.Handler {
@@ -31,6 +39,10 @@ func (s *Server) Routes() http.Handler {
 	mux.HandleFunc("POST /api/traces", s.handlePostTrace)
 	mux.HandleFunc("GET /api/traces", s.handleListTraces)
 	mux.HandleFunc("GET /api/traces/", s.handleGetTraceDetail)
+
+	if s.dashboardDir != "" {
+		mux.Handle("GET /", http.FileServer(http.Dir(s.dashboardDir)))
+	}
 
 	return withCORS(withLogging(mux))
 }

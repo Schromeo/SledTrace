@@ -31,10 +31,11 @@ Each stage runs on its own branch and stops for the maintainer's review.
    docs, shorten AGENTS.md, drop the slice harness. *Done when:* `main` plus one
    working branch, clean `git status`, all tests pass.
 2. **One-command start** — `pip install sledtrace` then `sledtrace serve` opens the
-   dashboard without a source checkout, Go or Node. Plan: the collector embeds the
-   built dashboard (Go `embed`) and serves it on one port; the pure-Go SQLite
-   driver allows cross-compiling; CI builds platform wheels that ship the
-   collector binary. Docker and source development stay as they are.
+   dashboard without a source checkout, Go or Node. The collector serves the
+   built dashboard from `SLEDTRACE_DASHBOARD_DIR` on its own port;
+   `sdk/python/scripts/build_wheels.py` cross-compiles the pure-Go collector and
+   packs it with the dashboard into platform wheels. Docker and source
+   development stay as they are.
    *Done when:* a clean environment runs the demo trace using only pip.
 3. **Front page** — README fits on one screen (problem → 3-minute start →
    screenshots → links); a 5-minute "trace your own RAG app" guide using

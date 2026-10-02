@@ -633,7 +633,7 @@ Current scope limits:
   unsupported or ambiguous conditions remain unpriced
 * onboarding path is local-first and repo-based
 * the SDK is distributed through PyPI, source checkout, or locally built wheel artifacts
-* `sledtrace serve` requires a SledTrace source checkout and is not a standalone wheel-installed runtime
+* `sledtrace serve` runs without a source checkout only where a platform wheel exists (Windows, macOS, Linux on x86-64/ARM64)
 * no LangChain adapter yet
 * no LlamaIndex adapter yet
 * no cloud sync, auth, hosted collector, or hosted features

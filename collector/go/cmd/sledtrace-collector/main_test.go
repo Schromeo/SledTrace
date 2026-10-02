@@ -1,6 +1,24 @@
 package main
 
-import "testing"
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestCheckDashboardDirRequiresIndex(t *testing.T) {
+	dir := t.TempDir()
+	if err := checkDashboardDir(dir); err == nil {
+		t.Fatal("expected an error for a directory without index.html")
+	}
+
+	if err := os.WriteFile(filepath.Join(dir, "index.html"), []byte("ok"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := checkDashboardDir(dir); err != nil {
+		t.Fatalf("expected a built Dashboard directory to pass, got %v", err)
+	}
+}
 
 func TestCollectorAddrDefaultsToLoopback(t *testing.T) {
 	t.Setenv("SLEDTRACE_COLLECTOR_ADDR", "")

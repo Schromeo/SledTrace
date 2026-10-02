@@ -488,9 +488,12 @@ Do not modify `local_rag_demo` for real usage. Instrument your own application c
 
 If your app runs in one virtual environment and `SledTrace` was installed into another, imports will fail.
 
-### Expecting `sledtrace serve` to work outside a source checkout
+### `sledtrace serve` says the bundled collector is missing
 
-The installed CLI provides help and version commands everywhere, but `sledtrace serve` needs the repository's Collector and Dashboard files. Clone SledTrace and run `serve` from inside that checkout.
+Platform wheels (Windows, macOS, Linux on x86-64 and ARM64) include the
+collector and dashboard. On other platforms pip installs the SDK-only wheel;
+clone SledTrace and run `sledtrace serve` from inside that checkout, or use
+Docker Compose.
 
 ## Troubleshooting
 

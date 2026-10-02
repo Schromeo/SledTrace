@@ -3,22 +3,25 @@
 
 from __future__ import annotations
 
+import argparse
+import json
 import os
 import shutil
+import signal
+import socket
 import subprocess
 import sys
 import tempfile
+import time
+import urllib.request
+import zipfile
 from pathlib import Path
 from typing import Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST_DIR = ROOT / "dist"
 EXPECTED_VERSION = "0.7.1"
-EXPECTED_SERVE_ERROR = (
-    "sledtrace serve currently requires a SledTrace source checkout. "
-    "Run it from the repository, or use Docker Compose from the repository root. "
-    "Standalone wheel-installed serving is not supported by this package."
-)
+EXPECTED_SERVE_ERROR = "does not include the bundled collector and dashboard"
 
 
 def run(command: list[str], cwd: Optional[Path] = None) -> subprocess.CompletedProcess[str]:
@@ -27,7 +30,7 @@ def run(command: list[str], cwd: Optional[Path] = None) -> subprocess.CompletedP
 
 
 def expected_wheels() -> list[Path]:
-    return sorted(DIST_DIR.glob(f"sledtrace-{EXPECTED_VERSION}-*.whl"))
+    return sorted(DIST_DIR.glob(f"sledtrace-{EXPECTED_VERSION}-py3-none-any.whl"))
 
 
 def build_if_needed() -> Path:
@@ -55,8 +58,103 @@ def build_if_needed() -> Path:
     return wheel
 
 
-def validate_wheel() -> int:
-    wheel = build_if_needed()
+def wheel_has_bundle(wheel: Path) -> bool:
+    with zipfile.ZipFile(wheel) as archive:
+        return any(name.startswith("sledtrace/_bundle/") for name in archive.namelist())
+
+
+def free_port() -> int:
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        return sock.getsockname()[1]
+
+
+def http_get(url: str) -> str:
+    with urllib.request.urlopen(url, timeout=5) as response:
+        return response.read().decode("utf-8")
+
+
+def stop_serve(process: subprocess.Popen) -> None:
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        # Reaches both `sledtrace serve` and the collector in its process group.
+        process.send_signal(signal.CTRL_BREAK_EVENT)
+    else:
+        process.terminate()
+    try:
+        process.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait()
+
+
+def check_bundled_serve(sledtrace_exe: Path, python_exe: Path, temp_dir: Path) -> int:
+    """`pip install` + `sledtrace serve` must run the dashboard and accept traces."""
+    port = free_port()
+    url = f"http://127.0.0.1:{port}"
+    command = [
+        str(sledtrace_exe), "serve", "--no-browser",
+        "--port", str(port), "--db", str(temp_dir / "serve" / "traces.db"),
+    ]
+    print(f"$ {' '.join(command)}")
+    creationflags = subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0
+    process = subprocess.Popen(
+        command, cwd=str(temp_dir), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        text=True, creationflags=creationflags,
+    )
+
+    try:
+        deadline = time.monotonic() + 30
+        while True:
+            try:
+                if json.loads(http_get(f"{url}/health")).get("service") == "sledtrace-collector":
+                    break
+            except OSError:
+                pass
+            if process.poll() is not None or time.monotonic() > deadline:
+                print("Bundled 'sledtrace serve' did not become ready.")
+                return 1
+            time.sleep(0.3)
+
+        page = http_get(f"{url}/")
+        if "<title>SledTrace</title>" not in page:
+            print(f"Expected the Dashboard at {url}/, got:\n{page[:300]}")
+            return 1
+
+        snippet = (
+            "from sledtrace import trace; "
+            "t=trace('wheel-serve-check', query='refund window?'); "
+            "t.retrieval('refund window', chunks=[{'text':'30 days','score':0.9}]); "
+            "t.llm('fixture', prompt='p', response='30 days'); "
+            f"print(t.flush(collector_url='{url}')['status'])"
+        )
+        result = run([str(python_exe), "-c", snippet], cwd=temp_dir)
+        if result.returncode != 0 or "stored" not in result.stdout:
+            print(result.stderr or result.stdout)
+            return 1
+
+        if "wheel-serve-check" not in http_get(f"{url}/api/traces"):
+            print("Trace sent to the bundled collector was not listed by the API.")
+            return 1
+
+        print(f"bundled serve ok: dashboard and API on {url}")
+    finally:
+        stop_serve(process)
+        output = process.stdout.read() if process.stdout else ""
+        print(output.strip())
+
+    if "SledTrace is running at" not in output:
+        print("'sledtrace serve' did not print its startup banner.")
+        return 1
+
+    return 0
+
+
+def validate_wheel(wheel: Optional[Path] = None) -> int:
+    wheel = wheel or build_if_needed()
+    bundled = wheel_has_bundle(wheel)
+    print(f"Validating {wheel.name} ({'with' if bundled else 'without'} bundled collector)")
 
     with tempfile.TemporaryDirectory(prefix="sledtrace-wheel-validate-") as temp_dir:
         venv_dir = Path(temp_dir) / "venv"
@@ -139,23 +237,30 @@ def validate_wheel() -> int:
 
             print(result.stdout.strip())
 
-        serve_result = run([str(sledtrace_exe), "serve"], cwd=Path(temp_dir))
-        if serve_result.returncode == 0:
-            print("Expected wheel-installed 'sledtrace serve' outside a checkout to fail.")
-            return 1
+        if bundled:
+            if check_bundled_serve(sledtrace_exe, python_exe, Path(temp_dir)) != 0:
+                return 1
+        else:
+            serve_result = run([str(sledtrace_exe), "serve"], cwd=Path(temp_dir))
+            if serve_result.returncode == 0:
+                print("Expected 'sledtrace serve' without a bundle or checkout to fail.")
+                return 1
 
-        if EXPECTED_SERVE_ERROR not in serve_result.stderr:
-            print(
-                "Wheel-installed 'sledtrace serve' did not provide the expected guidance:\n"
-                f"stdout:\n{serve_result.stdout}\nstderr:\n{serve_result.stderr}"
-            )
-            return 1
+            if EXPECTED_SERVE_ERROR not in serve_result.stderr:
+                print(
+                    "Wheel-installed 'sledtrace serve' did not provide the expected guidance:\n"
+                    f"stdout:\n{serve_result.stdout}\nstderr:\n{serve_result.stderr}"
+                )
+                return 1
 
-        print(serve_result.stderr.strip())
+            print(serve_result.stderr.strip())
 
     print("PASS: wheel install, import, and CLI validation succeeded.")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(validate_wheel())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--wheel", type=Path, help="wheel to validate (default: build or reuse dist/)")
+    options = parser.parse_args()
+    raise SystemExit(validate_wheel(options.wheel.resolve() if options.wheel else None))

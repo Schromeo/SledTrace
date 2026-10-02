@@ -63,6 +63,54 @@ jobs:
       - name: Validate copied independent app against installed wheel
         run: python scripts/validate-independent-app.py
 
+  packaged-serve:
+    name: pip install + sledtrace serve (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: sdk/python
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: collector/go/go.mod
+          cache-dependency-path: collector/go/go.sum
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: dashboard/web/package-lock.json
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip build
+          npm ci --prefix ../../dashboard/web
+
+      - name: Build the platform wheel with the bundled collector and dashboard
+        run: python scripts/build_wheels.py --targets current --no-sdk-only --outdir dist-bundled
+
+      - name: Install the wheel in a clean environment and run sledtrace serve
+        run: python scripts/validate-wheel.py --wheel dist-bundled/*.whl
+
   collector:
     name: Go Collector
     runs-on: ubuntu-latest
