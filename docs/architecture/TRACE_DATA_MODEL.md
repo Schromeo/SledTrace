@@ -3,8 +3,8 @@
 This is the initial v0.1 design with incremental historical updates, not a complete
 current implementation contract. In particular, the proposed prompt/custom and
 future span types below are not implemented; only retrieval/llm currently exist.
-Consult [AI_HANDOFF](../ai-context/AI_HANDOFF.md) for actual boundaries and
-[Road to v1.0](../product/ROAD_TO_V1_0.md) for proposed, not yet implemented extensions.
+The `tool` span type was added in v0.7.1. Historical design notes live in
+[docs/archive](../archive/README.md).
 
 ## Purpose
 
