@@ -550,12 +550,9 @@ bash ./scripts/mac/smoke.sh
 
 * `CONTRIBUTING.md` - Local setup, validation, and pull-request expectations.
 * `docs/releases/RELEASE_CHECKLIST.md` - Repeatable project and Python publication checklist.
-* `docs/ai-context/ROADMAP.md` - Milestones and planned sequencing.
-* `docs/ai-context/DEVLOG.md` - Chronological implementation log.
-* `docs/ai-context/CURRENT_TASK.md` - Current focus and immediate next steps.
+* `docs/PLAN_V0_8.md` - Current plan: polish the RAG debugger into the v0.8.0 release.
 * `docs/architecture/TRACE_DATA_MODEL.md` - Trace and span schema reference.
-* `docs/ai-context/AI_HANDOFF.md` - Latest handoff status and context.
-* `docs/product/V0_3_DIAGNOSTIC_INTELLIGENCE.md` - Diagnostic intelligence design notes.
+* `docs/archive/` - Historical roadmaps, development logs and frozen Agent-diagnosis work.
 
 ## Current status
 

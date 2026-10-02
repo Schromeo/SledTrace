@@ -43,6 +43,6 @@ Use this checklist for every project release. Tags and package-index versions ar
 
 - [ ] Publish the GitHub Release from the matching tag and release notes.
 - [ ] Verify the PyPI long description and project links.
-- [ ] Update README, `AGENTS.md`, and AI-context documents with actual—not intended—release state.
-- [ ] Record validation evidence, workflow URLs, tag, commit, and known limitations in `DEVLOG.md`.
+- [ ] Update README, `AGENTS.md`, and `docs/PLAN_V0_8.md` with actual—not intended—release state.
+- [ ] Record validation evidence, workflow URLs, tag, commit, and known limitations in the release notes under `docs/releases/`.
 - [ ] Confirm the final working tree is clean.
