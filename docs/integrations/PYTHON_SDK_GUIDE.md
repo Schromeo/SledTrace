@@ -2,23 +2,19 @@
 
 This guide covers the current SledTrace Python SDK API.
 
-It is intentionally API-focused. For broader product positioning and local-first onboarding flow, see `docs/product/USER_ONBOARDING.md`.
+It is intentionally API-focused. For a guided first integration, start with the
+[quickstart](../QUICKSTART.md).
 
-Current scope only:
+Covered here:
 
-- local-first tracing
-- `trace(...)`
-- retrieval spans
-- LLM spans
-- local collector flushes
+- `trace(...)` and span timing
+- retrieval, LLM and tool spans, and the explicit task result
+- chunk shape and retrieval score semantics
+- flushing to the local collector
+- recording OpenAI Responses usage
 
-Out of scope for this guide:
-
-- LangChain integration
-- LlamaIndex integration
-- OpenAI or Anthropic integration guides
-- agent, tool, or memory spans
-- cloud sync, auth, or hosted features
+Not available: automatic LangChain / LlamaIndex / provider instrumentation,
+memory or agent-loop spans, and cloud or hosted features.
 
 ## Installation
 
@@ -51,34 +47,14 @@ The default local collector URL is:
 http://localhost:4319
 ```
 
-Recommended local startup from the repo checkout:
-
-From the SledTrace repo root:
+Start the collector and dashboard with:
 
 ```bash
-python scripts/start-sledtrace.py
+sledtrace serve
 ```
 
-This repo-local helper starts the collector from `collector/go` and the dashboard from `dashboard/web`.
-
-You can still start services manually if needed.
-
-Collector:
-
-```bash
-cd collector/go
-go run ./cmd/sledtrace-collector
-```
-
-Dashboard:
-
-```bash
-cd dashboard/web
-npm ci
-npm run dev
-```
-
-If this is your first non-Docker Dashboard startup, run `npm ci` before `npm run dev`.
+This serves both on `http://127.0.0.1:4319`. To run from a source checkout or
+with Docker instead, see [development setup](../DEVELOPMENT.md).
 
 You can configure the collector URL through an environment variable in your app process.
 
@@ -140,8 +116,13 @@ trace(name, query=None, metadata=None, collector_url=None)
 t.measure()
 t.retrieval(query, chunks, name="retrieval", top_k=None, metadata=None, duration_ms=None, timing=None)
 t.llm(model, prompt=None, response=None, messages=None, name="llm", provider=None, input_tokens=None, output_tokens=None, latency_ms=None, metadata=None, timing=None)
+t.tool(name, input_summary=None, output_summary=None, *, status="ok", error=None, metadata=None, duration_ms=None, timing=None)
+t.log_task_result(result, accepted)
 t.flush(collector_url=None, timeout=5.0)
 t.try_flush(collector_url=None, timeout=5.0)
+
+normalize_chunk(chunk) / normalize_chunks(chunks)
+sledtrace.openai.record_response(t, response, name="openai-response")
 ```
 
 `trace(...)` returns a `SledTraceTrace` context manager.
@@ -376,6 +357,75 @@ t.llm(
     provider="local",
 )
 ```
+
+## Tool Spans and Task Results
+
+A synchronous, caller-instrumented `tool` span and an explicit task result are
+available since 0.7.1. From a source checkout, run the deterministic example
+without a paid model:
+
+```bash
+cd sdk/python
+python -m examples.agent_tool_demo success
+python -m examples.agent_tool_demo business-failure
+python -m examples.agent_tool_demo tool-recovery
+```
+
+Add `--flush` when a local Collector is running. The example uses one tool layer
+and simulated LLM outputs solely to check integration; it is not proof of value
+in a real external agent. For your own synchronous workflow, record safe input
+and output summaries, and keep the final task result separate from intermediate
+LLM responses:
+
+```python
+with trace("policy-review", metadata={
+    "task_id": "case-1", "run_id": "run-1",
+    "variant": "baseline", "app_version": "my-app-1",
+}) as t:
+    with t.measure() as timing:
+        found = lookup_policy("refund")
+    t.tool("policy_lookup", input_summary="refund key",
+           output_summary="one match" if found else "no match", timing=timing)
+    t.llm(model="my-model", response="draft", input_tokens=10)
+    t.log_task_result("review accepted", accepted=True)
+```
+
+`t.tool(...)` records only what the application supplies and returns a span ID.
+Use `status="error", error="safe summary"` for a failed tool or LLM attempt;
+the error is per step and does not automatically fail a recovered task.
+`log_task_result(result, accepted=...)` sets trace-level `task_result`,
+`accepted`, and the compatibility `answer` field; `accepted=False` marks the
+task trace as an error. No agent/LLM is run by the SDK, no provider usage is
+captured automatically, and sensitive arguments or secrets should not be put
+in summaries.
+
+## OpenAI Responses Usage
+
+Version 0.7.1 adds `sledtrace.openai.record_response` for one completed,
+non-streaming OpenAI Python SDK Responses result. Your application makes the provider call;
+the helper reads `response.model` and `response.usage` after the call and
+records an LLM span without storing prompts, output text, IDs, or credentials:
+
+```python
+from sledtrace import trace
+from sledtrace.openai import record_response
+
+# response = your_openai_client.responses.create(...)
+with trace("my-task") as t:
+    record_response(t, response)
+    # t.flush() when your local Collector is running
+```
+
+The OpenAI SDK is optional and not imported by SledTrace. Missing usage remains
+unknown; cached input and reasoning output are included in their parent counts,
+not added again. The Dashboard currently estimates Standard **text-token-only**
+USD cost for `gpt-4.1-mini` and `gpt-4o-mini` (including their documented
+snapshot IDs) using an official rate snapshot checked 2026-09-24. It leaves
+other models, missing cache counts, nonzero cache writes, and conflicted usage
+unpriced. This estimate is not a provider bill and excludes tools, alternate
+tiers, regional uplifts and other charges. Later model/rate overrides can be
+provided by a rate-card input in the Dashboard calculation; there is no user
+settings UI yet.
 
 ## flush() Behavior
 

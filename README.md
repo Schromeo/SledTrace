@@ -1,680 +1,117 @@
 # SledTrace
 
 [![CI](https://github.com/Schromeo/SledTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/Schromeo/SledTrace/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/sledtrace)](https://pypi.org/project/sledtrace/)
 
-SledTrace is an open-source, local-first observability and debugging tool for RAG pipelines.
+**A local debugger for RAG pipelines.** When your app gives a wrong answer,
+SledTrace shows you why: what the retriever returned, what the model was given,
+what it said, and where those disagree.
 
-It helps developers inspect why a RAG application produced a bad answer by showing the full pipeline: retrieved chunks, retrieval scores, prompts, responses, and diagnostic warnings.
+Everything runs on your machine. No account, no API key, nothing uploaded.
 
-SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
-
-Release history: [GitHub Releases](https://github.com/Schromeo/SledTrace/releases).
-This source tree and the published Python package are **0.7.1 — Trustworthy
-Local Tracing**. Install it from [PyPI](https://pypi.org/project/sledtrace/0.7.1/).
-
-Install the Python SDK from PyPI:
-
-```bash
-python -m pip install sledtrace
-```
-
-The `0.7.0rc1` prerelease remains available on [TestPyPI](https://test.pypi.org/project/sledtrace/0.7.0rc1/) as historical candidate provenance.
-
-#### Why "SledTrace"?
-
-Named after my husky. Running a RAG pipeline is like pulling a sled: many components - retrievers, rerankers, LLMs - pulling together like a dog team, and when the sled goes off course, you need to read the tracks in the snow to figure out which dog stumbled. SledTrace shows you the tracks.
-
-## Why SledTrace?
-
-RAG applications often fail silently.
-
-A wrong answer may come from:
-
-* no retrieved context
-* weak retrieval scores
-* duplicated chunks
-* conflicting retrieved evidence
-* stale or legacy documents
-* an answer that is not grounded in retrieved context
-* the model ignoring useful context
-
-SledTrace makes these failure modes visible so developers can debug the pipeline instead of guessing what went wrong.
-
-## Screenshots
-
-### Trace overview
-
-SledTrace shows local RAG traces with warning counts and demo case labels.
-
-![Trace overview](docs/assets/screenshots/trace-list.png)
-
-### Observed LLM usage
-
-The trace detail view shows recorded token usage and timing for each observed
-LLM call. Its known subtotal counts only calls with a trustworthy recorded or
-derived total, reports coverage separately, and labels unavailable values as
-unknown rather than zero. Caller-recorded usage has unknown provenance;
-explicitly copied OpenAI Responses usage is labeled per call. The optional
-text-token price estimate is limited to supported model IDs and is not a bill.
-
-The offline, sanitized example below shows 200 recorded tokens with 1/1
-coverage and a $0.000170 indicative text-token estimate. No provider request
-was made for this screenshot.
-
-![SledTrace 0.7.1 explicit Responses usage and indicative cost](docs/assets/screenshots/openai-responses-usage.jpg)
-
-### Conflicting retrieved context
-
-SledTrace can surface conflicting retrieved chunks, such as legacy and current refund policies that disagree.
-
-Current source labels these as heuristic checks, not calibrated probabilities.
-The warning explains its applicability while retaining evidence and recommended
-actions. No warnings does not establish that an answer is correct.
-
-![Heuristic conflict warning with evidence and recommended action](docs/assets/screenshots/heuristic-warning-detail.png)
-
-### Answer not grounded in retrieved context
-
-SledTrace can flag answers that introduce unsupported claims even when retrieval found relevant context.
-
-The full-layout image below is from the earlier v0.7.1 candidate. Its numerical
-confidence badge was uncalibrated; current source uses the heuristic presentation
-shown above instead.
-
-![Answer not grounded](docs/assets/screenshots/answer-not-grounded.png)
-
-## What SledTrace shows
-
-The current local MVP supports:
-
-* Python SDK tracing
-* retrieval span logging
-* LLM span logging
-* one caller-instrumented synchronous `tool` span and explicit task result
-* local Go collector
-* SQLite persistence
-* React dashboard
-* trace list
-* trace detail view
-* retrieved chunks viewer
-* LLM prompt / response viewer
-* per-call observed LLM usage, known subtotal, coverage, and timing gaps
-* explicit non-streaming OpenAI Responses usage recording and a bounded,
-  indicative Standard text-token cost estimate for supported models
-* evidence-backed warning cards
-* diagnostic signals, evidence items, and recommended actions
-* numeric value comparison blocks for grounding diagnostics
-
-Current implemented span types:
-
-* `retrieval`
-* `llm`
-* `tool` (introduced in the 0.7.1 source and package)
-
-Current warning rules:
-
-* `no_retrieved_chunks`
-* `low_retrieval_score`
-* `duplicate_chunks`
-* `weak_query_chunk_overlap`
-* `numeric_mismatch`
-* `conflicting_chunks`
-* `answer_not_grounded`
-
-The current warning rules are intentionally deterministic and local-first. SledTrace does not use LLM-as-judge by default.
-
-See `docs/demo/WARNING_RULES.md` for current rule definitions and limitations.
+![SledTrace dashboard](docs/assets/screenshots/dashboard-overview.png)
 
 ## Quickstart
 
-### Path A: Docker Compose local stack (recommended)
-
-Use this path when you are fresh-cloning the repo and want the fastest first run.
-
-Prerequisites: Git, Python 3.9+, and Docker Desktop (or another Docker Engine with Compose). Start Docker before running the command. On Windows, Docker Desktop also requires its WSL2 or Hyper-V virtualization backend to be enabled.
-
 ```bash
-docker compose up --build
-```
-
-In another terminal, verify collector health:
-
-```bash
-curl http://localhost:4319/health
-```
-
-Then generate reference traces:
-
-```bash
-cd sdk/python
-python -m pip install -e .
-python -m examples.reference_rag_app.run all
-```
-
-Open:
-
-```text
-http://localhost:5173
-```
-
-Collector and Dashboard host ports are published on `127.0.0.1` by default.
-The source-based Collector and Vite development server also default to loopback,
-and browser access is allowed only from the two local Dashboard origins
-(`localhost:5173` and `127.0.0.1:5173`). SDK and command-line requests without an
-`Origin` header continue to work normally.
-
-For intentional access from another machine, configure all three boundaries
-explicitly and review your firewall before starting the services:
-
-```bash
-# Docker Compose (.env)
-SLEDTRACE_BIND_HOST=0.0.0.0
-SLEDTRACE_ALLOWED_ORIGINS=http://YOUR_HOST:5173
-VITE_SLEDTRACE_API_URL=http://YOUR_HOST:4319
-
-# Source-based Collector
-SLEDTRACE_COLLECTOR_ADDR=0.0.0.0:4319
-SLEDTRACE_ALLOWED_ORIGINS=http://YOUR_HOST:5173
-
-# Source-based Dashboard
-VITE_SLEDTRACE_API_URL=http://YOUR_HOST:4319
-npm run dev -- --host 0.0.0.0
-
-# SDK process on another machine
-SLEDTRACE_COLLECTOR_URL=http://YOUR_HOST:4319
-```
-
-If you change the Dashboard port, include the resulting exact origin in
-`SLEDTRACE_ALLOWED_ORIGINS`. These settings expose an unauthenticated local
-development service; SledTrace does not add TLS or firewall rules.
-
-### Install and inspect the Python SDK
-
-```bash
-python -m pip install sledtrace
-sledtrace --help
-sledtrace version
-```
-
-New code should use the SledTrace import path:
-
-```python
-from sledtrace import trace
-```
-
-Legacy `raglens` compatibility remains temporary for migration support, but the project is SledTrace-first.
-
-### CLI and local services
-
-The package-installed CLI exposes help and version information everywhere. Starting the Collector and Dashboard remains source-checkout based:
-
-```bash
-cd sdk/python
-python -m pip install -e .
-
-sledtrace --help
-sledtrace version
+pip install sledtrace
 sledtrace serve
 ```
 
-`serve` delegates to the existing repo-local startup script so the collector and dashboard launch in the same way as the current local workflow.
-
-Run `sledtrace serve` from the repository root or any directory inside the checkout. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime. Outside a checkout, `serve` exits with guidance instead of guessing a repository path.
-
-Current recommended local stack:
-
-```bash
-docker compose up --build
-```
-
-### Path B: Repo-local startup helper (fallback)
-
-Use this path when you do not want Docker.
-
-Prerequisites: Python 3.9+, Go, Node.js 22, and npm. From the repo root, install the locked Dashboard dependencies once:
-
-```bash
-cd dashboard/web
-npm ci
-cd ../..
-```
-
-Then start local services:
-
-```bash
-python scripts/start-sledtrace.py
-```
-
-The helper checks Go, Node.js 22+, npm, installed Dashboard dependencies, and
-available ports before launching anything. It reports **SledTrace ready** only
-after Collector health and Dashboard HTTP checks pass. Vite uses a strict port:
-an occupied port produces guidance instead of silently moving the Dashboard.
-Ctrl+C or a startup/service failure cleans up the services started by the helper.
-
-For an alternative local port or a slow first Go build, invoke the helper
-directly (these options are not flags of the installed `sledtrace serve` CLI):
-
-```bash
-python scripts/start-sledtrace.py --dashboard-port 5174 --startup-timeout 120
-```
-
-The helper respects `SLEDTRACE_COLLECTOR_ADDR` (then
-`RAGLENS_COLLECTOR_ADDR`), derives the local health/API URL, and defaults CORS
-origins to the selected Dashboard port. Explicit `VITE_SLEDTRACE_API_URL`,
-`VITE_RAGLENS_API_URL`, and `SLEDTRACE_ALLOWED_ORIGINS` values remain overrides.
-It does not install dependencies or stop an existing service that owns a port.
-
-Then run traces in another terminal:
-
-```bash
-cd sdk/python
-python -m pip install -e .
-python -m examples.reference_rag_app.run all
-```
-
-Manual fallback startup (non-Docker):
-
-```bash
-cd collector/go
-go run ./cmd/sledtrace-collector
-
-cd dashboard/web
-npm install
-npm run dev
-```
-
-### Path C: Use SledTrace with your own RAG app
-
-Use this path when you want to instrument an existing Python RAG application instead of using only the built-in demo.
-
-1. Clone SledTrace somewhere locally.
-
-2. From the SledTrace repo root, start local services:
-
-```bash
-python scripts/start-sledtrace.py
-```
-
-3. In your own app virtual environment, install the SDK:
-
-```bash
-python -m pip install sledtrace
-```
-
-Contributors working against local SDK changes can instead use `python -m pip install -e /path/to/sledtrace/sdk/python`.
-
-Repository examples are validated against the SDK version declared by that
-checkout. If the checkout is ahead of the production package, install its
-editable SDK or built wheel before running those examples.
-
-Before adapting the calls to your application, you can exercise the complete
-integration contract with the standalone, standard-library-only example in the
-source checkout:
-
-```bash
-cd sdk/python
-python -m examples.independent_app success
-python -m examples.independent_app application-error
-python -m examples.independent_app collector-offline --collector-url http://127.0.0.1:1
-```
-
-The last two commands intentionally exit non-zero: `application-error` returns
-2 after storing an error trace, while `collector-offline` returns 1 after
-preserving the business result and reporting the delivery failure. The example
-file can be copied outside this repository and run anywhere that the built
-`sledtrace` wheel is installed; it does not import repository-only helpers.
-
-4. Instrument your own request path with the Python SDK:
-
-`t.measure()` and `t.try_flush()` below were introduced in **v0.7.1**. They
-are absent from `sledtrace==0.7.0`; for that older package, pass explicit
-`duration_ms`/`latency_ms` if known and use strict `t.flush()` instead.
+Your browser opens the dashboard at `http://127.0.0.1:4319`. Now send it a
+trace. Save this as `first_trace.py` and run it in another terminal:
 
 ```python
 from sledtrace import trace
 
+question = "How many days do customers have to return items after delivery?"
 
-def answer_question(user_query: str) -> str:
-    with trace(name="my-rag-request", query=user_query) as t:
-        with t.measure() as retrieval_timing:
-            retrieved = my_retriever(user_query)
-            chunks = to_sledtrace_chunks(retrieved)
+with trace(name="refund-question", query=question) as t:
+    t.retrieval(
+        query=question,
+        chunks=[
+            {"id": "policy-2024", "text": "Customers can return items within 30 days of delivery.",
+             "score": 0.82, "metadata": {"source": "refund_policy.md"}},
+            {"id": "policy-2021", "text": "Customers can return items within 14 days of delivery.",
+             "score": 0.79, "metadata": {"source": "legacy_refund_policy.md"}},
+        ],
+    )
+    t.llm(model="demo-model", prompt=question,
+          response="Customers have 45 days to return items after delivery.")
 
-        t.retrieval(
-            query=user_query,
-            chunks=chunks,
-            name="primary_retrieval",
-            top_k=len(chunks),
-            timing=retrieval_timing,
-        )
-
-        prompt = build_prompt(user_query, chunks)
-        with t.measure() as llm_timing:
-            answer = my_answerer(prompt)
-
-        t.llm(
-            model="my-model-name",
-            prompt=prompt,
-            response=answer,
-            name="answer_generation",
-            provider="local",
-            timing=llm_timing,
-        )
-
-    t.flush()
-    return answer
+print(t.flush())
 ```
 
-`t.flush()` remains strict: serialization, timeout, and Collector failures raise.
-When trace delivery must not replace a successful response or an existing
-application exception, choose the explicit observable best-effort path:
+Refresh the dashboard and open **refund-question**. SledTrace points out that
+the two retrieved policies contradict each other, and that the answer's
+"45 days" isn't supported by either of them:
 
-```python
-delivery = t.try_flush()
-if not delivery.ok:
-    print(f"SledTrace delivery failed: {delivery.error!r}")
+<img src="docs/assets/screenshots/warning-evidence.png" alt="Warnings with evidence and recommended actions" width="520">
+
+Ready to trace your own app? Follow the
+**[5-minute quickstart](docs/QUICKSTART.md)**.
+
+## What it catches
+
+| Warning | Meaning |
+| --- | --- |
+| `no_retrieved_chunks` | The retriever returned nothing usable |
+| `low_retrieval_score` | Even the best chunk scored low |
+| `duplicate_chunks` | The same text was retrieved more than once |
+| `weak_query_chunk_overlap` | Top chunks barely mention the question's key terms |
+| `conflicting_chunks` | Retrieved chunks disagree with each other |
+| `numeric_mismatch` | A number in the answer contradicts the retrieved context |
+| `answer_not_grounded` | A claim in the answer is weakly supported by the context |
+
+Every warning shows the evidence behind it and what to check next. The rules
+are deterministic heuristics that run locally; no LLM judges your data. See
+[warning rules](docs/demo/WARNING_RULES.md) for how each one works and where it
+falls short.
+
+SledTrace also records tool calls, the final task result, timing, and LLM token
+usage. Values it doesn't know are shown as unknown, never as zero.
+
+## How it works
+
+```text
+your Python app ──(sledtrace SDK)──▶ local collector ──▶ SQLite
+                                        │
+                                        └──▶ dashboard in your browser
 ```
 
-`try_flush()` returns a `TraceFlushResult`; it does not retry, queue, log, or hide
-the error from its result.
+You add a few calls to your request path (`trace`, `retrieval`, `llm`). The SDK
+sends each finished trace to the collector that `sledtrace serve` starts; the
+collector runs the warning rules and stores everything in
+`~/.sledtrace/sledtrace.db`.
 
-`to_sledtrace_chunks(...)` represents your app-owned adapter from retriever-native results to SledTrace chunk dictionaries.
+## Limits
 
-`t.measure()` times the actual operation with a monotonic clock and records its real UTC boundaries. Existing post-hoc `t.retrieval(...)` and `t.llm(...)` calls remain valid, but without a completed measurement or explicit latency their span duration is reported as not measured rather than a misleading `0ms`.
-
-A minimal chunk shape looks like this:
-
-```python
-{
-    "id": "chunk_1",
-    "text": "Customers may return most physical products within 30 days.",
-    "score": 0.92,
-    "score_type": "similarity",
-    "score_direction": "higher_is_better",
-    "metadata": {
-        "source": "refund_policy.md"
-    }
-}
-```
-
-Canonical `score` values are treated as higher-is-better for compatibility. Use
-`normalize_chunk(...)` / `normalize_chunks(...)` for retriever-native results:
-named similarity/relevance scores and distances keep their type and direction,
-while ambiguous tuple scores remain direction-unknown. SledTrace does not guess a
-universal `1 - distance` conversion, and distance/unknown values do not enter the
-higher-is-better low-score threshold.
-
-Current implemented span types are `retrieval` and `llm` only.
-
-For practical integration details, see:
-
-* `docs/product/USER_ONBOARDING.md`
-* `docs/integrations/PYTHON_SDK_GUIDE.md`
-* `sdk/python/examples/independent_app.py`
-* `sdk/python/examples/custom_pipeline_demo.py`
-
-## Local RAG demo
-
-The local demo is deterministic and API-key free.
-
-```bash
-cd sdk/python
-python -m examples.local_rag_demo.run_demo trace-all
-```
-
-Useful docs:
-
-* `docs/demo/LOCAL_RAG_DEMO.md`
-* `docs/demo/SMOKE_TEST.md`
-* `docs/demo/WARNING_RULES.md`
-
-## Diagnostic quality reference app
-
-This is the recommended validation app for v0.4 first-run checks.
-
-```bash
-cd sdk/python
-python -m examples.reference_rag_app.run all
-```
-
-Expected traces:
-
-* `reference-rag-app-refund`
-* `reference-rag-app-conflict`
-* `reference-rag-app-wrong-window`
-* `reference-rag-app-processing-range`
-* `reference-rag-app-wrong-processing-range`
-* `reference-rag-app-damaged`
-* `reference-rag-app-digital`
-* `reference-rag-app-subscription`
-* `reference-rag-app-weak`
-
-For full run guide, see `docs/demo/REFERENCE_RAG_APP.md`.
-
-## Optional real LLM validation
-
-The default demos do not require an API key.
-
-```bash
-cd sdk/python
-python -m examples.real_llm_rag_demo all
-```
-
-## Windows PowerShell shortcuts
-
-You can also use the provided PowerShell scripts from the repository root.
-
-One-click start:
-
-```powershell
-python .\scripts\start-sledtrace.py
-```
-
-Start the collector:
-
-```powershell
-.\scripts\windows\start-collector.ps1
-```
-
-Start the dashboard in another terminal:
-
-```powershell
-.\scripts\windows\start-dashboard.ps1
-```
-
-Generate demo traces in a third terminal:
-
-```powershell
-.\scripts\windows\demo-trace-all.ps1
-```
-
-Run the smoke test:
-
-```powershell
-.\scripts\windows\smoke.ps1
-```
-
-## macOS shortcuts
-
-On macOS, use the shell scripts in `scripts/mac`.
-
-One-click start:
-
-```bash
-python ./scripts/start-sledtrace.py
-```
-
-Start the collector:
-
-```bash
-bash ./scripts/mac/start-collector.sh
-```
-
-Start the dashboard in another terminal:
-
-```bash
-bash ./scripts/mac/start-dashboard.sh
-```
-
-Generate demo traces in a third terminal:
-
-```bash
-bash ./scripts/mac/demo-trace-all.sh
-```
-
-Run the smoke test:
-
-```bash
-bash ./scripts/mac/smoke.sh
-```
+- Python only, with explicit calls: there are no automatic LangChain or
+  LlamaIndex integrations yet.
+- Warnings are heuristics built on English text patterns, not a correctness
+  verdict.
+- Token usage is recorded only when you pass it (for example with
+  `sledtrace.openai.record_response`); cost estimates are indicative.
+- Local, single-user tool: no hosting, authentication or team features.
+- Prebuilt `sledtrace serve` for Windows, macOS and Linux (x86-64 and ARM64).
+  On other platforms, [run from source](docs/DEVELOPMENT.md).
 
 ## Documentation
 
-### For users
+- [Quickstart](docs/QUICKSTART.md): instrument your own RAG app.
+- [Python SDK guide](docs/integrations/PYTHON_SDK_GUIDE.md): full API reference.
+- [Warning rules](docs/demo/WARNING_RULES.md): what each warning checks.
+- [Development setup](docs/DEVELOPMENT.md): run from source, Docker, demos, configuration.
+- [Contributing](CONTRIBUTING.md) and [release notes](docs/releases/).
+- [Renaming from RAGLens](docs/REBRANDING.md): `raglens` imports still work.
 
-* `docs/product/USER_ONBOARDING.md` - Integrate SledTrace into an existing RAG app.
-* `docs/integrations/PYTHON_SDK_GUIDE.md` - Python SDK API usage.
-* `docs/demo/LOCAL_RAG_DEMO.md` - Deterministic local demo flow.
-* `docs/demo/REFERENCE_RAG_APP.md` - Reference integration runbook.
-* `docs/demo/SMOKE_TEST.md` - End-to-end smoke test flow.
-* `docs/demo/WARNING_RULES.md` - Current warning rules and limitations.
-* `docs/releases/V0_4_0.md` - v0.4.0 release notes (originally released under the RAGLens name).
-* `docs/releases/V0_4_1.md` - SledTrace v0.4.1 rebrand release notes.
-* `docs/releases/V0_5_0.md` - Python SDK distribution and packaging-readiness release notes.
-* `docs/releases/V0_6_0.md` - Local CLI and startup UX release notes.
-* `docs/releases/V0_7_0.md` - External Developer Readiness release notes.
-* `docs/releases/V0_7_1.md` - Trustworthy Local Tracing release notes.
-* `docs/REBRANDING.md` - migration notes for the RAGLens to SledTrace rename.
+## Why "SledTrace"?
 
-### For contributors / maintainers
+Named after my husky. A RAG pipeline is like a sled team: retrievers, rerankers
+and LLMs all pulling together. When the sled goes off course, you read the
+tracks in the snow to find out which dog stumbled. SledTrace shows you the
+tracks.
 
-* `CONTRIBUTING.md` - Local setup, validation, and pull-request expectations.
-* `docs/releases/RELEASE_CHECKLIST.md` - Repeatable project and Python publication checklist.
-* `docs/PLAN_V0_8.md` - Current plan: polish the RAG debugger into the v0.8.0 release.
-* `docs/architecture/TRACE_DATA_MODEL.md` - Trace and span schema reference.
-* `docs/archive/` - Historical roadmaps, development logs and frozen Agent-diagnosis work.
+## License
 
-## Current status
-
-Milestone snapshot:
-
-* v0.1 local RAG debugger MVP: complete
-* v0.2 developer integration / local SDK onboarding: complete
-* v0.3 diagnostic intelligence core: complete
-* v0.3.5 deterministic diagnostic-quality hardening: complete
-* v0.4.0 Docker/local first-run release: complete
-* v0.4.1 rebrand release: complete
-* v0.5.0 Python SDK distribution / packaging readiness: complete
-* v0.6.0 local CLI / startup UX: complete
-* v0.7.0 external developer readiness: complete
-* v0.7.1 trustworthy local tracing and explicit Responses usage: released
-
-Published releases:
-
-* [v0.5.0 — Python SDK Packaging Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.5.0)
-* [v0.6.0 — Local CLI / Startup UX](https://github.com/Schromeo/SledTrace/releases/tag/v0.6.0)
-* [v0.7.0 — External Developer Readiness](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.0)
-* [v0.7.1 — Trustworthy Local Tracing](https://github.com/Schromeo/SledTrace/releases/tag/v0.7.1)
-
-Current source version:
-
-```text
-v0.7.1 - Trustworthy Local Tracing
-```
-
-Completed:
-
-* Python SDK tracing foundation
-* Go collector ingestion APIs
-* SQLite trace/span/warning persistence
-* React dashboard MVP
-* Warning Engine / Diagnosis Layer MVP
-* Real Local RAG Demo using local markdown docs, TF-IDF retrieval, cosine similarity, and a deterministic local answerer
-* Developer Integration / Local SDK Onboarding
-* User onboarding documentation
-* Python SDK guide
-* Custom pipeline integration example
-* Cross-platform repo-local startup helper
-* Warning Schema v2
-* Evidence-backed warning details
-* Diagnostic signals, evidence items, and diagnostic objects
-* Dashboard warning detail rendering with evidence previews, numeric value diffs, and recommended actions
-* Deterministic diagnostic hardening for:
-
-  * natural-language numeric ranges such as `5 to 10 business days`
-  * elapsed-time false-positive protection such as `20 days ago`
-  * relevance-aware conflicting chunk selection
-  * topic-gated conflicting chunk selection
-  * query-intent compatibility for conflict warnings
-* Thin reference RAG app with mixed retrieval output normalization
-* Optional real LLM validation demo
-* Docker Compose local stack for collector + dashboard
-* root `.env.example` and Docker reset guidance
-* v0.4 release notes and first-run docs cleanup
-* locally buildable Python wheel and sdist
-* installable `sledtrace` console script with help and version commands
-* source-checkout-aware `sledtrace serve` delegation
-* cross-stack GitHub Actions CI and protected `main` checks
-* OIDC Trusted Publishing for the Python package
-* production PyPI installation path
-* clean-clone and browser-visible reference-trace validation
-* contributor templates and repeatable release checklist
-
-The default demo requires no external LLM API and no API key.
-
-## Current limitations
-
-Current scope limits:
-
-* only `retrieval`, `llm`, and one synchronous `tool` span are implemented
-* provider usage requires an explicit caller boundary; there is no automatic
-  interception, provider-wide coverage, or billing reconciliation
-* price estimates cover Standard text tokens for a small, dated model list;
-  unsupported or ambiguous conditions remain unpriced
-* onboarding path is local-first and repo-based
-* the SDK is distributed through PyPI, source checkout, or locally built wheel artifacts
-* `sledtrace serve` runs without a source checkout only where a platform wheel exists (Windows, macOS, Linux on x86-64/ARM64)
-* no LangChain adapter yet
-* no LlamaIndex adapter yet
-* no cloud sync, auth, hosted collector, or hosted features
-* no full LLM-as-judge grounding evaluator
-* no running-trace lifecycle handling for multi-step agent harnesses
-* no partial span ingestion
-* no retry spans
-* no diagnostics for agent loops, oscillation, retry storms, or no-progress execution
-
-## Project direction
-
-SledTrace starts as a local-first visual debugger for RAG pipelines.
-
-SledTrace starts with RAG pipeline debugging because retrieval, context quality, conflicting evidence, and grounding are common failure points in AI applications.
-
-The longer-term direction is to evolve the tracing core into a local-first observability layer for AI application harnesses: systems that manage context, tools, memory, model calls, verification, and feedback around foundation models.
-
-In that direction, SledTrace can grow beyond the current bounded retrieval, LLM, and tool records toward memory, verification, human feedback, and richer diagnostics over AI application traces. Those remain future direction and are not implemented in the current SDK.
-
-Future agent harness observability may also include running-trace lifecycle handling, partial span ingestion, additional span types such as agent and retry, plus diagnostics for agent loops, oscillation, retry storms, and no-progress execution. These are not implemented in current SledTrace.
-
-Near-term focus after v0.7:
-
-* collect evidence from external first-run attempts
-* convert real onboarding blockers into a small public issue backlog
-* automate Docker smoke validation when the maintenance cost is justified
-* validate the explicit provider-usage path in a real, user-owned workflow
-* preserve deterministic-first warning generation and stable trace contracts
-
-The TestPyPI candidate and production PyPI paths use OIDC Trusted Publishing. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope; the next product milestone will be selected from external-use evidence.
-
-## Design principles
-
-SledTrace follows a few core principles:
-
-* local-first by default
-* deterministic demo path
-* no API key required for the default local demo
-* explain RAG failures instead of only displaying raw traces
-* make retrieved evidence, prompts, responses, and warnings inspectable
-* keep warning rules simple, explicit, evidence-backed, and documented
-* preserve current trace contracts while improving developer experience
-
-
+[MIT](LICENSE)

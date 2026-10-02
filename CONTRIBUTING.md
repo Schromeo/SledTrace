@@ -1,15 +1,16 @@
 # Contributing to SledTrace
 
-SledTrace is a local-first debugger for RAG pipelines. Contributions should preserve the current `retrieval` and `llm` span contracts, deterministic diagnostics, and the temporary `raglens` compatibility layer unless a separately documented change explicitly replaces them.
+SledTrace is a local-first debugger for RAG pipelines. Contributions should preserve the current `retrieval`, `llm` and `tool` span contracts, deterministic diagnostics, and the temporary `raglens` compatibility layer unless a separately documented change explicitly replaces them.
 
 ## Before opening an issue
 
 - Search existing issues first.
 - Use the bug template for reproducible failures and the feature template for scoped proposals.
-- Do not describe planned capabilities as implemented. Agent/tool/memory spans, framework adapters, cloud hosting, authentication, and LLM-as-judge are not part of the current product.
+- Do not describe planned capabilities as implemented. Agent-loop and memory spans, framework adapters, cloud hosting, authentication, and LLM-as-judge are not part of the current product.
 
 ## Local setup
 
+[Development setup](docs/DEVELOPMENT.md) covers every way to run from source.
 The recommended first run uses Docker Desktop with Docker Compose:
 
 ```bash
@@ -64,7 +65,7 @@ On Windows use `npm.cmd` if PowerShell does not resolve `npm` correctly.
 - Keep the change focused and explain the user-visible outcome.
 - Include tests for behavior changes.
 - Include browser evidence for Dashboard-facing changes.
-- Update public and AI-context documentation when release state or supported behavior changes.
+- Update the public documentation when release state or supported behavior changes.
 - Keep generated build artifacts and virtual environments out of Git.
 - Wait for all required CI checks before merging.
 
