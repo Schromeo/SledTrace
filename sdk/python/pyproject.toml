@@ -41,6 +41,10 @@ sledtrace = "sledtrace.cli:main"
 where = ["."]
 include = ["raglens*", "sledtrace*"]
 
+# Present only in platform wheels built by scripts/build_wheels.py.
+[tool.setuptools.package-data]
+sledtrace = ["_bundle/*", "_bundle/dashboard/*", "_bundle/dashboard/**/*"]
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"

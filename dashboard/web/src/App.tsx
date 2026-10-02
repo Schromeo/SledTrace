@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_BASE_URL } from "./api/client";
+import { API_DISPLAY_URL } from "./api/client";
 import TraceDetailPage from "./pages/TraceDetailPage";
 import TraceListPage from "./pages/TraceListPage";
 
@@ -30,7 +30,7 @@ export default function App() {
         </div>
 
         <div className="topbar-right">
-          <span className="status-pill">Collector: {API_BASE_URL}</span>
+          <span className="status-pill">Collector: {API_DISPLAY_URL}</span>
         </div>
       </header>
 

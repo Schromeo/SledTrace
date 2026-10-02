@@ -83,7 +83,8 @@ def test_cli_help_describes_source_checkout_limit(capsys) -> None:
 
     output = " ".join(capsys.readouterr().out.split())
     assert "source checkout" in output
-    assert "standalone wheel-installed serving is not supported" in output
+    assert "--no-browser" in output
+    assert "--port" in output
 
 
 def test_cli_version_reports_package_version(capsys) -> None:
@@ -105,6 +106,7 @@ def test_serve_outside_checkout_fails_with_guidance(
     capsys,
 ) -> None:
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sledtrace.cli, "find_bundle", lambda: None)
 
     assert sledtrace.cli.serve() == 1
     assert capsys.readouterr().err.strip() == sledtrace.cli.SERVE_CHECKOUT_ERROR
@@ -120,6 +122,7 @@ def test_serve_delegates_to_repo_startup_script(
     calls: list[list[str]] = []
 
     monkeypatch.chdir(nested)
+    monkeypatch.setattr(sledtrace.cli, "find_bundle", lambda: None)
     monkeypatch.setattr(
         subprocess,
         "call",

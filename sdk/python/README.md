@@ -57,7 +57,17 @@ sledtrace version
 
 `sledtrace version` reports `0.7.1` for this source tree and its built wheel.
 
-`sledtrace serve` must be run from inside a SledTrace source checkout. It locates the repository from the current working directory and delegates to `scripts/start-sledtrace.py`. The wheel does not bundle the Collector, Dashboard, Docker assets, or a standalone serving runtime; outside a checkout, `serve` exits with actionable guidance.
+`sledtrace serve` starts the local collector and dashboard on one address
+(default `http://127.0.0.1:4319`, which is also the SDK's default collector URL)
+and opens the dashboard in your browser. Traces are stored in
+`~/.sledtrace/sledtrace.db` unless `--db` or `SLEDTRACE_DB_PATH` says otherwise.
+Run `sledtrace serve --help` for `--port`, `--host`, `--db` and `--no-browser`.
+
+Platform wheels for Windows, macOS and Linux (x86-64 and ARM64) include the
+collector binary and the built dashboard, so no Go, Node.js or source checkout
+is needed. On other platforms pip falls back to the SDK-only wheel; there,
+`sledtrace serve` works from inside a SledTrace source checkout
+(it runs `scripts/start-sledtrace.py`) and otherwise exits with guidance.
 
 ## Copyable independent-app example
 
