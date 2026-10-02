@@ -1,0 +1,556 @@
+{
+  "trace": {
+    "trace_id": "trace_demo_comprehensive_20260924",
+    "name": "refund-policy-agent",
+    "status": "ok",
+    "input": {
+      "query": "How long can customers return a physical product under the current refund policy?"
+    },
+    "output": {
+      "answer": "Customers can return a physical product within 45 days.",
+      "accepted": false,
+      "result_type": "policy_answer"
+    },
+    "metadata": {
+      "sdk_language": "python",
+      "sdk_version": "0.7.1",
+      "app": "support-rag-agent",
+      "environment": "local",
+      "request_id": "req_demo_20260924_001",
+      "task_id": "refund-window-qa",
+      "run_id": "run_20260924_001",
+      "variant": "prompt-v3",
+      "app_version": "2026.09.24",
+      "answer_mode": "deterministic_simulation",
+      "retriever": "hybrid_policy_search",
+      "warning_count_expected": 5
+    },
+    "started_at": "2026-09-24T15:00:00.000000Z",
+    "ended_at": "2026-09-24T15:00:01.840000Z",
+    "duration_ms": 1840
+  },
+  "spans": [
+    {
+      "span_id": "span_demo_retrieval_001",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "parent_span_id": null,
+      "type": "retrieval",
+      "name": "hybrid_policy_search",
+      "status": "ok",
+      "input": {
+        "query": "How long can customers return a physical product under the current refund policy?",
+        "top_k": 4,
+        "filters": {
+          "document_type": "refund_policy"
+        }
+      },
+      "output": {
+        "chunks": [
+          {
+            "id": "chunk_refund_current_001",
+            "text": "Customers may return most physical products within 30 days of the purchase date. The product must be unused and undamaged.",
+            "score": 0.42,
+            "score_type": "similarity",
+            "score_direction": "higher_is_better",
+            "source": "refund_policy_current.md",
+            "document_id": "refund_policy",
+            "rank": 1,
+            "metadata": {
+              "policy_version": "2026.06",
+              "document_status": "current",
+              "section": "physical_returns",
+              "retriever_stage": "hybrid"
+            }
+          },
+          {
+            "id": "chunk_refund_legacy_001",
+            "text": "Customers may request a refund for physical products within 14 days of purchase under the archived refund policy.",
+            "score": 0.37,
+            "score_type": "similarity",
+            "score_direction": "higher_is_better",
+            "source": "refund_policy_legacy.md",
+            "document_id": "refund_policy_legacy",
+            "rank": 2,
+            "metadata": {
+              "policy_version": "2021.04",
+              "document_status": "archived",
+              "section": "physical_returns",
+              "retriever_stage": "hybrid"
+            }
+          },
+          {
+            "id": "chunk_refund_current_duplicate",
+            "text": "Customers may return most physical products within 30 days of the purchase date. The product must be unused and undamaged.",
+            "score": 0.35,
+            "score_type": "similarity",
+            "score_direction": "higher_is_better",
+            "source": "refund_policy_current_copy.md",
+            "document_id": "refund_policy_copy",
+            "rank": 3,
+            "metadata": {
+              "policy_version": "2026.06",
+              "document_status": "current",
+              "section": "physical_returns",
+              "retriever_stage": "hybrid",
+              "copy_of": "chunk_refund_current_001"
+            }
+          },
+          {
+            "id": "chunk_shipping_001",
+            "text": "Standard shipping usually takes 5 to 7 business days after an order has been processed.",
+            "score": 0.18,
+            "score_type": "similarity",
+            "score_direction": "higher_is_better",
+            "source": "shipping_policy.md",
+            "document_id": "shipping_policy",
+            "rank": 4,
+            "metadata": {
+              "policy_version": "2026.05",
+              "document_status": "current",
+              "section": "shipping_times",
+              "retriever_stage": "hybrid"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "retriever": "hybrid_policy_search",
+        "embedding_model": "local-embedding-v2",
+        "keyword_stage": "bm25",
+        "reranker": "cross_encoder_local",
+        "low_score_threshold": 0.5,
+        "requested_top_k": 4,
+        "returned_chunks": 4
+      },
+      "started_at": "2026-09-24T15:00:00.120000Z",
+      "ended_at": "2026-09-24T15:00:00.620000Z",
+      "duration_ms": 500,
+      "error": null
+    },
+    {
+      "span_id": "span_demo_llm_001",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "parent_span_id": null,
+      "type": "llm",
+      "name": "generate_policy_answer",
+      "status": "ok",
+      "input": {
+        "model": "gpt-4o-mini",
+        "prompt": "Answer only from the retrieved policy context. Prefer current documents over archived documents. If the context conflicts, explain the conflict.\n\nQuestion: How long can customers return a physical product under the current refund policy?\n\nContext:\n[1] refund_policy_current.md: Customers may return most physical products within 30 days of the purchase date.\n[2] refund_policy_legacy.md: Customers may request a refund within 14 days under the archived policy.\n[3] refund_policy_current_copy.md: Customers may return most physical products within 30 days.\n[4] shipping_policy.md: Standard shipping takes 5 to 7 business days.",
+        "messages_count": 2
+      },
+      "output": {
+        "response": "Customers can return a physical product within 45 days."
+      },
+      "metadata": {
+        "provider": "openai-compatible",
+        "temperature": 0.2,
+        "input_tokens": 412,
+        "output_tokens": 18,
+        "total_tokens": 430,
+        "usage_source": "caller_supplied",
+        "usage_verified": false,
+        "latency_ms": 1340,
+        "finish_reason": "stop"
+      },
+      "started_at": "2026-09-24T15:00:00.660000Z",
+      "ended_at": "2026-09-24T15:00:02.000000Z",
+      "duration_ms": 1340,
+      "error": null
+    }
+  ],
+  "warnings": [
+    {
+      "warning_id": "warning_demo_low_score",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "span_id": "span_demo_retrieval_001",
+      "type": "low_retrieval_score",
+      "severity": "warning",
+      "message": "Retrieved chunks have low relevance scores.",
+      "details": {
+        "threshold": 0.5,
+        "max_score": 0.42,
+        "scored_chunk_count": 4,
+        "reason": "highest comparable retrieved score is below threshold"
+      },
+      "schema_version": "2",
+      "rule_id": "low_retrieval_score",
+      "rule_version": "1",
+      "title": "Low retrieval score",
+      "category": "retrieval",
+      "explanation": "The best comparable retrieval score is below the configured threshold.",
+      "signals": [
+        {
+          "signal_id": "top_retrieval_score_below_threshold",
+          "label": "Top retrieval score is below threshold",
+          "observed": 0.42,
+          "expected": 0.5,
+          "comparator": "below_threshold",
+          "strength": "strong"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence_demo_low_score",
+          "type": "retrieval_stat",
+          "label": "Top retrieval score below configured threshold",
+          "span_id": "span_demo_retrieval_001",
+          "snippet": "max_score=0.42 threshold=0.5",
+          "attributes": {
+            "max_score": 0.42,
+            "threshold": 0.5,
+            "score_semantics": "similarity, higher is better"
+          }
+        }
+      ],
+      "diagnostics": [],
+      "recommended_action": "Inspect query construction, ranking, and score calibration for this retriever.",
+      "created_at": "2026-09-24T15:00:02.010000Z"
+    },
+    {
+      "warning_id": "warning_demo_duplicate",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "span_id": null,
+      "type": "duplicate_chunks",
+      "severity": "warning",
+      "message": "Retrieved chunks contain duplicate text.",
+      "details": {
+        "duplicate_groups": [
+          {
+            "normalized_text": "customers may return most physical products within 30 days of the purchase date the product must be unused and undamaged",
+            "chunk_ids": [
+              "chunk_refund_current_001",
+              "chunk_refund_current_duplicate"
+            ],
+            "span_ids": [
+              "span_demo_retrieval_001",
+              "span_demo_retrieval_001"
+            ]
+          }
+        ],
+        "reason": "multiple retrieved chunks have identical normalized text"
+      },
+      "schema_version": "2",
+      "rule_id": "duplicate_chunks",
+      "rule_version": "1",
+      "title": "Duplicate retrieved chunks",
+      "category": "retrieval",
+      "explanation": "Two retrieved chunks contain the same normalized text.",
+      "signals": [
+        {
+          "signal_id": "duplicate_chunk_groups_detected",
+          "label": "Duplicate retrieved chunk groups detected",
+          "observed": 1,
+          "expected": 0,
+          "comparator": "greater_than_zero",
+          "strength": "moderate"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence_demo_duplicate",
+          "type": "retrieval_stat",
+          "label": "Duplicate retrieved chunk groups",
+          "snippet": "1 duplicate group detected",
+          "attributes": {
+            "chunk_ids": [
+              "chunk_refund_current_001",
+              "chunk_refund_current_duplicate"
+            ]
+          }
+        }
+      ],
+      "diagnostics": [],
+      "recommended_action": "Inspect chunking and deduplication so repeated context does not crowd out distinct evidence.",
+      "created_at": "2026-09-24T15:00:02.011000Z"
+    },
+    {
+      "warning_id": "warning_demo_conflict",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "span_id": null,
+      "type": "conflicting_chunks",
+      "severity": "warning",
+      "message": "Retrieved chunks contain conflicting numeric values: 30 days vs 14 days.",
+      "details": {
+        "left_value": "30 days",
+        "right_value": "14 days",
+        "left_chunk_id": "chunk_refund_current_001",
+        "right_chunk_id": "chunk_refund_legacy_001",
+        "left_topic": "return_window",
+        "right_topic": "return_window",
+        "shared_terms": ["return", "physical", "product"],
+        "query_matched_terms": ["return", "current", "product"],
+        "answer_matched_terms": ["return", "physical", "product"],
+        "reason": "retrieved chunks contain different numeric values in similar local context"
+      },
+      "schema_version": "2",
+      "rule_id": "conflicting_chunks",
+      "rule_version": "2",
+      "title": "Retrieved chunks contain conflicting values",
+      "category": "conflict",
+      "explanation": "Current and archived retrieved documents state different return windows.",
+      "signals": [
+        {
+          "signal_id": "same_unit_different_retrieved_values",
+          "label": "Retrieved chunks contain different values with the same unit",
+          "observed": ["30 days", "14 days"],
+          "expected": "one consistent retrieved value",
+          "comparator": "multiple_distinct_values",
+          "strength": "strong"
+        },
+        {
+          "signal_id": "conflict_relevant_to_query",
+          "label": "Selected conflict is relevant to query terms",
+          "observed": 3,
+          "expected": "> 0",
+          "comparator": "query_overlap_count",
+          "strength": "moderate"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence_demo_conflict_current",
+          "type": "chunk_snippet",
+          "label": "Current refund policy value",
+          "span_id": "span_demo_retrieval_001",
+          "chunk_id": "chunk_refund_current_001",
+          "source": "refund_policy_current.md",
+          "snippet": "Customers may return most physical products within 30 days of the purchase date.",
+          "attributes": {
+            "value": "30 days",
+            "document_status": "current",
+            "rank": 1
+          }
+        },
+        {
+          "evidence_id": "evidence_demo_conflict_legacy",
+          "type": "chunk_snippet",
+          "label": "Archived refund policy value",
+          "span_id": "span_demo_retrieval_001",
+          "chunk_id": "chunk_refund_legacy_001",
+          "source": "refund_policy_legacy.md",
+          "snippet": "Customers may request a refund for physical products within 14 days of purchase under the archived refund policy.",
+          "attributes": {
+            "value": "14 days",
+            "document_status": "archived",
+            "rank": 2
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "diagnostic_object_id": "diagnostic_demo_conflict_group",
+          "type": "conflict_group",
+          "label": "Conflicting retrieved numeric values",
+          "normalized": {
+            "values": ["30 days", "14 days"],
+            "unit": "days"
+          },
+          "attributes": {
+            "source_chunks": ["chunk_refund_current_001", "chunk_refund_legacy_001"]
+          }
+        }
+      ],
+      "recommended_action": "Inspect source freshness and ranking to decide which retrieved policy should be trusted.",
+      "created_at": "2026-09-24T15:00:02.012000Z"
+    },
+    {
+      "warning_id": "warning_demo_numeric_mismatch",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "span_id": "span_demo_llm_001",
+      "type": "numeric_mismatch",
+      "severity": "high",
+      "message": "Answer says 45 days, but retrieved context says 30 days.",
+      "details": {
+        "answer_value": "45 days",
+        "retrieved_value": "30 days",
+        "chunk_id": "chunk_refund_current_001",
+        "chunk_rank": 1,
+        "shared_terms": ["return", "product"],
+        "reason": "answer numeric value differs from retrieved numeric value in similar local context"
+      },
+      "schema_version": "2",
+      "rule_id": "numeric_mismatch",
+      "rule_version": "2",
+      "title": "Answer numeric value conflicts with retrieved context",
+      "category": "grounding",
+      "explanation": "The final answer introduces a return-window value that differs from retrieved evidence.",
+      "signals": [
+        {
+          "signal_id": "same_unit_different_value",
+          "label": "Same unit but different numeric value",
+          "observed": "45 days",
+          "expected": "30 days",
+          "comparator": "not_equal",
+          "strength": "strong"
+        },
+        {
+          "signal_id": "local_context_overlap",
+          "label": "Answer and chunk values share local context",
+          "observed": "return, product",
+          "expected": "at least one shared context term",
+          "comparator": "overlap_greater_than_zero",
+          "strength": "moderate"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence_demo_answer_value",
+          "type": "answer_snippet",
+          "label": "Answer numeric claim",
+          "span_id": "span_demo_llm_001",
+          "snippet": "Customers can return a physical product within 45 days.",
+          "attributes": {
+            "value": "45 days",
+            "source": "answer"
+          }
+        },
+        {
+          "evidence_id": "evidence_demo_retrieved_value",
+          "type": "numeric_value",
+          "label": "Retrieved policy numeric value",
+          "span_id": "span_demo_retrieval_001",
+          "chunk_id": "chunk_refund_current_001",
+          "source": "refund_policy_current.md",
+          "snippet": "within 30 days of the purchase date",
+          "attributes": {
+            "answer_value": "45 days",
+            "retrieved_value": "30 days"
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "diagnostic_object_id": "diagnostic_demo_numeric_answer",
+          "type": "numeric_claim",
+          "label": "Numeric value in final answer",
+          "span_id": "span_demo_llm_001",
+          "text": "45 days",
+          "normalized": {
+            "value": "45",
+            "unit": "days"
+          }
+        },
+        {
+          "diagnostic_object_id": "diagnostic_demo_numeric_chunk",
+          "type": "chunk_fact",
+          "label": "Numeric value in retrieved chunk",
+          "span_id": "span_demo_retrieval_001",
+          "text": "within 30 days of the purchase date",
+          "normalized": {
+            "value": "30",
+            "unit": "days",
+            "chunk_id": "chunk_refund_current_001"
+          }
+        }
+      ],
+      "recommended_action": "Inspect whether the answer ignored current evidence or confused policy versions.",
+      "created_at": "2026-09-24T15:00:02.013000Z"
+    },
+    {
+      "warning_id": "warning_demo_not_grounded",
+      "trace_id": "trace_demo_comprehensive_20260924",
+      "span_id": "span_demo_llm_001",
+      "type": "answer_not_grounded",
+      "severity": "warning",
+      "message": "Answer contains a numeric claim that is not supported by the retrieved context.",
+      "details": {
+        "answer": "Customers can return a physical product within 45 days.",
+        "unsupported_values": ["45 days"],
+        "supporting_context_values": ["30 days", "14 days"],
+        "reason": "final answer contains a claim with weak lexical support in retrieved chunks"
+      },
+      "schema_version": "2",
+      "rule_id": "answer_not_grounded",
+      "rule_version": "1",
+      "title": "Answer may not be grounded",
+      "category": "grounding",
+      "explanation": "The final answer introduces a value that does not appear in the retrieved evidence.",
+      "signals": [
+        {
+          "signal_id": "unsupported_answer_claim_detected",
+          "label": "Unsupported answer claim detected",
+          "observed": ["45 days"],
+          "expected": "present in retrieved context",
+          "comparator": "not_present_in_retrieved_context",
+          "strength": "moderate"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence_demo_ungrounded_answer",
+          "type": "answer_snippet",
+          "label": "Final answer under review",
+          "span_id": "span_demo_llm_001",
+          "snippet": "Customers can return a physical product within 45 days.",
+          "attributes": {
+            "unsupported_values": ["45 days"]
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "diagnostic_object_id": "diagnostic_demo_unsupported_claim",
+          "type": "numeric_claim",
+          "label": "Unsupported answer value",
+          "span_id": "span_demo_llm_001",
+          "text": "45 days",
+          "normalized": {
+            "unsupported_days": ["45 days"]
+          }
+        }
+      ],
+      "recommended_action": "Compare the final answer against the retrieved context and check for unsupported claims.",
+      "created_at": "2026-09-24T15:00:02.014000Z"
+    }
+  ],
+  "separate_rule_scenarios": [
+    {
+      "name": "empty-retrieval-control-case",
+      "purpose": "The empty retrieval rule is separate because the main trace contains chunks.",
+      "trace_id": "trace_demo_empty_retrieval_20260924",
+      "input": {
+        "query": "What is the policy for international livestock transport?"
+      },
+      "retrieval_output": {
+        "chunks": []
+      },
+      "expected_warning": "no_retrieved_chunks",
+      "expected_behavior": "The Collector should return HTTP 200 and one no_retrieved_chunks warning."
+    },
+    {
+      "name": "weak-query-overlap-control-case",
+      "purpose": "The weak-overlap rule is isolated so the main trace can show useful policy evidence.",
+      "trace_id": "trace_demo_weak_overlap_20260924",
+      "input": {
+        "query": "Can support fix my birthday coupon issue?"
+      },
+      "retrieval_output": {
+        "chunks": [
+          {
+            "id": "chunk_shipping_unrelated_001",
+            "text": "Standard shipping usually takes 5 to 7 business days after an order has been processed.",
+            "rank": 1,
+            "score": 0.31,
+            "score_type": "similarity",
+            "score_direction": "higher_is_better"
+          },
+          {
+            "id": "chunk_returns_unrelated_001",
+            "text": "Customers may return most physical products within 30 days of purchase.",
+            "rank": 2,
+            "score": 0.22,
+            "score_type": "similarity",
+            "score_direction": "higher_is_better"
+          }
+        ]
+      },
+      "expected_warnings": [
+        "low_retrieval_score",
+        "weak_query_chunk_overlap",
+        "answer_not_grounded"
+      ],
+      "expected_behavior": "The Collector should preserve the query terms, top chunks, overlap measurements, and unsupported answer evidence."
+    }
+  ]
+}
