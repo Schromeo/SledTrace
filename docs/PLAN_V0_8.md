@@ -41,8 +41,8 @@ Each stage runs on its own branch and stops for the maintainer's review.
    screenshots → links); `docs/QUICKSTART.md` (trace your own RAG app) and
    `docs/DEVELOPMENT.md` (run from source); fresh screenshots; favicon.
    *Done when:* someone new can start from the README alone.
-4. **Release prep** — version 0.8.0, changelog, full clean-install check.
-   The maintainer pushes, tags and publishes.
+4. ✅ **Release prep** — version 0.8.0, [release notes](releases/V0_8_0.md),
+   full clean-install check. The maintainer pushes, tags and publishes.
 
 ## Later (not in this plan)
 

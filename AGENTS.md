@@ -9,9 +9,8 @@ model, and it also records caller-instrumented tool calls and LLM token usage.
 Former name: RAGLens. Legacy `raglens` imports and `RAGLENS_COLLECTOR_URL` stay
 supported; do not remove them without updating the compatibility tests.
 
-Latest release: **v0.7.1** on PyPI (`sledtrace`). Current work: the v0.8.0
-polish described in [docs/PLAN_V0_8.md](docs/PLAN_V0_8.md). Read it before
-starting any task.
+Latest release: **v0.8.0** on PyPI (`sledtrace`), the result of the polish
+plan in [docs/PLAN_V0_8.md](docs/PLAN_V0_8.md). Read it before starting any task.
 
 ## Architecture
 
