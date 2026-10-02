@@ -29,6 +29,10 @@ import type {
 } from "../types";
 import type { CallTotal, LlmUsageCall, TokenField, UsageLedger } from "../utils/usage";
 import { estimateOpenAITextCost, formatEstimatedUsd } from "../utils/pricing";
+import { healthLabel, traceHealth } from "../utils/health";
+
+const USAGE_DOCS_URL =
+  "https://github.com/Schromeo/SledTrace/blob/main/docs/QUICKSTART.md#4-optional-extras";
 
 type Props = {
   traceId: string;
@@ -115,6 +119,7 @@ export default function TraceDetailPage({ traceId }: Props) {
   const finalResult = taskDisplay(detail.trace.output);
   const hasTool = detail.spans.some((span) => span.type === "tool");
   const warningCount = detail.warnings.length;
+  const health = traceHealth(detail.trace.status, detail.warnings);
   const warningCountClass =
     warningCount > 0 ? "summary-value-danger" : "summary-value-ok";
 
@@ -127,8 +132,11 @@ export default function TraceDetailPage({ traceId }: Props) {
           <p className="mono small">{detail.trace.trace_id}</p>
         </div>
 
-        <div className={`big-status ${detail.trace.status}`}>
-          {detail.trace.status}
+        <div className="trace-hero-status">
+          <div className={`health-badge health-${health}`}>
+            {healthLabel(health, warningCount)}
+          </div>
+          <div className="muted small">Run status: {detail.trace.status}</div>
         </div>
       </div>
 
@@ -158,7 +166,7 @@ export default function TraceDetailPage({ traceId }: Props) {
         <div className="summary-card summary-card-answer">
           <div className="summary-label">{finalResult.label}</div>
           <div className="summary-value summary-value-answer">
-            <div className="inline-resizable-answer">
+            <div className="answer-text">
               {finalResult.text || "No result recorded"}
             </div>
             {finalResult.accepted !== null ? (
@@ -184,6 +192,72 @@ export default function TraceDetailPage({ traceId }: Props) {
         </div>
       </div>
 
+      <section
+        className={`warnings-panel health-${health}`}
+        aria-labelledby="warnings-heading"
+      >
+        <h3 id="warnings-heading">Warnings</h3>
+        <p className="warning-help">{WARNING_GUIDANCE}</p>
+        {detail.warnings.length === 0 ? (
+          <div className="empty-card compact">
+            {NO_WARNINGS_MESSAGE}
+          </div>
+        ) : (
+          <div className="warning-list">
+            {detail.warnings.map((warning) => (
+              <div key={warning.warning_id} className="warning-card">
+                <div className="warning-card-header">
+                  <strong>{getWarningTitle(warning)}</strong>
+                  <span className="warning-severity">
+                    {warning.severity}
+                  </span>
+                </div>
+
+                {hasEnhancedWarning(warning) ? (
+                  <>
+                    <div className="warning-meta-row">
+                      <span className="warning-meta-badge warning-meta-badge-secondary">
+                        Heuristic
+                      </span>
+                      {warning.category ? (
+                        <span className="warning-meta-badge">
+                          {warning.category}
+                        </span>
+                      ) : null}
+
+                    </div>
+
+                    <p>{warning.explanation || warning.message}</p>
+
+                    {renderComparedValuesBlock(warning)}
+
+                    {renderEvidencePreview(warning.evidence ?? [])}
+
+                    <div className="warning-recommendation">
+                      <div className="warning-section-label">
+                        Recommended action
+                      </div>
+                      <div className="warning-help">
+                        {warning.recommended_action ||
+                          getWarningHelpText(warning.type)}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p>{warning.message}</p>
+
+                    <div className="warning-help">
+                      {getWarningHelpText(warning.type)}
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       <UsageLedgerPanel
         ledger={usageLedger}
         selectedSpanId={selectedSpanId}
@@ -198,67 +272,6 @@ export default function TraceDetailPage({ traceId }: Props) {
             selectedSpanId={selectedSpanId}
             onSelectSpan={setSelectedSpanId}
           />
-
-          <h3>Warnings</h3>
-          <p className="warning-help">{WARNING_GUIDANCE}</p>
-          {detail.warnings.length === 0 ? (
-            <div className="empty-card compact">
-              {NO_WARNINGS_MESSAGE}
-            </div>
-          ) : (
-            <div className="warning-list">
-              {detail.warnings.map((warning) => (
-                <div key={warning.warning_id} className="warning-card">
-                  <div className="warning-card-header">
-                    <strong>{getWarningTitle(warning)}</strong>
-                    <span className="warning-severity">
-                      {warning.severity}
-                    </span>
-                  </div>
-
-                  {hasEnhancedWarning(warning) ? (
-                    <>
-                      <div className="warning-meta-row">
-                        <span className="warning-meta-badge warning-meta-badge-secondary">
-                          Heuristic
-                        </span>
-                        {warning.category ? (
-                          <span className="warning-meta-badge">
-                            {warning.category}
-                          </span>
-                        ) : null}
-
-                      </div>
-
-                      <p>{warning.explanation || warning.message}</p>
-
-                      {renderComparedValuesBlock(warning)}
-
-                      {renderEvidencePreview(warning.evidence ?? [])}
-
-                      <div className="warning-recommendation">
-                        <div className="warning-section-label">
-                          Recommended action
-                        </div>
-                        <div className="warning-help">
-                          {warning.recommended_action ||
-                            getWarningHelpText(warning.type)}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p>{warning.message}</p>
-
-                      <div className="warning-help">
-                        {getWarningHelpText(warning.type)}
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="span-detail-panel">
@@ -287,8 +300,64 @@ function UsageLedgerPanel({
       ? ledger.knownSubtotal.toLocaleString("en-US")
       : "Unknown";
 
+  // Most RAG traces carry no token counts. Keep the "unknown, not zero"
+  // message but fold the full ledger away until there is something to show.
+  if (ledger.coveredCalls === 0 && ledger.conflictCalls === 0) {
+    const calls = ledger.observedCalls;
+    return (
+      <details className="usage-panel usage-panel-collapsed">
+        <summary>
+          <span className="usage-collapsed-title">Token usage not recorded</span>
+          <span className="muted small">
+            {calls === 0
+              ? "No LLM calls in this trace"
+              : `${calls} LLM call${calls === 1 ? "" : "s"} · usage unknown, not zero`}
+          </span>
+          <a
+            className="usage-docs-link small"
+            href={USAGE_DOCS_URL}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(event) => event.stopPropagation()}
+          >
+            How to record usage
+          </a>
+        </summary>
+        <UsageLedgerBody
+          ledger={ledger}
+          subtotal={subtotal}
+          selectedSpanId={selectedSpanId}
+          onSelectSpan={onSelectSpan}
+        />
+      </details>
+    );
+  }
+
   return (
     <section className="usage-panel" aria-labelledby="usage-ledger-heading">
+      <UsageLedgerBody
+        ledger={ledger}
+        subtotal={subtotal}
+        selectedSpanId={selectedSpanId}
+        onSelectSpan={onSelectSpan}
+      />
+    </section>
+  );
+}
+
+function UsageLedgerBody({
+  ledger,
+  subtotal,
+  selectedSpanId,
+  onSelectSpan,
+}: {
+  ledger: UsageLedger;
+  subtotal: string;
+  selectedSpanId: string | null;
+  onSelectSpan: (spanId: string) => void;
+}) {
+  return (
+    <>
       <div className="usage-panel-header">
         <div>
           <div className="eyebrow">Observed execution usage</div>
@@ -339,7 +408,7 @@ function UsageLedgerPanel({
           ))}
         </div>
       )}
-    </section>
+    </>
   );
 }
 
@@ -521,20 +590,20 @@ function SelectedSpanView({ span }: { span: Span }) {
         </div>
       )}
 
-      <section className="section">
-        <h4>Input</h4>
+      <details className="section raw-json">
+        <summary>Raw input</summary>
         <JsonViewer value={span.input} />
-      </section>
+      </details>
 
-      <section className="section">
-        <h4>Output</h4>
+      <details className="section raw-json">
+        <summary>Raw output</summary>
         <JsonViewer value={span.output} />
-      </section>
+      </details>
 
-      <section className="section">
-        <h4>Metadata</h4>
+      <details className="section raw-json">
+        <summary>Raw metadata</summary>
         <JsonViewer value={span.metadata} />
-      </section>
+      </details>
     </div>
   );
 }

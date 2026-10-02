@@ -18,6 +18,8 @@ export type TraceListItem = {
   answer: string;
   duration_ms: number | null;
   warning_count: number;
+  /** Sent by collectors 0.8.1+; absent from older ones. */
+  high_warning_count?: number;
   started_at: string;
 };
 

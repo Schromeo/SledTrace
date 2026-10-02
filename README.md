@@ -46,7 +46,7 @@ Refresh the dashboard and open **refund-question**. SledTrace points out that
 the two retrieved policies contradict each other, and that the answer's
 "45 days" isn't supported by either of them:
 
-<img src="docs/assets/screenshots/warning-evidence.png" alt="Warnings with evidence and recommended actions" width="520">
+<img src="docs/assets/screenshots/warning-evidence.png" alt="Warnings with evidence and recommended actions" width="760">
 
 Ready to trace your own app? Follow the
 **[5-minute quickstart](docs/QUICKSTART.md)**.
@@ -102,7 +102,7 @@ collector runs the warning rules and stores everything in
 - [Python SDK guide](docs/integrations/PYTHON_SDK_GUIDE.md): full API reference.
 - [Warning rules](docs/demo/WARNING_RULES.md): what each warning checks.
 - [Development setup](docs/DEVELOPMENT.md): run from source, Docker, demos, configuration.
-- [Contributing](CONTRIBUTING.md) and [release notes](docs/releases/V0_8_0.md).
+- [Contributing](CONTRIBUTING.md) and [release notes](docs/releases/V0_8_1.md).
 - [Renaming from RAGLens](docs/REBRANDING.md): `raglens` imports still work.
 
 ## Why "SledTrace"?

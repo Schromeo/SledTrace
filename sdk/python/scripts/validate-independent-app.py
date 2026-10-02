@@ -18,7 +18,7 @@ from typing import Optional
 ROOT = Path(__file__).resolve().parents[1]
 DIST_DIR = ROOT / "dist"
 EXAMPLE = ROOT / "examples" / "independent_app.py"
-EXPECTED_VERSION = "0.8.0"
+EXPECTED_VERSION = "0.8.1"
 
 
 def run(

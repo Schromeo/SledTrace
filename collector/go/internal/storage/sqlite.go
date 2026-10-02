@@ -441,7 +441,8 @@ SELECT
     t.output_json,
     t.duration_ms,
     t.started_at,
-    COUNT(w.id) AS warning_count
+    COUNT(w.id) AS warning_count,
+    COALESCE(SUM(CASE WHEN lower(w.severity) IN ('high', 'critical') THEN 1 ELSE 0 END), 0) AS high_warning_count
 FROM traces t
 LEFT JOIN warnings w ON w.trace_id = t.id
 GROUP BY t.id
@@ -460,14 +461,15 @@ LIMIT 100
 
 	for rows.Next() {
 		var (
-			id           string
-			name         string
-			status       string
-			inputJSON    sql.NullString
-			outputJSON   sql.NullString
-			duration     sql.NullInt64
-			startedAt    string
-			warningCount int
+			id               string
+			name             string
+			status           string
+			inputJSON        sql.NullString
+			outputJSON       sql.NullString
+			duration         sql.NullInt64
+			startedAt        string
+			warningCount     int
+			highWarningCount int
 		)
 
 		if err := rows.Scan(
@@ -479,6 +481,7 @@ LIMIT 100
 			&duration,
 			&startedAt,
 			&warningCount,
+			&highWarningCount,
 		); err != nil {
 			return nil, fmt.Errorf("scan trace row: %w", err)
 		}
@@ -487,14 +490,15 @@ LIMIT 100
 		outputMap := parseJSONMap(outputJSON.String)
 
 		item := models.TraceListItem{
-			TraceID:      id,
-			Name:         name,
-			Status:       status,
-			Query:        stringFromMap(inputMap, "query"),
-			Answer:       stringFromMap(outputMap, "answer"),
-			DurationMS:   nullableIntFromSQL(duration),
-			WarningCount: warningCount,
-			StartedAt:    startedAt,
+			TraceID:          id,
+			Name:             name,
+			Status:           status,
+			Query:            stringFromMap(inputMap, "query"),
+			Answer:           stringFromMap(outputMap, "answer"),
+			DurationMS:       nullableIntFromSQL(duration),
+			WarningCount:     warningCount,
+			HighWarningCount: highWarningCount,
+			StartedAt:        startedAt,
 		}
 
 		traces = append(traces, item)
