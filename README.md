@@ -102,7 +102,7 @@ collector runs the warning rules and stores everything in
 - [Python SDK guide](docs/integrations/PYTHON_SDK_GUIDE.md): full API reference.
 - [Warning rules](docs/demo/WARNING_RULES.md): what each warning checks.
 - [Development setup](docs/DEVELOPMENT.md): run from source, Docker, demos, configuration.
-- [Contributing](CONTRIBUTING.md) and [release notes](docs/releases/).
+- [Contributing](CONTRIBUTING.md) and [release notes](docs/releases/V0_8_0.md).
 - [Renaming from RAGLens](docs/REBRANDING.md): `raglens` imports still work.
 
 ## Why "SledTrace"?
