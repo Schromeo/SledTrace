@@ -21,7 +21,8 @@ test("canonical null stays unmeasured instead of using timestamps", () => {
 
 test("measured zero remains distinct from unknown", () => {
   assert.equal(getDurationMs({ duration_ms: 0 }), 0);
-  assert.equal(formatDurationMs(0), "0ms");
+  assert.equal(formatDurationMs(0), "<1ms");
+  assert.equal(formatDurationMs(1), "1ms");
 });
 
 test("legacy duration metadata and timestamp-only records remain readable", () => {

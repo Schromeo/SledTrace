@@ -44,6 +44,12 @@ Each stage runs on its own branch and stops for the maintainer's review.
 4. ✅ **Release prep** — version 0.8.0, [release notes](releases/V0_8_0.md),
    full clean-install check. The maintainer pushes, tags and publishes.
 
+## After the plan
+
+- v0.8.1: dashboard polish (warnings first, severity colours, first-run
+  screen, live updates, collector status). See
+  [release notes](releases/V0_8_1.md).
+
 ## Later (not in this plan)
 
 - LangChain / LlamaIndex auto-instrumentation

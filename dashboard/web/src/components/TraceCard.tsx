@@ -1,4 +1,6 @@
 import type { TraceListItem } from "../types";
+import { formatWarnings, healthLabel, listHealth } from "../utils/health";
+import { formatDurationMs } from "../utils/timing";
 
 type Props = {
   trace: TraceListItem;
@@ -8,6 +10,11 @@ type Props = {
 
 export default function TraceCard({ trace, selected, onClick }: Props) {
   const demoCase = getDemoCase(trace.name);
+  const health = listHealth(
+    trace.status,
+    trace.warning_count,
+    trace.high_warning_count ?? 0,
+  );
 
   return (
     <button
@@ -15,7 +22,11 @@ export default function TraceCard({ trace, selected, onClick }: Props) {
       onClick={onClick}
     >
       <div className="trace-card-top">
-        <span className={`status-dot ${trace.status}`} />
+        <span
+          className={`status-dot health-${health}`}
+          title={healthLabel(health, trace.warning_count)}
+          aria-label={healthLabel(health, trace.warning_count)}
+        />
 
         <div className="trace-card-title">
           <strong>{trace.name}</strong>
@@ -31,8 +42,10 @@ export default function TraceCard({ trace, selected, onClick }: Props) {
       {trace.answer && <div className="trace-answer">{trace.answer}</div>}
 
       <div className="trace-meta">
-        <span>{formatDuration(trace.duration_ms)}</span>
-        <span>{formatWarningCount(trace.warning_count)}</span>
+        <span>{formatDurationMs(trace.duration_ms ?? null)}</span>
+        <span className={trace.warning_count > 0 ? "trace-meta-warnings" : undefined}>
+          {formatWarnings(trace.warning_count)}
+        </span>
         <span>{formatDate(trace.started_at)}</span>
       </div>
     </button>
@@ -47,26 +60,6 @@ function getDemoCase(traceName: string): string | null {
   }
 
   return traceName.slice(prefix.length);
-}
-
-function formatWarningCount(count: number): string {
-  if (count === 1) {
-    return "1 warning";
-  }
-
-  return `${count} warnings`;
-}
-
-function formatDuration(durationMs: number | null): string {
-  if (durationMs === null || durationMs === undefined) {
-    return "unknown duration";
-  }
-
-  if (durationMs < 1000) {
-    return `${durationMs}ms`;
-  }
-
-  return `${(durationMs / 1000).toFixed(2)}s`;
 }
 
 function formatDate(value: string): string {

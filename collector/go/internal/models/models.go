@@ -98,7 +98,10 @@ type TraceListItem struct {
 	Answer       string `json:"answer"`
 	DurationMS   *int   `json:"duration_ms"`
 	WarningCount int    `json:"warning_count"`
-	StartedAt    string `json:"started_at"`
+	// HighWarningCount counts warnings of severity high/critical, so the
+	// trace list can show the same severity as the detail view.
+	HighWarningCount int    `json:"high_warning_count"`
+	StartedAt        string `json:"started_at"`
 }
 
 type TraceListResponse struct {

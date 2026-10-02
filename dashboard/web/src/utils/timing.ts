@@ -153,6 +153,12 @@ export function formatDurationMs(durationMs: number | null): string {
     return "Not measured";
   }
 
+  // Durations are recorded in whole milliseconds, so a measured 0 means the
+  // step finished in under a millisecond, not that it was skipped.
+  if (durationMs < 1) {
+    return "<1ms";
+  }
+
   if (durationMs < 1000) {
     return `${Math.round(durationMs)}ms`;
   }

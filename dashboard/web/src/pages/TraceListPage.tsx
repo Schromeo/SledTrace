@@ -3,28 +3,36 @@ import { fetchTraces } from "../api/client";
 import TraceCard from "../components/TraceCard";
 import type { TraceListItem } from "../types";
 
+const REFRESH_INTERVAL_MS = 4000;
+
 type Props = {
   selectedTraceId: string | null;
   onSelectTrace: (traceId: string) => void;
+  onLoaded?: (result: { ok: boolean; count: number }) => void;
 };
 
 export default function TraceListPage({
   selectedTraceId,
   onSelectTrace,
+  onLoaded,
 }: Props) {
   const [traces, setTraces] = useState<TraceListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadTraces() {
+  async function loadTraces({ quiet = false } = {}) {
     try {
-      setLoading(true);
-      setError(null);
+      if (!quiet) {
+        setLoading(true);
+      }
 
       const data = await fetchTraces();
       setTraces(data.traces);
+      setError(null);
+      onLoaded?.({ ok: true, count: data.traces.length });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load traces");
+      onLoaded?.({ ok: false, count: 0 });
     } finally {
       setLoading(false);
     }
@@ -32,6 +40,14 @@ export default function TraceListPage({
 
   useEffect(() => {
     void loadTraces();
+
+    // Pick up new traces automatically while the tab is visible.
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        void loadTraces({ quiet: true });
+      }
+    }, REFRESH_INTERVAL_MS);
+    return () => window.clearInterval(timer);
   }, []);
 
   return (
@@ -39,7 +55,10 @@ export default function TraceListPage({
       <div className="panel-header">
         <div>
           <h2>Traces</h2>
-          <p>{traces.length} local traces</p>
+          <p>
+            {traces.length} local {traces.length === 1 ? "trace" : "traces"} ·
+            updates automatically
+          </p>
         </div>
 
         <button className="secondary-button" onClick={() => void loadTraces()}>
@@ -53,22 +72,13 @@ export default function TraceListPage({
         <div className="error-box">
           <strong>Failed to load traces</strong>
           <p>{error}</p>
-          <p>Make sure the Go collector is running on port 4319.</p>
+          <p>Make sure <code>sledtrace serve</code> is still running.</p>
         </div>
       )}
 
       {!loading && !error && traces.length === 0 && (
-        <div className="empty-card">
-          <h3>No traces yet</h3>
-          <p>Instrument your Python application with the installed SDK:</p>
-          <pre>python -m pip install sledtrace</pre>
-          <p>Or install this checkout's matching SDK and send a deterministic trace:</p>
-          <pre>{`python -m pip install -e sdk/python
-cd sdk/python
-python -m examples.independent_app success`}</pre>
-          <p className="muted">
-            The example is repo-local; the installed SDK works from any directory.
-          </p>
+        <div className="empty-card compact">
+          <strong>No traces yet.</strong> New traces appear here automatically.
         </div>
       )}
 

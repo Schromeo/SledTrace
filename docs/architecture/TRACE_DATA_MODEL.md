@@ -698,6 +698,7 @@ Returns a list of traces for the dashboard.
       "answer": "Customers may request a refund within 14 days.",
       "duration_ms": 2000,
       "warning_count": 1,
+      "high_warning_count": 0,
       "started_at": "2026-05-14T10:00:00Z"
     }
   ]
@@ -829,6 +830,7 @@ The trace list page needs:
 * `answer`
 * `duration_ms`
 * `warning_count`
+* `high_warning_count` (0.8.1+: warnings with severity `high` or `critical`)
 * `started_at`
 
 ## Trace detail page
