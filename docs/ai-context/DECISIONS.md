@@ -1,5 +1,195 @@
 # Architecture Decisions
 
+## 2026-09-29 — DOC1 restores document ownership and fixed parent gates
+
+- User approved one bounded AI-document cleanup, not a product/harness redesign.
+  Active task, handoff and roadmap contain current owned facts only; original
+  texts survive in dated same-directory snapshots so relative evidence links
+  retain their bases. DEVLOG remains the execution record, not a required full read.
+- AGENTS/NEXT_AGENT_BRIEF are standing rules/navigation, not per-slice status.
+  Detailed roadmap retains product goals and budgets; milestone state is indexed
+  in ROADMAP and implementation facts in AI_HANDOFF. No repeated test transcripts.
+- Sub-slice completion does not close a parent milestone or reset its initial
+  budget. Necessary preflight/capture/readback count toward the same goal; prior
+  unrecorded effort is UNKNOWN. Known future effort cannot erase that unknown.
+- P6's real keep/revert exit stays unchanged. First compare smaller permitted
+  evidence/reproduction against proposed capture. Inconclusive is an honest
+  report, not M3b success. No additional tests/frameworks to manufacture a win.
+- P6C proposal is preserved but remains unapproved/unselected; this documentation
+  decision does not authorize source changes, v2 contracts, paid calls or delivery.
+  Existing dirty product files are preservation scope, not DOC1 edit authority.
+  Archive/entry/link/hash/scope/docs acceptance ends DOC1; no second polish slice.
+
+## 2026-09-29 — P6C0 retains a hard gate on proposed diagnostic capture
+
+- Read-only audit proves the typed cause-code loss path, not the historical
+  failure cause. Reducer and targeted-delta precheck must not be conflated.
+- Proposed, not approved/implemented: exact gate/code metadata in an additive
+  local source field and explicit export v2, preserving strict v1 and old unknowns.
+  No raw body, message parsing, Claim data, automatic retry or implicit upgrade.
+  Same-room changed content remains an immutable import conflict.
+- Source/reader work is split into two bounded offline-first slices; both cross-
+  repo and new persisted/import contract need the owner's specific approval.
+  No repeated audit without new evidence. Actual repair and paid replay remain
+  separate. [Precise proposal](../product/P6_REDUCTION_CAPTURE_PROPOSAL.md).
+
+## 2026-09-29 — P6 uses existing downstream facts before guessing a source fix
+
+- P6A's read-only audit separates source Turn Envelope validation from later
+  Canonical State reduction. Existing v1 already carries reduction failure;
+  explain that known gate in SledTrace before requesting additional capture.
+- Selected P6B is a bounded Dashboard projection, not a MeetingRoom repair or
+  automatic warning. Retain preceding successful gates and unknown reducer
+  cause; only unique source identity supports linkage. No new contract.
+- Freeze a public task and manual criterion before a later real comparison;
+  do not reuse a private creative artifact, invent matched controls, or disguise
+  the same trace under duplicate IDs as before/after runs. A UI-only correction
+  cannot establish M3b or resource savings. Cause-backed source changes and paid
+  experiments remain separate human gates. [P6 card](../product/P6_EXPERIMENT_PREFLIGHT.md).
+
+## 2026-09-29 — Approved P5B is session-local manual evidence, not stored truth
+
+- Explicit user approval adopts the P5A pair-file contract. Exact 16 KiB v1,
+  fixed user_declared provenance, two distinct records, bounded opaque references
+  and explicit null/assessment semantics; reject duplicate keys, including escaped
+  aliases. The browser does not fetch references or persist/upload the declaration.
+- Existing GETs and ledger/P4 facts suffice; no backend/schema/source change.
+  API errors retain HTTP status for missing-record handling without echoing server
+  bodies in this view. Changing file/view cancels stale result publication.
+- Missing/mismatched controls disable differences; unknown quality disables
+  improvement claims. Numeric differences concern compatible recorded-call scope,
+  not whole workflow. Price/date/basis, null/zero and failed attempts remain visible.
+- A manual assessment may indicate regression despite lower usage; it is not an
+  automatic judge or independently validated quality. Synthetic UI success does
+  not close M3b. [Implemented contract](../integrations/PAIR_EVIDENCE.md).
+
+## 2026-09-29 — P5A evidence boundary and pending comparison proposal
+
+- Names, room IDs, task_id, accepted and fewer warnings/tokens do not establish
+  controlled comparison. Ordinary MAMR v1 lacks identity/controls/quality
+  criteria; do not silently add fields that its strict importer rejects.
+- Proposed, **not yet adopted**: a bounded user-declared pair file and read-only
+  Dashboard view, session memory only. Reuse current GETs, ledger and P4 evidence;
+  no source/SDK/persistence change. The new file contract needs human approval.
+- Captured quality and manual assessment remain separate. Reference equality
+  is declared, not independently verified. Compatible complete observed-call
+  subtotals may be described, not promoted into whole-workflow savings or billing.
+- Full proposed fields, acceptance and stop rules live in the
+  [P5A preflight](../product/PAIR_COMPARISON_PREFLIGHT.md). No implementation,
+  roadmap reorder, real experiment or publication decision in this slice.
+
+## 2026-09-29 — P4 explanation is derived, not a new persisted warning contract
+
+- Ordinary MAMR receipts already contain the known failed gate and identity;
+  derive a bounded UI overview rather than change API/storage or add a second
+  warning system. Old records and warning counts are unchanged. Source metadata
+  remains application-reported, not independently verified.
+- One attempt/card retains separate call/provider/validator facts. Exact unique
+  receipt-to-span matching enables evidence navigation; duplicates/inconsistent
+  identity degrade to gaps, not guessed links or extra root-cause alerts.
+- Diagnostic-v1 has no causal/dependency/blocking links. Group workflow/task
+  context separately and label impact unknown; no temporal cause inference,
+  auto repair or expected-type invention from `invalid_type` alone.
+- Keep current ES2020 build and native Node test runner unchanged. Small utility
+  is independently testable without importing runtime modules by .ts extension.
+- P5 must first resolve comparison evidence: the metadata-only projection lacks
+  task/input/config/model identity and assessed quality. Different room IDs,
+  fewer errors/tokens or memo presence do not prove improvement.
+
+## 2026-09-29 — P3B imports the existing metadata-only source projection
+
+- User continuation selects P3B's additive local `/api/imports/mamr` contract.
+  Only ordinary diagnostic-v1 is supported: 1 MiB, 1024 items per array, exact
+  required fields/types, fixed enums and safe bounded identifiers/diagnostic paths.
+  Duplicate JSON keys, extra/missing fields, invalid references and contradictory
+  outcome/unresolved signals are rejected with non-echoing errors before storage.
+- Stable room/attempt-derived IDs merge started/terminal receipts into one llm
+  span while preserving the original allowlisted bundle in metadata. A room
+  snapshot is immutable; later changed exports under that room ID conflict.
+  No private output, configured model name or causal relationship is inferred.
+- Receipt usage is application-reported. Unknown remains null; reported zero
+  remains zero. Visible output does not supply a provider total; reasoning is
+  not blindly added to output. Source room updates are not execution durations.
+- Use P3A atomic/no-op/conflict persistence. The generic trace POST, SDK wire
+  contract and released version are unchanged. P4's D1 explanation remains next.
+
+## 2026-09-28 — P3A import identity is source content, not warning generation
+
+- MAMR diagnostic-v1 imports get a separate internal SQLite manifest keyed by
+  trace ID with a hash of the mapped trace/spans. This preserves the generic
+  `POST /api/traces` behavior and existing trace IDs.
+- A matching import is a no-op. Changed mapped content under the same ID, or
+  any pre-existing non-import trace, is a conflict. No overwrite or new ID.
+- Trace, spans, generated warnings and manifest commit in one transaction.
+  Generated warning IDs/timestamps do not change import identity, so a later
+  rule-engine version cannot silently duplicate the same source run.
+- This is storage preparation, not approval of a general importer, source
+  schema, Agent diagnostic rule or historical backfill. P3B owns strict parsing,
+  privacy validation and user-visible readback.
+
+## 2026-09-27 — Approved bounded P2 source evidence contract
+
+- Explicit user approval permits additive source.attempt events and optional
+  versioned local receipts in MAMR, not a SledTrace SDK/protocol change.
+- Scope ordinary runAgent meeting calls. Separate call outcome, reported provider
+  finish and Turn Envelope validation. Later task/reducer/quality gates and other
+  MAMR workflows remain outside this capture; no generic all-call claim.
+- Preserve fixed safe metadata, nullable usage/provenance, source time/monotonic
+  elapsed, dedup/conflict semantics and deletion with room. Do not parse P1's
+  explanatory suffix, add raw output, change old totals or rewrite historical traces.
+- Local browser loss can leave unknown terminal evidence; started is not proof
+  of provider acceptance/billing. P3 needs separate privacy/atomic import approval.
+- MAMR D-070 and its bilingual P2 brief own the implemented contract and acceptance.
+  This supersedes the older P2-unimplemented state below, not the historical record.
+
+## 2026-09-27 — P1 reuses the existing safe error string
+
+- User continuation authorized adopted P1 in MAMR under its own correction brief.
+- Preserve old message prefix, parser acceptance and normalized output; append
+  versioned reasons, fixed paths and structural facts without rejected content,
+  unknown keys or parser exception text. Reuse format-error/history strings.
+- No public/persisted schema change; suffix is explanatory text, not a structured
+  consumer API. Collection diagnosis stops at item index.
+- P1 local evidence is not native SledTrace capture, historical reconstruction
+  or a full-green check. Baseline Solo/type failures need separate correction.
+  P2 is unimplemented. MAMR D-069 and its bilingual evaluation own the evidence.
+
+## 2026-09-26 — Diagnose workflow failure before expanding waste rules
+
+- The user adopted the revised Agent direction and requested synchronization
+  of all relevant SledTrace documentation. This turn authorizes documentation,
+  not P1 implementation, MAMR edits, paid calls, merge or publication.
+- Preserve released M0/M1/E2/E3 and post-release reference evidence. MAMR is
+  now an internal multi-LLM dogfooding workflow, not external adoption or tool
+  execution evidence. Its historical four-call UI mapping cannot identify the
+  precise invalid statement/card field or prove a repair.
+- Replace E4-two-warnings-before-E5 with P1 validator reasons, P2 source
+  evidence, P3 safe bundle import, P4 D1 failure localization, P5 minimal
+  outcome comparison and P6 one real keep/revert decision. P7/D2–D3 is optional.
+  Repeated equal tool output stays observation; no rule-count release quota.
+- Separate call, contract-validation, workflow and quality states. The old
+  accepted=false mapping of interruption is not a human rejection; preserve
+  the record and disclose the limitation. Parent/sequence is not causal proof.
+- Prefer explicit source capture with opt-in sanitized batch delivery. This
+  bounded MAMR path is not a generic JS SDK, live Collector stream or schema
+  approval. Public/persisted contracts require a separate implementation gate;
+  read MAMR's own instructions before touching that repository.
+- Resolve necessary atomic persistence and duplicate/conflict semantics before
+  repeatable import. Source provenance and completeness are separate; app or
+  framework reported numbers are not direct Responses/billing verification.
+- Fix the testbeds at MAMR, pinned PydanticAI and existing RAG. Offline branch
+  tests establish validator behavior; heuristics need counterexamples/holdouts;
+  actual changes need fixed outcome criteria. Do not apply one sample quota to
+  every slice or keep paying to recreate missing historical evidence.
+- At most two evidence-producing repair attempts; two slices without visible
+  outcome or two suitable scenarios without actionable value trigger narrowing.
+  Prior $0.50/$0.10 budgets do not renew. Every slice stops after its acceptance.
+- M2.5/M3a/M3b replace the old M3 ordering; M4/M5/G1 retain independent use,
+  privacy, runtime and reliability gates. Details: ROAD_TO_V1_0 sections 5–13.
+  Earlier decisions below retain their historical context where superseded.
+
+---
+
 ## 2026-09-26 — A2 keeps framework usage distinct from direct Responses usage
 
 - Add a paid, explicitly opt-in mode only to the pinned public example. Keep

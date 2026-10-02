@@ -120,11 +120,12 @@ The separate [E4 evidence runbook](AGENT_REPEAT_EVIDENCE.md) records the new
 offline trace and its limits. This is one normal-repeat counterexample, not a
 public fingerprint contract or a useful-waste finding.
 
-Next gate: this independent public example establishes basic integration
-only. It does not show that an actual developer found useful waste, nor give
-general safe comparison/state evidence across workflows or a held-out E4
-evaluation set. Do not implement E4 rules or claim v0.8 readiness from this
-run alone.
+Current role (2026-09-26): retain this fixed reference for actual tool execution
+and normal-repeat counterexamples. It does not prove useful waste or v0.8
+readiness. The [revised plan](../product/ROAD_TO_V1_0.md) now prioritizes MAMR
+source evidence, D1 failure localization and paired comparison; no third Agent
+framework search or two-rule E4 quota is required. Keep real-provider history
+below separate from TestModel and the new mode's stub-only validation.
 
 ## Historical real-model evidence and A2 boundary
 

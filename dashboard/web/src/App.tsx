@@ -2,10 +2,17 @@ import { useState } from "react";
 import { API_BASE_URL } from "./api/client";
 import TraceDetailPage from "./pages/TraceDetailPage";
 import TraceListPage from "./pages/TraceListPage";
+import PairComparisonPage from "./pages/PairComparisonPage";
 
 export default function App() {
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [comparing, setComparing] = useState(false);
+
+  function inspectTrace(traceId: string) {
+    setComparing(false);
+    setSelectedTraceId(traceId);
+  }
 
   function toggleSidebar() {
     setSidebarOpen((open) => !open);
@@ -21,6 +28,10 @@ export default function App() {
             title={sidebarOpen ? "Hide trace sidebar" : "Show trace sidebar"}
           >
             {sidebarOpen ? "<< Hide traces" : ">> Show traces"}
+          </button>
+          <button className="secondary-button" aria-pressed={comparing}
+            onClick={() => setComparing(value => !value)}>
+            {comparing ? "Back to trace" : "Compare runs"}
           </button>
         </div>
 
@@ -39,13 +50,13 @@ export default function App() {
           <section className="sidebar">
             <TraceListPage
               selectedTraceId={selectedTraceId}
-              onSelectTrace={setSelectedTraceId}
+              onSelectTrace={inspectTrace}
             />
           </section>
         )}
 
         <section className="detail">
-          {selectedTraceId ? (
+          {comparing ? <PairComparisonPage onInspect={inspectTrace} /> : selectedTraceId ? (
             <TraceDetailPage traceId={selectedTraceId} />
           ) : (
             <div className="empty-state">

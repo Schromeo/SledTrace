@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchTraces } from "../api/client";
+import { fetchTraces, importMamrFile } from "../api/client";
 import TraceCard from "../components/TraceCard";
 import type { TraceListItem } from "../types";
 
@@ -15,6 +15,27 @@ export default function TraceListPage({
   const [traces, setTraces] = useState<TraceListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+
+  async function importFile(file: File) {
+    setImporting(true);
+    setImportMessage(null);
+    setImportError(null);
+    try {
+      const result = await importMamrFile(file);
+      setImportMessage(result.status === "unchanged"
+        ? "Already imported. Existing evidence kept; no duplicate calls."
+        : "MeetingRoom evidence imported. Select the trace to inspect its source receipts.");
+      await loadTraces();
+      onSelectTrace(result.trace_id);
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : "MeetingRoom import failed.");
+    } finally {
+      setImporting(false);
+    }
+  }
 
   async function loadTraces() {
     try {
@@ -45,6 +66,19 @@ export default function TraceListPage({
         <button className="secondary-button" onClick={() => void loadTraces()}>
           Refresh
         </button>
+      </div>
+
+      <div className="meeting-import">
+        <label htmlFor="mamr-file">Import MeetingRoom diagnostic JSON</label>
+        <p>One ordinary meeting · diagnostic-v1 · up to 1 MiB. Text and model names are omitted by the source export.</p>
+        <input id="mamr-file" type="file" accept=".json,application/json" disabled={importing}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            event.currentTarget.value = "";
+            if (file) void importFile(file);
+          }} />
+        <div role="status" aria-live="polite">{importing ? "Importing…" : importMessage}</div>
+        {importError && <div className="error-box compact" role="alert">{importError}</div>}
       </div>
 
       {loading && <div className="muted">Loading traces...</div>}

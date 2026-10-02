@@ -1,5 +1,525 @@
 # Devlog
 
+## 2026-09-29 — DOC1 bounded AI-context ownership cleanup
+
+- User approved the previous bounded documentation proposal. Used sledtrace-slice
+  for one documentation-only delivery; no product/harness/package/MAMR edits,
+  private data, paid call, commit/push/merge/release or automatic P6C activation.
+- Preserved full pre-cleanup CURRENT_TASK, AI_HANDOFF, ROADMAP and detailed-plan
+  texts in dated same-directory history snapshots. History is not execution
+  authority; originals remain traceable with their relative link bases intact.
+- Shortened active task/handoff/roadmap/navigation, restored standing AGENTS,
+  and removed per-slice execution updates from the detailed product plan.
+  One evidence record here replaces repeating commands in the active documents.
+- Fixed P6 parent exit and cumulative budget interpretation. P6A/B/C0 are
+  prerequisites, not a real repair; prior effective effort is UNKNOWN.
+  P6C contract/source work stays pending explicit approval. Compare smaller
+  permitted evidence first; no new roadmap stages or AI management subsystem.
+- Preservation comparison: PASS, four snapshot bodies equal the pre-edit texts
+  after line-ending/terminal-blank normalization. Initial scratch check used
+  an incorrect banner separator offset and falsely reported a mismatch; fixing
+  the checker (not the archive) established equality for all four originals.
+- Incremental SHA256 inventory: PASS, exactly 12 documentation files changed
+  or added, no deletion; all 204 other pre-existing non-ignored files unchanged.
+  This is separate from the accumulated scope and proves no inherited product,
+  harness, fixture, screenshot or package edit in DOC1.
+- Final PowerShell local-link scan: exit 0, 94 targets across 12 changed documents,
+  no broken target. Self-review: no new authority, misleading gate completion,
+  invented effort total or unarchived historical task; no product state change.
+- Exact commands: python scripts/dev/slice.py status, scope and check each
+  exit 0; scope accepts 65 accumulated paths; docs profile passes diff-check.
+  git diff --check exits 0, only existing LF-to-CRLF notices. New untracked
+  documents receive a separate whitespace check because Git diff omits them.
+- Stop: DOC1 is complete, not P6/M3b. No SDK/Go/frontend build or paid run;
+  earlier product test passes remain historical. No commit/push or remote CI.
+
+## 2026-09-29 — P6C0 cause-code loss audit and bounded approval proposal
+
+- User continuation selects P6B's cause-evidence gate. Used sledtrace-slice/review
+  for one read-only audit + docs proposal; no product code, MAMR file writes,
+  provider call, contract implementation, commit/push or release. Prior dirty
+  prerequisites preserved, v0.7.1 publication unchanged.
+- Verified MAMR four-code ReductionErrorCode, server reduceCompletedTurns event,
+  targeted-delta precheck, client event/local-reducer transcript updates, strict
+  transcript reader and existing private evaluation's explicit missing-detail
+  statement. Typed code is discarded before persistence/export; targeted gate
+  shares the event but is not reducer execution. Historical cause still unknown.
+  No raw failed response, creative input/Memo or private screenshot copied.
+- Command-local safe.directory read-only git HEAD/status exits 0: unchanged
+  clean eabf737a2197366c283a6c5e99c755264f023c5a. No global Git configuration changed.
+- Wrote P6_REDUCTION_CAPTURE_PROPOSAL: three fixed source gates, four existing
+  reducer codes + one proposed targeted-limit code; additive optional local
+  diagnostic, explicit v2 allowlist/import while v1/old records remain intact.
+  No raw error/envelope/Claim or hidden content capture. Same-room changed v1/v2
+  remains 409, not automatic upgrade or cloned execution. Two one-day offline
+  slices separate source and reader; actual fix/replay still independently gated.
+- Updated task/handoff/roadmap/decisions/detail and stable AGENTS navigation.
+  sledtrace-slice requires stopping before cross-repo/persisted-contract writes;
+  ask the owner for the specific proposal authorization instead of repeating
+  cause searches. No claim of real root-cause diagnosis, repair or M3b completion.
+- `python scripts/dev/slice.py scope` exits 0: 61 accumulated paths allowed;
+  `python scripts/dev/slice.py check` docs profile exits 0, standard diff passes.
+  PowerShell local-link validation exits 0, 60 targets across nine edited docs.
+  Self-review clarified a conflict corner: local nullable/sticky-unknown
+  projection retains event history and never exports an arbitrary winner.
+  No unresolved blocker in this proposal; implementation requires approval.
+  SDK/Go/frontend unchanged and not rebuilt; prior test passes are historical.
+
+## 2026-09-29 — P6B recorded reduction failure explanation
+
+- User continuation selected the P6A card. Used sledtrace-slice and
+  sledtrace-review for one SledTrace-only Dashboard slice. Product edits are
+  mamrExplanation.ts, its tests and one CSS selector; existing dirty prerequisites
+  are retained. No MAMR/SDK/Collector API or stored-contract edits, warning, paid
+  call, commit/push/merge/release. Published baseline remains v0.7.1.
+- Read the exact matched turn's status and existing format/reduction flags.
+  Provider/call/envelope receipt facts remain intact; known later reduction has
+  its own layer, multiple signals preserve earlier failure, one attempt remains
+  one count. No inferred reducer reason/Claim, dependency or savings. Unknown
+  flags/status and started-only terminal gaps cannot become successful application
+  outcomes; multiple attempts sharing a turn cannot inherit its failure flag.
+- `node --experimental-strip-types --test tests/mamrExplanation.test.mjs`
+  exits 0, 15/15 (six new tests with multiple subcases). Canonical
+  `python scripts/dev/slice.py check` initially exits 1 before npm launches:
+  Windows sandbox WinError 5. Normal explicitly authorized execution exits 0:
+  67/67 frontend, TypeScript/Vite production build, diff. No configuration/check
+  weakened. Final malformed-flag text guard was added after that first full pass;
+  final-code canonical result is recorded below. Unchanged SDK/Go not rerun.
+- Existing isolated Collector 4320 / Dashboard 5179 reused. Generated a neutral
+  JSON bundle in PowerShell memory from completed.json (not source file edits):
+  room meeting-p6b-synthetic-reduction-recovery-v1, one error/reduction flag and
+  one done/recovery with four fabricated lifecycle receipts. Normal POST import
+  succeeded, trace_mamr_faec0cfaa2c4146edc822a8a090784bfecf125bffd52fcfc57eee19f6bc4e64e.
+  Counts/time are copied fixture values, not real-provider data or a real replay.
+  The test DB now contains seven local fixture records; no user data removed.
+- Actual browser page: returned/completed/passed plus turn error/reduction Yes,
+  later recovered attempt, complete/approved/not_evaluated remain separate.
+  Keyboard Enter on Inspect receipt selects the failure receipt, scrolls and
+  focuses Selected span receipt; exact attempt/turn verified in rendered DOM.
+  Workflow disclosure keeps human approval separate from quality. Existing RAG
+  30/14-day conflict/no MAMR explanation and existing P5 manual regression file
+  (30→5 tokens, passed→failed) still read. No new paired experiment fabricated.
+- Browser DOM summary is generic, unlike native AX's button label; one Playwright
+  button-role press timed out without changing data. Re-observed DOM, used the
+  supported native keyboard navigation; no UI/content/viewport modification.
+  Saved actual default-viewport mamr-reduction-explanation.jpg, updated README
+  and import guide with synthetic label; browser deliverable remains open.
+- Updated CURRENT_TASK/ROADMAP/HANDOFF/AGENTS and detailed P6 status/card. Source
+  cause remains unavailable, P6C cross-repo/capture and paid experiments require
+  their own authorization. No real application fix, controlled pair or M3b claim.
+- Self-review: no actionable blocking finding within this card. Final-code scope
+  exits 0, 60 accumulated paths allowed; canonical check exits 0, 67/67 tests,
+  production build and standard diff. Local-link check passes 68 targets in nine
+  edited docs. An extra `git -c core.autocrlf=false diff --check` exits 1 by
+  treating existing CRLF as trailing whitespace across the prerequisite stack;
+  no repository config/files were changed by that command. Restored the standard
+  command (configured core.autocrlf=true): exits 0. No broad line-ending rewrite
+  or gate weakening; stop after this bounded slice.
+
+## 2026-09-29 — P6A bounded evidence/experiment preflight
+
+- User continuation selected the previous card's P6A. Used sledtrace-slice and
+  sledtrace-review for one documentation-only audit; no product source edits,
+  new contract, MAMR writes, model calls, commit/push or release. Preserved all
+  existing dirty prerequisites. Released baseline remains v0.7.1.
+- Read current MAMR instructions/context, ordinary export, parser/reducer and
+  lifecycle plus SledTrace importer/P4/P5. A newer real metadata-only record
+  confirms a format rejection and a separate post-validation reduction failure.
+  Existing export lacks failed raw output/reducer detail; no root-cause fix is
+  justified. No private creative content, Memo or screenshots copied/reused.
+- MAMR git initially rejects sandbox ownership. Command-local
+  `git -c safe.directory=C:/Users/spour/OneDrive/Desktop/Multi-AI-MeetingRoom`
+  readonly status/HEAD succeeds, clean eabf737a2197366c283a6c5e99c755264f023c5a;
+  no global trust setting or external repository change. Exploratory file-path
+  misses were corrected; they are not product validation failures or bypasses.
+- Concrete next intervention: explain existing uniquely linked
+  reductionFailureObserved in the Dashboard, retaining preceding gate facts,
+  unknown cause, recovery and exact receipt. P6B needs no source app/capture change.
+  P6_EXPERIMENT_PREFLIGHT fixes a public task, manual six-item rubric and bounded
+  conditional P6C comparison; provider/model/control references remain unfrozen.
+  Same-trace UI checks are not app before/after runs; no controlled pair/M3b claim.
+- Updated owned CURRENT_TASK/ROADMAP/HANDOFF/DECISIONS/AGENTS and detailed P6
+  split only; primary stage order unchanged. New private record is diagnostic
+  evidence, not a new public benchmark. No old paid-budget reuse or test loop.
+- `python scripts/dev/slice.py scope` exits 0, all 59 accumulated paths allowed;
+  `python scripts/dev/slice.py check` docs profile exits 0;
+  `git diff --check` exits 0 (only existing LF/CRLF notices).
+  PowerShell local-link verification exits 0, 47 targets across 8 edited docs.
+  Review found and corrected stale next-action wording in ROADMAP/detail header;
+  no remaining actionable blocker in this documentation card. Unchanged SDK/Go/
+  frontend checks intentionally not rerun as fresh evidence. P6B/P6C unimplemented.
+
+## 2026-09-29 — P5B read-only paired comparison
+
+- User explicitly approved P5A. Used sledtrace-slice for one Dashboard-only
+  implementation with documentation, preserving all prior dirty prerequisites.
+  No MeetingRoom/SDK/Collector code or persistence change, model call or release.
+- Added pairComparison.ts exact parser and pure measurements/comparison plus
+  PairComparisonPage.tsx. 16 KiB UTF-8, exact keys/version/provenance, bounded
+  references, quality-evidence combination and distinct trace IDs. Duplicate
+  and escaped keys reject. Invalid/mismatched details cannot become empty runs.
+  HTTP status is retained in ApiRequestError; trace path IDs are encoded.
+- App exposes Compare runs and original-record navigation; leaving unmounts and
+  drops declarations. File change clears old results; cancelled async results
+  cannot publish into a later pair. Recorded step disclosure retains all statuses.
+  Captured task/MAMR facts and manual quality stay separate. Partial/conflicting/
+  mixed usage and incompatible prices/timing do not yield fake deltas. No ratios,
+  semantic judge, savings verdict, automatic repair or comparison scheduler.
+- Targeted `node --experimental-strip-types --test tests/pairComparison.test.mjs`
+  exit 0, 14/14. First `npm.cmd run build` exit 1 after successful tsc because
+  esbuild could not read parent directories in the Windows sandbox. Canonical
+  `python scripts/dev/slice.py check` under approved execution exit 0: npm.cmd
+  test 61/61, TypeScript/Vite production build and diff check pass. No build
+  configuration or required check was weakened. Unchanged Go/SDK not rerun.
+- Actual existing Collector 4320 / Dashboard 5179: inserted two explicitly named
+  synthetic UI records through the normal local POST, not live Responses calls.
+  All fake counts/timing/provider-source fields are fixture coverage only. Baseline
+  has 2 LLM records including an error (30 tokens), candidate 1 (5 tokens); manual
+  passed→failed shows regression despite lower usage/cost/time. Caller accepted
+  remains true separately. Keyboard expands recorded statuses and opens baseline
+  trace; returning has no pair. Same record detail/ledger remains inspectable.
+- Existing MAMR rejected/completed fixtures show missing controls and unassessed
+  quality, unknown price/duration, no deltas. Different case IDs => non-comparable.
+  Missing candidate => explicit 404; wrong MAMR-format file => static file error.
+  Temporary Vite 5180 pointing at inactive 44333 verifies actual offline error
+  and its retry control, not zero usage. Tab closed and only that test process interrupted;
+  exit 1 is intentional cancellation, not a failed product check. 5179/4320 kept.
+- Original RAG 30/14-day conflict warning/readback still works. Default narrow
+  viewport renders stacked run panels; no viewport override or content editing.
+  Saved two real screenshots, updated README/guide/current owned-status docs.
+  External p5b-ui-*.json are local synthetic acceptance inputs outside the checkout,
+  not user records or a persistent product declaration format store.
+- Used sledtrace-review: no actionable blocking finding within this card. Manual
+  references remain unverified; call coverage is not completeness; no controlled
+  real pair/fix or M3b evidence. Next bounded P6A selects fixed task/criterion and
+  justified intervention before any source edit or new paid budget. No commit,
+  push/remote CI/merge/tag/Release/PyPI; v0.7.1 remains the published baseline.
+- Final canonical check on the final code exits 0 (61/61 + build/diff). Scope
+  exits 0 for 58 accumulated paths; status reports P5B complete. Guide JSON is
+  accepted by the actual parser; guide/preflight links/images exist. Port 5180
+  has no listener after cleanup. Post-closeout diff check passes; no fresh full
+  release validation is claimed. Deliverable tab retains the synthetic comparison.
+
+## 2026-09-29 — P5A comparison-evidence preflight (documentation only)
+
+- User continued after P4. Used sledtrace-slice for one bounded preflight;
+  no product implementation, new source contract, paid call or testbed expansion.
+  Preserved the prior uncommitted documentation/P3/P4 stack.
+- Read the actual MAMR ordinary diagnostic-v1 exporter, Python task/result
+  examples and Dashboard ledger/pricing/timing. Input/config/model/app-version/
+  quality criteria are absent from MAMR v1; task_id/variant/accepted do not
+  establish controlled comparison. Live read-only GETs of the existing isolated
+  4320 fixture DB showed one RAG and three MAMR records, not a new experiment or
+  global user-data audit. MAMR quality is not_evaluated and duration is null.
+- Added PAIR_COMPARISON_PREFLIGHT: evidence inventory, alternative choices,
+  proposed bounded session-only user-declared JSON contract, mismatch/unknown/
+  quality/metric rules and a 1–2-day P5B acceptance card. No arbitrary source
+  field additions or inferred quality. Two traces and explicit manual assessment
+  references remain distinct from captured facts; unknown cannot become zero,
+  percentages or whole-workflow savings. Proposal awaits human approval.
+- Clarified PYTHON_SDK_GUIDE's blanket unsupported wording: the Python API does
+  not import/diagnose MAMR, while the local Collector/UI candidate does. Comparison
+  remains unimplemented. Updated task/handoff/roadmap/decision/agent-entry status.
+- Validation: `python scripts/dev/slice.py status`, `scope`, `check` each exit 0
+  under explicit Windows worktree GIT_DIR/GIT_WORK_TREE. Scope passes 51 accumulated
+  paths including preserved prerequisites. Docs profile runs only `git diff
+  --check` and passes; LF-to-CRLF warnings are not whitespace errors. PowerShell
+  checked the preflight's two relative links and parsed its illustrative JSON;
+  exit 0, not acceptance of an implemented importer. `git status --short` exit 0
+  retains the dirty prerequisite stack. No fresh Go/npm/SDK test/build or remote CI.
+- Self-review with sledtrace-review found no actionable preflight defect within
+  this card. Limits: no suitable controlled pair established, no independently
+  verified manual references, no comparison UI or real improvement evidence.
+  Stop at the new file-contract gate before P5B. No source-repo write, commit,
+  push, merge, tag, Release or PyPI action; published baseline stays v0.7.1.
+
+## 2026-09-29 — P4 source-backed failure explanation
+
+- User selected the next P4 card after P3B. Used sledtrace-slice and preserved
+  the entire prior dirty documentation/P3A/P3B stack. Minimal frontend-only
+  view-time explanation; no API/SQLite/SDK/MeetingRoom contract change.
+- Added `mamrExplanation.ts`, `MamrExplanation.tsx` and nine focused tests.
+  Source attempt identity, call/provider/validator facts, validator version/code/
+  path and next checks are inspectable without decoding JSON. One start/terminal
+  pair contributes one card; duplicate/mismatched/unsupported rows become gaps.
+  Failure cards precede passed gates for inspection, not causal/root-cause order.
+- Known call error/cancel/timeout and reported provider incomplete/failed are
+  distinct from contract rejection. Started-only, missing capture and unknown
+  provider/validation outcomes cannot become success or free usage. Completed
+  and human-approved does not imply quality. Old posthoc/RAG records get no
+  source-backed diagnosis. No semantic judge, scores, waste/budget rules or repair.
+- Exact receipt matching links only one unique stored LLM span; no adjacent-span
+  substitution. Native button activation selects, scrolls and focuses the receipt
+  region. Workflow/task observations live in a native disclosure explicitly
+  labelled not a causal chain. No dependency or blocked-result evidence exported.
+- Targeted `node --experimental-strip-types --test tests/mamrExplanation.test.mjs`
+  exit 0, 9/9. First canonical check failed launching npm under Windows sandbox;
+  approved execution ran all 47 tests but found TS5097 (.ts import) / TS2550
+  (Object.hasOwn not in ES2020). Local utility compatibility corrected; tsconfig
+  unchanged. Final `python scripts/dev/slice.py check` exit 0: `npm.cmd test`
+  47/47, `npm.cmd run build` TypeScript/Vite success, `git diff --check` success.
+  No SDK/Collector edits in P4; their prior validation is not a fresh P4 pass.
+- Browser acceptance uses existing isolated fixture DB on Collector 4320 and
+  Dashboard 5179. Contract rejection displays returned/completed separately from
+  invalid_type/card.stance; completed capture retains not-evaluated quality;
+  started-only interruption is unknown failure layer. Keyboard Enter activates
+  receipt and focuses `Selected span receipt`; context disclosure also toggles
+  by keyboard. RAG 30-day/14-day conflict remains visible, explanation count zero.
+  Two new actual screenshots retained; narrow-window hide/show list works.
+  Screenshot capture followed UI repaint; no viewport change or model call.
+- Self-review with sledtrace-review: no blocking defect found within this card.
+  Limits: fixture-based UI/branch evidence, no causal dependency schema, raw output,
+  expected type, real diagnosis-guided fix or semantic verdict. Independent live
+  usefulness and M3 completion remain open. README/context/owned current-status
+  docs synchronized; no roadmap reorder. Next is P5 comparison-evidence preflight,
+  because room IDs alone do not establish comparable task/input/config/criteria.
+- Local only, no commit/push/remote CI/merge/tag/Release/PyPI or source repo edit.
+  Final `slice.py status` reports P4 complete and `slice.py scope` passes all
+  50 accumulated paths (including preserved prerequisites); post-doc diff check
+  passes. Screenshot/document targets exist; the current-status contradiction
+  scan found no remaining blanket P4-unimplemented claim in the inspected docs.
+
+## 2026-09-29 — P3B strict MAMR import and visible readback
+
+- Continued the current source-evidence plan after reading the active contract,
+  P3A storage and MAMR's ordinary diagnostic-v1 exporter. Preserved earlier
+  uncommitted documentation/P3A changes. One slice only; no MeetingRoom source
+  edits, SDK changes, new span family, paid call or release.
+- Added `POST /api/imports/mamr`: exact bounded JSON parsing (1 MiB, 1024 items,
+  depth 16), duplicate-key/type/enum/reference/outcome checks, static error text
+  and P3A atomic persistence. 201 imported / 200 unchanged / 409 changed same
+  room with original retained. Bad input leaves no partial import. Safe integer
+  and aggregate bounds prevent lossy frontend arithmetic.
+- Map one span per source attempt, preserving the whole allowlisted source
+  bundle and terminal receipt. Unknown versus zero, provider versus visible
+  output, source status/timing and call/provider/validator/workflow states remain
+  distinct. No model, text, task quality, parent/dependency, price or room
+  execution duration is inferred. Changed snapshots for the same room conflict;
+  this is not live append or incremental reconciliation.
+- Added Dashboard file import, source context and selected receipt. Source usage
+  is labelled MAMR-reported, not provider-verified. No Agent failure rule ran;
+  zero RAG warnings is not evidence of a healthy meeting. README includes an
+  actual source-panel screenshot and links the bounded local-candidate guide.
+- Final canonical `python scripts/dev/slice.py check` exit 0: Python 89 passed,
+  4 skipped (one legacy deprecation warning); `go test ./... -count=1` all
+  packages pass; `npm.cmd test` 38/38; `npm.cmd run build` TypeScript/Vite pass;
+  `git diff --check` pass. Earlier sandbox/default pytest-temp and Git-worktree
+  discovery failures were resolved using isolated workspace cache/temp paths,
+  approved execution and explicit GIT_DIR/GIT_WORK_TREE. No test/check bypass.
+  Test-only named-map comparison was corrected to canonical JSON equality;
+  Go tests use context.Background for the project's Go 1.22 baseline.
+- Real browser on port 5179 / isolated Collector 4320: imported the source
+  rejection fixture; re-import was a no-op; original completed fixture (same
+  source room ID) conflicted and retained rejection. Separate synthetic room-ID
+  copies of completed/started-only fixtures displayed passed/complete and
+  unresolved/unknown respectively. Their model and quality remain unknown/not
+  evaluated. Screenshots `mamr-import-source.jpg` / `mamr-import-receipt.jpg`
+  show actual rendered UI, not mockups. This is fixture-backed browser evidence,
+  not a new live meeting, provider call, accuracy or quality result.
+- Old `python -m examples.reference_rag_app.run conflict` exit 0 against the
+  isolated Collector (deterministic answer, no --llm). Browser readback preserved
+  query/answer/retrieved chunks and the 30-day/14-day heuristic conflict warning;
+  no MeetingRoom evidence panel was attached to the RAG trace.
+- Self-review with sledtrace-review found no remaining blocking defect within
+  P3B. Limits: source export omits model/text, IDs may still be sensitive despite
+  shape checks, source-reported metadata is not independently verified, immutable
+  import does not reconcile later room updates. Live export handoff and automatic
+  causal/efficiency diagnosis remain unvalidated. Related active documentation
+  updated; CURRENT_TASK closed with the next bounded P4 explanation card.
+- Local only: preserved dirty stack remains uncommitted/unpushed; no remote CI,
+  merge, version/tag/Release/PyPI action. Do not begin P4 automatically.
+  Final `slice.py status` reports P3B complete, `slice.py scope` passes all 45
+  accumulated changed paths, and post-documentation `git diff --check` passes.
+  The preview Collector was restarted on the same isolated database; an initial
+  incorrect launch path failed before starting, then the repository's actual
+  `go run ./cmd/sledtrace-collector` entry restored it on loopback port 4320.
+
+## 2026-09-28 — P3A MAMR import storage
+
+- User continued Agent development. Read current SledTrace P2 closeout and the
+  newly available MeetingRoom diagnostic-v1 exporter and three synthetic
+  fixtures; preserved both checkouts' existing work. Selected the necessary
+  atomic/idempotent storage prerequisite as one bounded slice.
+- Added `mamr_imports` with `CREATE TABLE IF NOT EXISTS` and an internal
+  transaction for one mapped trace, spans, warnings and manifest. Fingerprint
+  excludes generated warning IDs/timestamps; duplicate source content is a
+  no-op, changed same ID and existing generic trace conflict. No old data
+  migration or `POST /api/traces` behavior change.
+- First targeted `go test` was blocked before compilation by sandbox access to
+  Go's default cache/standard-library files. With a workspace-local temporary
+  `GOCACHE`, targeted storage tests then passed; full
+  `go test ./... -count=1` passed across command, API, storage and warning packages.
+  Tests cover round-trip, null/zero, duplicates, conflicts and rollback after
+  bad/duplicate spans or invalid/orphan warnings. This is local deterministic
+  evidence, not a parsed MAMR file or a Dashboard browser acceptance.
+- Self-review: P3A transaction does not rewrite previous trace rows; warning
+  references must point to spans in the same import. SledTrace P3B, D1 and
+  M2.5 remain open. No paid call, commit/push/merge/tag/release or remote CI.
+- Final `python scripts/dev/slice.py check` exits 0: collector profile runs
+  `go test ./... -count=1` across all Go packages and `git diff --check`.
+  `slice.py status` reports P3A complete; `slice.py scope` passes all 26 changed
+  paths, including 23 preserved older documentation paths. The temporary
+  `.gocache` was verified inside this checkout and removed after validation.
+
+## 2026-09-27 — P2 approved source evidence, local closeout
+
+- Explicit approval implemented MAMR-only ordinary runAgent source receipts,
+  diagnostic observers, safe internal envelope reasons, optional local history,
+  strict parsing/dedup/conflict semantics and minimal receipt UI. Earlier AR1/P1/
+  P1B edits in both repositories are preserved, still uncommitted/unpushed.
+- Final MAMR `pnpm.cmd check` exit 0: 71/71 tests, build, lint and types pass.
+  Final regression additions preserve known Gemini visible output across events
+  without usage, and ignore JSON property order for receipt identity.
+- Real browser IndexedDB acceptance passed: legacy absence, unresolved started,
+  receipt round-trip/repeated-save dedup, conflict transaction rollback and
+  deletion/reused room ID. Actual production receipt component renders restored
+  synthetic data. This is not a real provider meeting or a SledTrace UI integration.
+  Reproduction and complete gate matrix live in MAMR's bilingual
+  `docs/correction-briefs/2026-09-27-p2-source-attempts.md`.
+- Self-review found no remaining blocking issue within this scope. Timer-expiry,
+  real provider streams, full meeting/reload and remote CI were not newly tested.
+  Coverage excludes Plan/Observer/Solo/Review work and later task/reducer gates.
+  Configured model is unverified; missing terminal and usage remain unknown.
+- No paid call, dependency, version/tag/release, historical trace rewrite or P3
+  implementation. M2.5 remains incomplete. Next candidate: P3 storage/privacy
+  audit and contract decision, with necessary R1 work split if needed.
+- Related active documents synchronized. README/release screenshots unchanged:
+  SledTrace UI and published artifacts did not change; browser proof is an offline
+  source-side component acceptance, not a new product marketing screenshot.
+- Documentation checks: slice.py status/scope/check exit 0, all 23 accumulated
+  SledTrace paths in scope; MAMR git diff --check exit 0. LF/CRLF notices are
+  informational. SledTrace docs profile is not a substitute for MAMR product tests.
+
+## 2026-09-27 — P2 source-evidence audit / human contract gate
+
+- User requested continuation. Read-only audit preserved both dirty checkouts;
+  no MAMR code, data, dependency or schema changed in this turn.
+- Inspected ordinary runAgent and terminal reduction, DiscussEvent/UsageSummary,
+  TranscriptItem parsing, RoomStore event persistence, provider diagnostic paths
+  and PlanAttempt lifecycle. Ordinary agent.error lacks usage; incomplete-response
+  exceptions can drop already-reported usage. Numeric legacy totals cannot express
+  unknown, and saved event time is record.updatedAt rather than source start/end.
+- Existing Plan receipts have useful lifecycle semantics but Plan-specific fields;
+  do not generalize their coverage or alter their behavior for this slice.
+- Proposed additive versioned local attempt collection/lifecycle event with strict
+  safe metadata, nullable reported usage and distinct call/validation states.
+  Scope ordinary runAgent-backed turns; other workflows remain uncovered.
+  CURRENT_TASK owns the full proposal and approval boundary.
+- Following sledtrace-slice, stopped before public/persisted contract changes.
+  No product tests rerun because no product change; prior P1B 68/68 remains dated
+  evidence, not a new execution. No paid calls, browser session, commit or release.
+- Roadmap sequence unchanged. P2 implementation pending approval; P3 not started.
+- Documentation validation: slice.py status/scope/check and git diff --check
+  exit 0; all 23 accumulated paths remain in scope. No new Markdown link targets.
+
+## 2026-09-27 — P1B validation baseline repair
+
+- User continuation selected the documented baseline correction before P2.
+  Preserved uncommitted AR1/P1 changes across both repositories.
+- Baseline commands in MAMR: node --test --test-name-pattern='Solo makes'
+  tests/rendered-html.test.mjs exited 1 (502 vs 200); pnpm.cmd typecheck:generated
+  exited 2 (41 diagnostics).
+- Root causes: mock asserted old 1600 cap inside a caught provider callback
+  (actual default 1200); phase success type lacked existing value/objective;
+  two Review calls supplied an ignored third argument.
+- Minimal repair: correct the return annotation, remove ignored arguments,
+  assert Solo requests outside mock and test omitted/lite/medium/unlimited caps
+  1200/600/1200/12000 with one mocked call and retained usage per request.
+  No production cap, prompt, model, validator, dependency or public schema change.
+- pnpm.cmd typecheck:generated — exit 0.
+- node --test --test-name-pattern='Solo|P1' tests/rendered-html.test.mjs — exit 0,
+  5/5. Four profile cases live within the Solo success test.
+- pnpm.cmd check — exit 0 on rebuilt current tree: generated worker types,
+  production build, 68/68 tests, lint and typecheck. Existing unknown-route build
+  notice is informational. No fresh remote CI or browser/IndexedDB acceptance.
+- sledtrace-review self-review found no introduced blocker; no skip/suppression.
+  MAMR docs/correction-briefs/2026-09-27-p1b-validation-baseline.md and Chinese
+  mirror own the detailed closeout. Old P1 failed evidence is retained as history.
+- Local result only; no credentials read, paid calls, commit/push/release/deployment.
+  P2 remains next candidate, not implemented. M2.5/DP-0.3 are not declared complete.
+  No new architecture decision; roadmap sequence unchanged.
+- Final docs checks: slice.py status/scope/check exit 0 (23 allowed paths);
+  both repositories' git diff --check exit 0. Read-only link scan verifies 244
+  local relative targets with no broken paths; fragment anchors not checked.
+
+
+## 2026-09-27 — P1 local MAMR validator diagnostics
+
+- Continued adopted P1; preserved 23 prior AR1 doc changes. MAMR started clean on
+  codex/dp-0-portability at a0cae68688cb6963ca7ce3fb1a08cbe7c16676b1.
+  Followed its correction brief and bilingual closeout requirement.
+- Code: MAMR lib/meeting-state.ts safe error suffixes; tests/rendered-html.test.mjs
+  three new tests. Existing parser semantics and event/history fields retained.
+- node --test --test-name-pattern='P1 Turn|P1 preserves|Turn Envelope validation and'
+  tests/rendered-html.test.mjs — exit 0, 3 passed.
+- pnpm.cmd check — exit 1: worker types/build pass; 67/68 tests, existing Solo
+  session-key 502 vs 200 (already recorded 2026-09-25). All three P1 tests pass,
+  including route no-retry/usage and saved-record round-trip. Lint/types not reached.
+- pnpm.cmd lint — exit 0. pnpm.cmd typecheck:generated — exit 2, 41 diagnostics.
+  Read-only compiler-host comparison with HEAD parser produces identical errors
+  in untouched route/page. Separate read-only node --input-type=module parser
+  differential passes 1,107 comparisons (acceptance, normalization, old prefix).
+  Neither inline supplemental check writes/switches baseline files; they are
+  not repository scripts. Checked-in P1 tests remain repeatable.
+- sledtrace-review self-review: no introduced blocking defect; collection errors
+  stop at item index. Source display wiring/record serialization is not a new
+  browser or IndexedDB run. No historical root-cause reconstruction claimed.
+- Full evidence: sibling MAMR docs/evaluations/2026-09-27-p1-turn-validation-diagnostics.md
+  and Chinese mirror. Build/lint passing does NOT make the full check green.
+- No SledTrace product edits, paid calls, credential reads, prompt/model changes,
+  retry, old-trace rewrite, commit/push/deployment/release. P1 local result delivered;
+  separately correct baseline check failures before P2. M2.5 remains incomplete.
+- Final validation: python scripts/dev/slice.py status, scope and check all exit 0;
+  all 23 changed SledTrace paths are allowed. Both repositories' git diff --check
+  pass. Read-only local Markdown link scan checks 236 targets with zero broken
+  paths (fragments not validated). MAMR node --test --test-name-pattern='P1'
+  tests/rendered-html.test.mjs exits 0, all three P1 tests pass again.
+  Docs checks cannot override MAMR's failed full-project gate.
+
+## 2026-09-26 — AR1 Agent roadmap documentation alignment
+
+- User approved the failure-localization/comparison direction after discussing
+  the MAMR case, then requested all related documents be updated. Revised
+  roadmap introduces M2.5/M3a/M3b and P1–P7; D1 is required, D2/D3 conditional,
+  and two waste rules are no longer a prerequisite for comparison.
+- Updated active instructions, handoff/task/roadmaps, decision history,
+  README/contributor/onboarding/SDK guides, architecture, rule/reference
+  runbooks, workflow and release checklist. Added MAMR_DIAGNOSTIC_CASE and a
+  full documentation impact audit including intentionally unchanged files.
+  Corrected stale claims that tool spans/E1/E2 were not yet implemented.
+- Earlier in this session, the user-authorized MAMR meeting made four real
+  model calls and paused on invalid Turn Envelope. UI-reported output was
+  1694 tokens and its rounded app-estimate sum about $0.0248, not a bill.
+  No recovery, synthesis or quality acceptance was observed. The local trace
+  trace_cf3d673b401d4df290cfeaa85ab49c74 was a posthoc UI mapping, not native
+  capture. The dedicated case document records timing/usage/provenance and
+  accepted=false interpretation limits. No new model request ran in AR1.
+- Read-only source inspection confirmed parseTurnEnvelope's combined
+  statement/card gate and runAgent's format-error event boundary. Collector
+  readback retained error status, posthoc metadata and mapping-only duration.
+  No historical database record was changed to make the evidence look better.
+- This checkout started clean at a97935dd148b7223068bd2da4ec02188203fb58b on
+  codex/e4-reference-repeat-observation. Prior candidate history remains intact;
+  remote PR/CI/merge status was not rechecked. No product code, MAMR file,
+  package README/metadata, version, screenshot or published artifact changed.
+- Documentation validation (all exit 0):
+  - `python scripts/dev/slice.py status`: AR1 metadata parsed, docs profile.
+  - `python scripts/dev/slice.py scope`: 23/23 changed paths allowed.
+  - `python scripts/dev/slice.py check`: docs profile / diff-check PASS.
+  - `git diff --check`: no whitespace errors; Git reported only existing
+    checkout-policy LF-to-CRLF notices.
+  - Read-only PowerShell local-link scan using `Get-Content`,
+    `[regex]::Matches` and `Test-Path`: 23 changed Markdown files, 64 local
+    targets, 0 fragment links, 0 broken targets. Remote URLs were not checked.
+- Self-review followed sledtrace-review: checked adoption vs implementation,
+  released vs candidate, historical vs active instructions, privacy, workflow
+  interruption vs quality rejection, schema/paid/cross-repo gates and scope.
+  No remaining blocking documentation finding. Package README was already
+  accurate and unchanged, so no build/package validation was required. No
+  product regression result or remote CI pass is claimed by AR1.
+- P1 is the next candidate, not an implemented outcome. No commit, push, merge
+  or release was performed; all changes remain local documentation edits.
+
 ## 2026-09-26 — E4R executed normal-repeat counterexample
 
 - Reused the pinned public PydanticAI bank-support workflow, rather than

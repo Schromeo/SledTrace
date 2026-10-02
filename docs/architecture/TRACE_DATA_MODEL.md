@@ -2,9 +2,36 @@
 
 This is the initial v0.1 design with incremental historical updates, not a complete
 current implementation contract. In particular, the proposed prompt/custom and
-future span types below are not implemented; only retrieval/llm currently exist.
+future span types below are historical proposals. Current v0.7.1 implements
+retrieval/llm plus one caller-instrumented synchronous tool span.
 Consult [AI_HANDOFF](../ai-context/AI_HANDOFF.md) for actual boundaries and
 [Road to v1.0](../product/ROAD_TO_V1_0.md) for proposed, not yet implemented extensions.
+
+## Current boundary and planned diagnostic semantics
+
+P5B's pair-evidence v1 is a separate user-declared file consumed in browser-page
+memory, not a trace metadata/SQLite/SDK wire extension. It does not overwrite
+source outcomes or certify reference equality. [Contract](../integrations/PAIR_EVIDENCE.md).
+
+P3B is a local candidate mapping, documented in the
+[MAMR import contract](../integrations/MAMR_DIAGNOSTIC_IMPORT.md): source bundle
+in trace.metadata.mamr, one existing llm span per attempt, selected receipt in
+span.metadata.mamr_receipt, application usage_source=mamr_reported. Source room
+and workflow status are preserved; call status does not imply validator success.
+No new span family, accepted verdict, model name or meeting duration is inferred.
+P3A atomically stores the import and distinguishes no-op from conflict.
+
+Current task results can carry accepted=true/false/unknown independently of
+attempt status; that does not fully distinguish interruption from quality
+rejection. P1–P7 propose separate call, application-contract, workflow and
+quality evidence, with explicit provenance and stable attempt linkage. They
+are semantic requirements, **not a shipped schema or a new wire contract**.
+
+Existing parent_span_id represents containment, not proof of causal dependency.
+An import must preserve source times separately from import times and source
+provenance separately from completeness. Duplicate/conflict and atomic persistence
+semantics must be resolved before repeatable import. No database migration is
+authorized by this document update; see [the detailed plan](../product/ROAD_TO_V1_0.md).
 
 ## Purpose
 

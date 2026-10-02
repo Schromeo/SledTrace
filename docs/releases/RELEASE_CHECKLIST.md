@@ -10,14 +10,25 @@ Use this checklist for every project release. Tags and package-index versions ar
 - [ ] Align Python package, CLI, example metadata, and Dashboard package versions.
 - [ ] Prepare release notes and remove stale current-version claims.
 
+## Agent milestone evidence (when included)
+
+- [ ] Check the selected [milestone exit gate](../product/ROAD_TO_V1_0.md), not a quota of warning rules.
+- [ ] D1 evidence, actual repair/regression decision and comparison limits match the release claim; optional D2/D3 include counterexamples and abstention.
+- [ ] Distinguish fixture, live provider, posthoc mapping, internal dogfooding and independent user evidence.
+- [ ] Verify source provenance, unknown usage, interrupted vs rejected quality, and original vs import timestamps.
+- [ ] Any included import has tested privacy, atomic save, duplicate/conflict and old-data behavior.
+- [ ] Include all failed/extra attempts in comparison; no invented savings or invoice accuracy.
+- [ ] Preserve prior release notes/tags/artifacts; new planning does not retroactively add capabilities.
+
 ## 2. Local validation
 
 - [ ] `cd sdk/python && pytest -q`
 - [ ] `cd sdk/python && python -m build`
 - [ ] `cd sdk/python && python -m twine check dist/*`
 - [ ] `cd sdk/python && python scripts/validate-wheel.py`
+- [ ] `cd sdk/python && python scripts/validate-independent-app.py`
 - [ ] `cd collector/go && go test ./... -count=1`
-- [ ] `cd dashboard/web && npm ci && npm run build`
+- [ ] `cd dashboard/web && npm ci && npm test && npm run build` (use npm.cmd on Windows)
 - [ ] `git diff --check`
 - [ ] Clean-clone smoke test completed for the documented startup path.
 - [ ] Dashboard traces and expected warnings inspected in a browser.

@@ -2,8 +2,20 @@
 
 Historical v0.1 product specification and implementation snapshot. Its old
 next-step recommendations are not the active roadmap. See
-[Road to v1.0](ROAD_TO_V1_0.md) for the 2026-09-15 proposed direction and
+[Road to v1.0](ROAD_TO_V1_0.md) for the adopted 2026-09-26 failure-localization and comparison direction and
 [AI_HANDOFF](../ai-context/AI_HANDOFF.md) for currently implemented behavior.
+
+Current v0.7.1 already includes a caller-recorded `tool` span; references below
+to tool tracing as future describe the historical v0.1 snapshot, not today's
+capability boundary. P1 diagnostics and approved P2 ordinary-turn source receipts
+are locally implemented/validated in MAMR only, after P1B's baseline correction.
+P3A/P3B now locally import the metadata-only MAMR bundle and show source receipts,
+with offline fixture/browser acceptance. P4 locally adds source-backed gate
+explanation and receipt navigation; causal links and real usefulness are not
+proved. P5B adds a local paired view with session-only user-declared context,
+not independently verified comparison. P6/P7 remain unimplemented; the roadmap
+owns their gates. This bounded
+path is not general Agent integration or semantic diagnosis.
 
 ## Product Name
 

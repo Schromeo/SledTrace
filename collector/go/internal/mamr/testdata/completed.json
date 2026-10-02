@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "mamr-ordinary-meeting-diagnostic",
+  "room": { "id": "meeting-fixture-1", "createdAt": "2026-09-27T11:59:00.000Z", "updatedAt": "2026-09-27T12:00:03.000Z" },
+  "workflow": { "stage": "decision", "phase": "complete", "status": "complete", "round": 1, "stopReason": null, "updatedAt": "2026-09-27T12:00:03.000Z" },
+  "taskResult": { "memoPresent": true, "humanDecision": "approved", "qualityEvaluation": "not_evaluated" },
+  "outcomeSignals": { "turnEnvelopeRejectionObserved": false, "meetingInterrupted": false, "humanDecision": "approved", "qualityEvaluation": "not_evaluated" },
+  "turns": [{ "id": "turn-1", "seatId": "seat-1", "round": 1, "phase": "proposal", "status": "done", "formatFailureObserved": false, "reductionFailureObserved": false }],
+  "sourceEvidence": {
+    "state": "recorded",
+    "unresolvedAttemptIds": [],
+    "receipts": [
+      { "version": 1, "captureVersion": "mamr-turn-v1", "validatorVersion": "turn-envelope/v1", "attemptId": "attempt-1", "requestId": "request-1", "turnId": "turn-1", "seatId": "seat-1", "provider": "openai", "phase": "proposal", "round": 1, "outputLimit": 1200, "lifecycle": "started", "startedAt": "2026-09-27T12:00:00.000Z", "endedAt": null, "elapsedMs": null, "callStatus": "started", "providerFinish": "unknown", "providerReason": "unknown", "validation": "not_run", "validationCode": null, "validationPath": null, "inputTokens": { "value": null, "source": "unknown" }, "outputTokens": { "value": null, "source": "unknown" }, "reasoningTokens": { "value": null, "source": "unknown" }, "outputTokenBasis": "provider_output" },
+      { "version": 1, "captureVersion": "mamr-turn-v1", "validatorVersion": "turn-envelope/v1", "attemptId": "attempt-1", "requestId": "request-1", "turnId": "turn-1", "seatId": "seat-1", "provider": "openai", "phase": "proposal", "round": 1, "outputLimit": 1200, "lifecycle": "terminal", "startedAt": "2026-09-27T12:00:00.000Z", "endedAt": "2026-09-27T12:00:02.000Z", "elapsedMs": 2000, "callStatus": "returned", "providerFinish": "completed", "providerReason": "unknown", "validation": "passed", "validationCode": null, "validationPath": null, "inputTokens": { "value": 10, "source": "reported" }, "outputTokens": { "value": 8, "source": "reported" }, "reasoningTokens": { "value": null, "source": "unknown" }, "outputTokenBasis": "provider_output" }
+    ]
+  }
+}

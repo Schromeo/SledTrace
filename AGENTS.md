@@ -1,168 +1,110 @@
-
 # AGENTS.md
 
-## Project
+## Working principle
 
-SledTrace is an open-source, local-first observability and debugging tool for RAG pipelines.
+每次只完成当前任务；按变更范围验证；结果有证据；发现范围外问题则报告，不自动扩展；满足验收条件后停止。
 
-Former project name: RAGLens.
+## Product and boundaries
 
-Current stable project direction is SledTrace-first. Legacy RAGLens compatibility may remain temporarily where explicitly documented.
+SledTrace is a local-first debugger for RAG and explicitly instrumented AI
+workflows. Agent direction: failure localization and outcome-aware improvement
+verification, NOT an Agent runtime or hosted LLMOps platform. Python remains the
+main SDK; a selected cross-language testbed does not imply generic JS support.
+Current implementation/release facts belong in AI_HANDOFF, not this standing file.
 
-Current released version: **v0.7.1 — Trustworthy Local Tracing**, published from immutable tag `v0.7.1` on 2026-09-25. The protected PyPI workflow succeeded, and the wheel was installed from production PyPI in a clean virtual environment outside the repository.
+Architecture: Python explicit trace/flush → Go Collector → deterministic
+diagnostics → SQLite → React/TypeScript Dashboard.
+Preserve retrieval/llm/caller-instrumented synchronous tool spans, existing RAG
+behavior, sledtrace/SLEDTRACE_COLLECTOR_URL preferences and documented
+raglens/RAGLENS_COLLECTOR_URL compatibility. No compatibility removal by cleanup.
 
-Current development focus: **a bounded execution-efficiency path to v1.0**, adopted for incremental development by the user on 2026-09-15. v0.7.1 includes the reliability work, B1/B2/H0 integration, D0 harness, E1 usage visibility, E2's single Python tool path, X1 external-corpus exercise, X2 legacy-warning read fix, and E3's explicit offline-validated OpenAI Responses usage helper with indicative pricing. The E3 helper has not been verified against a paid provider response or reconciled against billing. Later comparison/runtime capabilities remain candidates, not blanket authorization.
+## Read and authority
 
-The Python package is published on production PyPI as `sledtrace==0.7.1`; its wheel and sdist are available. A clean external virtual environment installed the wheel, imported `sledtrace`, `raglens`, and `sledtrace.openai`, and verified CLI version/help plus the documented nonzero out-of-checkout `serve` guidance. `0.7.0rc1` remains on TestPyPI as historical candidate provenance.
+For a small, explicitly described task, read this file and the files you will
+change; read CURRENT_TASK only when the task is the active slice. When taking over
+a stage or choosing what to do next, read NEXT_AGENT_BRIEF, then CURRENT_TASK,
+AI_HANDOFF and ROADMAP. Read DECISIONS or ROAD_TO_V1_0 sections only for the
+architecture or stage choice at hand. DEVLOG and *_HISTORY_* files are lookup
+material, not default reading.
+Latest human instructions govern; archived next actions and plan text are not
+authorization. Standing rules do not override newer verified implementation facts.
 
-## Before Doing Meaningful Work
+CURRENT_TASK owns one selected slice and its acceptance. AI_HANDOFF owns current
+facts/risks/entry points. ROADMAP owns milestone status and candidate sequence.
+ROAD_TO_V1_0 owns product goals/gates. DECISIONS owns durable rationale;
+DEVLOG owns execution history. NEXT_AGENT_BRIEF is stable navigation.
+Keep active documents short; archive history with working links and evidence.
 
-Always read these files first:
+Implementation uses .agents/skills/sledtrace-slice/SKILL.md; review uses
+.agents/skills/sledtrace-review/SKILL.md. Use existing scripts/dev/slice.py
+status/scope/check and authoritative profiles, not a new workflow framework.
+Preserve dirty/unmerged prerequisites; scope permission does not authorize
+changing every inherited path. `slice.py scope` reports everything changed since
+scope_base, including uncommitted earlier slices; do not build extra hash
+inventories or custom scanners to prove the increment. If uncommitted slices are
+piling up, tell the user and suggest a commit point instead.
 
-1. `docs/ai-context/NEXT_AGENT_BRIEF.md` when taking over this work
-2. `docs/ai-context/AI_HANDOFF.md`
-3. `docs/ai-context/CURRENT_TASK.md`
-4. `docs/ai-context/ROADMAP.md` current snapshot and proposed sequence
+## Before selecting an implementation
 
-Read `docs/ai-context/DECISIONS.md` before making architecture decisions.
+State a compact card: user result, confirmed blocker, reusable capability,
+smallest patch, non-goals, proportional validation, visible evidence and stop.
+Compare a smaller evidence/reproduction route before new capture or infrastructure.
+Do not implement until it is a coherent shortest path to the requested result.
 
-For roadmap selection, read the overview and relevant slice of
-`docs/product/ROAD_TO_V1_0.md`. Its detailed future plan does not override the
-current implementation facts or authorize the entire plan. Do not reread all
-historical milestones before every small change.
+WIP=1; normally 0.5–3 effective days. Completion stops at validated documented
+review-readiness, not automatic next-slice implementation. Public API/schema/
+span-family, cross-repo, release/security actions and paid calls require the
+corresponding human decision; ordinary authorized details do not need reapproval.
+Never infer authorization to commit/push/merge/publish from docs cleanup.
 
-Use the repository and these documents as the source of truth.
-Do not assume old milestone information from this file overrides the current AI context documents.
+## Parent milestone and anti-loop rules
 
-For implementation, use `.agents/skills/sledtrace-slice/SKILL.md` and the active
-CURRENT_TASK metadata. Use `python scripts/dev/slice.py status`, `scope`, and
-`check` instead of rediscovering validation commands. For review, use
-`.agents/skills/sledtrace-review/SKILL.md`. The skills contain workflow detail;
-keep this standing file concise.
+Keep the parent milestone exit and initial budget fixed while splitting work.
+Preflight, capture and readback count toward that goal; new slice IDs do not reset
+the budget. Record actual effort/known cumulative effort with an explicit unknown
+historical portion. Never invent time or declare a milestone done from slice count.
 
-CURRENT_TASK owns the next slice and its acceptance criteria. AI_HANDOFF owns the current snapshot and known findings. ROADMAP owns candidate sequencing; DECISIONS owns rationale; DEVLOG owns historical execution evidence. Avoid duplicating long release histories across active documents or rereading historical sections for every small change.
+Near twice the initial budget, or two slices without visible user outcome,
+stop scope growth and reassess. A failing check gets at most one targeted fix
+and one rerun. The same failure without new evidence ends the attempt: report it as introduced here, confirmed
+pre-existing, environment limit or unknown (do not guess pre-existing), and mark
+the task incomplete if it affects correctness.
+Two real scenarios without actionable value require narrowing, not more adapters.
+Safety and necessary verification are not optional under these stop rules.
 
-## Pre-Implementation Decision Gate
+At acceptance, stop. Record non-blocking discoveries instead of following them.
+Keep/revert/inconclusive are valid experiment findings; inconclusive leaves the
+product gate open. Do not manufacture success through repeated tests or screenshots.
 
-Before each implementation slice, state a compact decision card covering:
+## Diagnostic and scope guardrails
 
-1. user value
-2. the actual current blocker
-3. capabilities already present in the repository
-4. the smallest deliverable change
-5. explicit non-goals for the slice
-6. proportional validation
-7. user-visible evidence
+Unknown is not zero; equal tool output is not proven waste; cheaper is not better;
+estimated USD is not provider billing. Separate call/provider, application
+contract, workflow, manual assessment and unevaluated quality. Parent nesting,
+time order and a source error code do not establish causal root cause.
+No private chain-of-thought, secrets or unapproved private artifacts in traces.
 
-Do not start implementation until these points form a coherent shortest path to the requested outcome.
+D1 is required by the detailed plan; D2/D3 conditional, with no warning quota.
+Existing RAG rules keep retrieval applicability. Use offline branches for
+validators, counterexamples/holdouts for heuristics, actual comparisons for
+outcome claims. Fixed testbeds are MAMR, pinned PydanticAI and existing RAG;
+do not seek a third framework to postpone a value decision.
+MAMR is the observed workflow; read its own instructions before authorized edits.
+Capture at source is not live Collector streaming. Historical budgets are not
+standing API authority.
 
-Only one CURRENT_TASK slice may be active. Implementation agents stop at a
-validated, documented, review-ready state; they never automatically start the
-next slice. Public API/schema/span-family changes and external/release/security
-actions remain subject to CURRENT_TASK's human gates.
-
-Keep one primary outcome per slice. Record newly discovered non-blocking work instead of following it immediately. After validation and documentation, stop and reassess the next slice rather than continuing through an old plan by inertia.
-
-Use one active slice, normally 0.5–3 focused development days. If work approaches
-twice its initial budget, or two slices produce no visible user outcome, stop
-expanding scope and reassess. Two unsuccessful investigations without new evidence
-require a bounded findings report, not another speculative rewrite. These limits
-do not excuse skipping necessary safety checks or claiming unfinished work passed.
-
-## Current Architecture
-
-```text
-Python SDK
-  -> trace()
-  -> retrieval + llm + caller-instrumented tool spans (released)
-  -> flush()
-  -> Go collector
-  -> deterministic Warning Engine
-  -> SQLite
-  -> React/TypeScript dashboard
-```
-
-Current implemented span types:
-
-- retrieval
-- llm
-- tool — caller-instrumented synchronous span, published in v0.7.1; this does not execute an agent
-
-Current major components:
-
-- Python SDK
-- Go collector
-- SQLite local persistence
-- deterministic diagnostic engine
-- React + TypeScript dashboard
-- Docker Compose local stack
-- reference RAG application
-- buildable Python wheel/sdist
-- package-installed `sledtrace` CLI with source-checkout-based `serve`
-
-## Engineering Philosophy
-
-SledTrace is local-first developer infrastructure.
-
-Prefer:
-
-- simple implementations
-- explicit behavior
-- deterministic diagnostics where practical
-- small focused changes
-- compatibility with existing RAG applications
-- reproducible tests
-- easy local installation
-- clear developer UX
-
-Avoid speculative abstractions.
-
-Do not turn SledTrace into a generic chatbot.
-
-Do not turn SledTrace into a large hosted LLMOps platform unless the roadmap explicitly changes.
-
-## Scope Guardrails
-
-Do not add any of the following unless the current milestone explicitly requires it:
-
-- hosted cloud infrastructure
-- authentication or billing
-- multi-tenancy
-- Kafka
-- Kubernetes
-- ClickHouse
-- new span types
-- LangChain/LlamaIndex adapters
-- LLM-as-judge
-- unrelated warning rules
-- breaking SDK/API/schema changes
-
-Do not log or attempt to collect private chain-of-thought.
-
-Do not store secrets in traces.
-
-## Compatibility
-
-Preferred public project/package naming:
-
-- SledTrace
-- `sledtrace`
-- `SLEDTRACE_COLLECTOR_URL`
-
-Legacy RAGLens compatibility may exist temporarily:
-
-- `raglens`
-- `RAGLENS_COLLECTOR_URL`
-
-Do not remove legacy compatibility without checking the current milestone and compatibility tests.
+No cloud/auth/billing/multi-tenancy, Kafka/Kubernetes/ClickHouse, new span families,
+broad framework adapters, LLM-as-judge, unrelated rules or breaking SDK/data
+contracts unless the selected milestone and human authority require them.
+Prefer existing components, explicit behavior and bounded changes over abstractions.
 
 ## Validation
 
-Use proportional validation. During development, run targeted tests; at slice
-completion, run the affected component's required checks below and inspect the
-real affected flow. At integration/release, validate the exact candidate across
-components and distribution boundaries. Do not repeat unchanged full release
-checks after a planning-only edit or call old results a fresh pass.
+Daily development and release acceptance are separate. Daily: run targeted
+tests while working, then the changed component's checks below once at the end
+(`slice.py check` with the slice's profile). Release: the `release` profile and
+RELEASE_CHECKLIST, only when the user asks to prepare a release. Do not rerun
+unchanged components, repeat a passing check, or call old results a fresh pass.
 
 For documentation-only changes, check links, factual/authorization consistency,
 file scope, and `git diff --check`; no product build is needed. Package README or
@@ -200,7 +142,7 @@ npm test
 npm run build
 ```
 
-For dashboard-visible changes, a successful build is necessary but not sufficient. When practical:
+For Dashboard changes whose acceptance depends on what the user sees, also do a visual check when practical:
 
 1. start the real local Collector and Dashboard
 2. generate deterministic reference traces
@@ -210,7 +152,7 @@ For dashboard-visible changes, a successful build is necessary but not sufficien
 
 Screenshot policy:
 
-- provide conversation screenshots for dashboard-facing validation checkpoints
+- one screenshot of the changed view is enough; skip it when no visible behavior changed
 - update README screenshots only when the visible product or onboarding flow materially changes
 - refresh release-quality screenshots before a release that changes the Dashboard
 - keep screenshots deterministic and free of secrets, private paths, or personal data
@@ -227,56 +169,24 @@ python -m examples.reference_rag_app.run all
 
 Do not claim a milestone is complete unless its required validation has actually passed.
 
-## Documentation Discipline
+## Closeout and document ownership
 
-After a meaningful completed slice, record execution evidence once. Document
-ownership determines which files need updating; do not copy the same test log
-into every context file:
+Closing a slice: review the diff once against the acceptance criteria, run its
+validation, add one short DEVLOG entry (commands, results, limits) and set
+CURRENT_TASK status/outcome. Do not draft the next slice or decision card unless
+the user asks; listing open issues is enough. ROADMAP changes only when a
+milestone status changes. Record failures and limits; do not advance product
+gates to finish a checklist.
+Update AI_HANDOFF only when facts/risks/contracts change; DECISIONS only for a
+durable choice; detailed plan only for product/stage decisions. README/releases
+change when usable behavior/publication changes, not to advertise proposals.
+Archive replaced active history instead of appending it into CURRENT_TASK.
+Keep local validation, committed, pushed, merged, released and real-user value
+distinct. Commits/publication remain separately authorized.
 
-User-required closeout workflow (2026-09-15): every development slice ends with
-code-diff self-review, proportional tests, visible evidence when applicable,
-a DEVLOG entry, CURRENT_TASK updated with outcome and the next bounded decision
-card, and ROADMAP progress checked/updated (including a no-sequence-change note
-when appropriate). Incomplete or failed validation must be recorded as such;
-never advance a milestone just to complete the checklist. Do not hand off a
-completed slice without these records. Commits and publication are separate.
-
-- update `docs/ai-context/DEVLOG.md`
-- update `docs/ai-context/AI_HANDOFF.md` when the current snapshot, contracts, or known risks change
-- update `docs/ai-context/CURRENT_TASK.md` at every development-slice closeout
-- update `docs/ai-context/ROADMAP.md` progress at every development-slice closeout; change sequencing only when evidence warrants it
-- update `docs/ai-context/DECISIONS.md` when making a meaningful architecture decision
-- update `docs/product/ROAD_TO_V1_0.md` only when product assumptions, gates, or detailed sequencing change
-- keep `docs/ai-context/NEXT_AGENT_BRIEF.md` a stable navigation/working-agreement entry, not a second execution log
-- update release notes, root README status, and package README status when publication state changes
-
-Keep documentation aligned with actual tested repository behavior.
-
-## Working Style
-
-- Respond in Chinese unless the user explicitly requests English.
-- Inherit the user's already authorized scope across model changes; do not ask them to repeat context or reconfirm routine implementation choices.
-- Keep review findings, proposed milestones, authorized work, and completed/validated work distinct. The 2026-09-14 continuation authorizes the selected development slice; it is not a blanket instruction to execute every roadmap item or publish a version.
-- When the user continues development, use CURRENT_TASK as the default first slice and complete its decision card before editing.
-- Show real product/test evidence at relevant checkpoints. Known Docker/WSL environment failure is not a reason to block unrelated SDK work.
-- Use bounded investigations. Once the required checks and acceptance criteria pass, hand off the result and reassess the next slice instead of extending the scope.
-
-Before coding:
-
-1. complete the pre-implementation decision gate
-2. inspect the relevant implementation
-3. understand the current contract
-4. identify the smallest safe change
-5. state important assumptions
-
-After coding:
-
-1. run relevant tests
-2. inspect failures rather than bypassing them
-3. summarize files changed
-4. report exact validation results
-5. call out remaining limitations honestly
-
-Do not mark work complete merely because code was written.
+Reply in Chinese unless asked for English. Explain assumptions and evidence;
+do not ask the user to repeat already authorized routine details.
+Use bounded relevant checks. Known Docker/WSL limitations do not justify
+repeated startup retries or changes to the user's system for unrelated work.
 
 

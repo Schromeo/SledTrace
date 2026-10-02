@@ -93,6 +93,19 @@ Demo case:
 hallucinated
 ```
 
+## Agent coverage and planned diagnostics
+
+The seven rules in this guide are RAG-oriented deterministic heuristics, not
+general Agent health checks. Grounding requires a retrieval span; tool-only
+traces do not become grounded or successful because their warning count is zero.
+Application errors and task results are separate recorded evidence.
+
+D1 failure localization, D2 repeated unchanged failure and D3 declared-policy
+breach belong to the [adopted roadmap](../product/ROAD_TO_V1_0.md), not the current
+engine. D1 is required for the next diagnostic milestone; D2/D3 are conditional.
+Equal tool output is an observation, not automatically wasted work. Missing
+telemetry is a coverage limitation, not a fabricated warning or a healthy result.
+
 ## Current Limitation
 
 This is not a full grounding evaluator.

@@ -25,7 +25,8 @@ export type LlmUsageCall = {
   outputTokens: TokenField;
   recordedTotalTokens: TokenField;
   total: CallTotal;
-  provenance: "unknown" | "openai_responses";
+  provenance: "unknown" | "openai_responses" | "mamr_reported";
+  outputTokenBasis: "provider_output" | "visible_output" | "unknown";
   cachedInputTokens: TokenField;
   cacheWriteTokens: TokenField;
   reasoningOutputTokens: TokenField;
@@ -87,7 +88,11 @@ function normalizeLlmUsage(
   durationMs: number | null,
 ): LlmUsageCall {
   const provenance = span.metadata.usage_source === "openai_responses"
-    ? "openai_responses" : "unknown";
+    ? "openai_responses" : span.metadata.usage_source === "mamr_reported" ? "mamr_reported" : "unknown";
+  const outputTokenBasis = provenance === "mamr_reported"
+    ? span.metadata.output_token_basis === "provider_output" ? "provider_output"
+      : span.metadata.output_token_basis === "visible_output" ? "visible_output" : "unknown"
+    : provenance === "openai_responses" ? "provider_output" : "unknown";
   const providerRecord = provenance === "openai_responses";
   const inputTokens = readTokenField(span.metadata, "input_tokens", providerRecord);
   const outputTokens = readTokenField(span.metadata, "output_tokens", providerRecord);
@@ -125,13 +130,15 @@ function normalizeLlmUsage(
     inputTokens,
     outputTokens,
     recordedTotalTokens,
-    total: subfieldConflict ? { kind: "conflict", value: null, basis: null } : providerInvalid
+    total: provenance === "mamr_reported" && outputTokenBasis !== "provider_output"
+      ? { kind: "unknown", value: null, basis: null } : subfieldConflict ? { kind: "conflict", value: null, basis: null } : providerInvalid
       ? { kind: "unknown", value: null, basis: null } : resolveCallTotal(
       inputTokens,
       outputTokens,
       recordedTotalTokens,
     ),
     provenance,
+    outputTokenBasis,
     cachedInputTokens,
     cacheWriteTokens,
     reasoningOutputTokens,

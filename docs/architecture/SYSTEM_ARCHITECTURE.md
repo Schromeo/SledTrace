@@ -17,7 +17,8 @@ React Dashboard
 
 ### Python SDK
 
-The Python SDK instruments a RAG pipeline.
+The Python SDK explicitly instruments RAG or bounded AI application steps;
+it does not execute models or tools.
 
 It records:
 
@@ -25,7 +26,9 @@ It records:
 - retrieval spans
 - retrieved chunks
 - LLM calls
-- final answer
+- caller-instrumented synchronous tool steps and failed LLM attempts
+- final answer or explicit task result/acceptance
+- supplied usage, or explicit completed Responses usage via the optional helper
 
 It sends trace payloads to the collector using:
 
@@ -74,7 +77,9 @@ Note:
   - `low_retrieval_score` (default threshold `0.5`, overridable via span metadata)
   - `duplicate_chunks`
   - `conflicting_chunks`
-  - simplified `answer_not_grounded`
+  - `weak_query_chunk_overlap`
+  - `numeric_mismatch`
+  - deterministic `answer_not_grounded` (requires retrieval evidence)
 
 ### React Dashboard
 
@@ -90,12 +95,13 @@ It reads collector APIs and displays:
 - retrieval chunks
 - LLM prompt and response
 - metadata
-- warning cards
+- warning cards with evidence and heuristic limitations
+- ordered tool/LLM attempts, explicit task result and usage subtotal/coverage
 
 ## Current Data Flow
 
 1. Developer runs a RAG app instrumented with the Python SDK.
-2. SDK records retrieval and LLM spans.
+2. SDK records explicit retrieval, LLM and/or synchronous tool spans.
 3. SDK calls `t.flush()`.
 4. Collector receives the trace payload.
 5. Collector stores trace and spans in SQLite.
@@ -123,5 +129,27 @@ POST /api/traces
   -> save warnings
   -> return stored response with warnings_generated
 ```
+
+## Local candidate source evidence path — P3B
+
+The [roadmap](../product/ROAD_TO_V1_0.md) selects a bounded MAMR
+source-event → sanitized diagnostic bundle → importer → existing local stack
+path, now locally connected with offline fixtures. Capture happens at the actual call/validator boundary; submission can
+occur after completion/interruption. This is not a live Collector stream or
+generic JavaScript SDK.
+
+Call, contract-validation, workflow and task-quality states stay distinct.
+Generic trace POST still stores trace/spans and warnings in separate transactions.
+The dedicated MAMR route strictly validates the existing allowlisted source JSON
+and uses P3A's single transaction for trace/spans/warnings/import manifest.
+Exact re-import is a no-op; changed same-room content conflicts. Source evidence
+and counted attempts are separate. [Contract](../integrations/MAMR_DIAGNOSTIC_IMPORT.md).
+Secret/content controls apply before data leaves the application.
+P4 locally derives a bounded D1 gate explanation at view time from accepted
+source metadata. It adds no warning-engine/persistence contract. No explicit
+causal links were exported, so workflow context is not an impact chain. P5B reads
+two existing GET details with a user-declared pair file in page memory only;
+no new route/table/source schema. [Contract](../integrations/PAIR_EVIDENCE.md).
+D2/D3 remain unimplemented; no general Agent diagnosis or real fix is implied.
 
 

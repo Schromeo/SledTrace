@@ -29,8 +29,8 @@ The current release also does not include:
 
 - LangChain integration
 - LlamaIndex integration
-- real LLM provider integrations inside SledTrace itself
-- agent/tool/memory span tracing
+- automatic provider interception (the released explicit OpenAI Responses helper is opt-in)
+- a generic Agent runtime or agent/memory/retry spans
 - cloud sync, auth, or hosted features
 
 ## Who This Is For
@@ -281,6 +281,16 @@ Current implemented span types are:
 
 - `retrieval`
 - `llm`
+- `tool` — caller-instrumented synchronous steps; not an Agent executor
+
+For explicit tool status/task results and the optional Responses usage helper,
+see the [SDK README](../../sdk/python/README.md). This page's examples remain
+RAG-focused. This development checkout has a bounded
+[MAMR diagnostic JSON import](../integrations/MAMR_DIAGNOSTIC_IMPORT.md) in the
+Dashboard file picker, locally validated on offline examples. P4 explains known
+source gates, and [P5B's paired view](../integrations/PAIR_EVIDENCE.md) reads two
+traces with explicit manual declarations. Neither proves causal root cause or
+real improvement; see [the roadmap](ROAD_TO_V1_0.md).
 
 ## Why `flush()` Should Be Called After `with trace(...)`
 
@@ -353,7 +363,9 @@ Current warning analysis includes:
 - `low_retrieval_score`
 - `duplicate_chunks`
 - `conflicting_chunks`
-- `answer_not_grounded` (current deterministic MVP behavior)
+- `weak_query_chunk_overlap`
+- `numeric_mismatch`
+- `answer_not_grounded` (deterministic heuristic; requires retrieval evidence)
 
 These rules are intentionally simple and local-first.
 
@@ -366,7 +378,15 @@ SledTrace does not yet perform:
 - comprehensive factuality scoring
 - generalized hallucination detection
 - tool span or memory span diagnostics
-- agent-level workflow tracing
+- automatic Agent workflow capture, causal impact chains, D2/D3 or paired-run comparison
+
+This development checkout has a bounded source-backed D1 overview for imported
+ordinary MAMR diagnostic-v1 records. It locates known gates and next checks,
+not model-internal causes or answer quality; published v0.7.1 is unchanged.
+See the [import/explanation guide](../integrations/MAMR_DIAGNOSTIC_IMPORT.md).
+
+Explicit LLM/tool steps and task results can be recorded today. No warning on a
+tool-only trace means no current Agent rule fired, not that its workflow is healthy.
 
 ## `local_rag_demo` vs Real User Integration
 

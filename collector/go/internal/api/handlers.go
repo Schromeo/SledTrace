@@ -29,6 +29,7 @@ func (s *Server) Routes() http.Handler {
 
 	mux.HandleFunc("GET /health", s.handleHealth)
 	mux.HandleFunc("POST /api/traces", s.handlePostTrace)
+	mux.HandleFunc("POST /api/imports/mamr", s.handleImportMAMR)
 	mux.HandleFunc("GET /api/traces", s.handleListTraces)
 	mux.HandleFunc("GET /api/traces/", s.handleGetTraceDetail)
 

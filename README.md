@@ -2,15 +2,16 @@
 
 [![CI](https://github.com/Schromeo/SledTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/Schromeo/SledTrace/actions/workflows/ci.yml)
 
-SledTrace is an open-source, local-first observability and debugging tool for RAG pipelines.
+SledTrace is an open-source, local-first debugger for RAG pipelines and explicitly instrumented AI workflows.
 
 It helps developers inspect why a RAG application produced a bad answer by showing the full pipeline: retrieved chunks, retrieval scores, prompts, responses, and diagnostic warnings.
 
 SledTrace is designed for local development first. The default local demo is deterministic, API-key free, and runs entirely on your machine.
 
 Release history: [GitHub Releases](https://github.com/Schromeo/SledTrace/releases).
-This source tree and the published Python package are **0.7.1 — Trustworthy
-Local Tracing**. Install it from [PyPI](https://pypi.org/project/sledtrace/0.7.1/).
+The released baseline is **0.7.1 — Trustworthy Local Tracing**. Install it from
+[PyPI](https://pypi.org/project/sledtrace/0.7.1/). Source-development additions
+below are labeled separately; they are not part of the published 0.7.1 package.
 
 Install the Python SDK from PyPI:
 
@@ -62,6 +63,38 @@ coverage and a $0.000170 indicative text-token estimate. No provider request
 was made for this screenshot.
 
 ![SledTrace 0.7.1 explicit Responses usage and indicative cost](docs/assets/screenshots/openai-responses-usage.jpg)
+
+### MeetingRoom import and failure explanation — local development candidate
+
+Import one metadata-only ordinary-meeting diagnostic JSON in the Dashboard.
+The screenshot uses an offline source fixture: the workflow is interrupted,
+the contract was rejected, and quality remains unevaluated. Start and terminal
+receipts count as one attempt; repeated identical imports do not add records.
+The explanation locates the source-reported validator/path, separates call and
+provider completion from contract rejection, and links to the exact receipt.
+Workflow interruption is not automatically attributed to that attempt. Model
+names/text are omitted; this is not generic Agent capture or semantic evaluation.
+See the [import guide](docs/integrations/MAMR_DIAGNOSTIC_IMPORT.md) for limits,
+conflicts and reproduction.
+
+![Local candidate: source-backed contract failure explanation](docs/assets/screenshots/mamr-failure-explanation.jpg)
+
+Later application gates remain separate: the next synthetic offline screenshot
+shows a passed envelope followed by recorded state-reduction failure, alongside
+a later recovered attempt. The cause is unknown; this is a local explanation
+correction, not a real Agent repair or a released feature.
+
+![Local candidate: synthetic reduction failure despite passed envelope](docs/assets/screenshots/mamr-reduction-explanation.jpg)
+
+### Paired comparison — local development candidate
+
+Read two existing traces with a bounded user-declared comparison JSON. Captured
+outcomes and manual assessments stay separate; missing controls disable deltas.
+This actual screenshot uses synthetic acceptance data: lower recorded usage does
+not override a manual quality regression. No automatic judge or whole-run savings.
+The file stays in page memory only. See the [pair-evidence guide](docs/integrations/PAIR_EVIDENCE.md).
+
+![Local candidate: synthetic manual regression, not a real repair](docs/assets/screenshots/pair-comparison.jpg)
 
 ### Conflicting retrieved context
 
@@ -648,25 +681,26 @@ Current scope limits:
 
 ## Project direction
 
-SledTrace starts as a local-first visual debugger for RAG pipelines.
+The adopted next direction is **explain a workflow failure, inspect the evidence,
+then verify a developer's change**. RAG remains supported; usage and cost help
+evaluate changes rather than serving as a stand-alone optimization verdict.
 
-SledTrace starts with RAG pipeline debugging because retrieval, context quality, conflicting evidence, and grounding are common failure points in AI applications.
+The [detailed roadmap](docs/product/ROAD_TO_V1_0.md) plans source-level contract
+evidence, failure localization and outcome-aware before/after comparison.
+A [real MeetingRoom case](docs/demo/MAMR_DIAGNOSTIC_CASE.md) motivates that work,
+but its four-call trace was mapped from the UI afterward: it is not native
+MAMR integration, automatic Agent diagnosis or proof of a successful fix.
 
-The longer-term direction is to evolve the tracing core into a local-first observability layer for AI application harnesses: systems that manage context, tools, memory, model calls, verification, and feedback around foundation models.
-
-In that direction, SledTrace can grow beyond the current bounded retrieval, LLM, and tool records toward memory, verification, human feedback, and richer diagnostics over AI application traces. Those remain future direction and are not implemented in the current SDK.
-
-Future agent harness observability may also include running-trace lifecycle handling, partial span ingestion, additional span types such as agent and retry, plus diagnostics for agent loops, oscillation, retry storms, and no-progress execution. These are not implemented in current SledTrace.
-
-Near-term focus after v0.7:
-
-* collect evidence from external first-run attempts
-* convert real onboarding blockers into a small public issue backlog
-* automate Docker smoke validation when the maintenance cost is justified
-* validate the explicit provider-usage path in a real, user-owned workflow
-* preserve deterministic-first warning generation and stable trace contracts
-
-The TestPyPI candidate and production PyPI paths use OIDC Trusted Publishing. Framework integrations and hosted/cloud features remain future candidates and are not part of the current implemented scope; the next product milestone will be selected from external-use evidence.
+Current v0.7.1 supports explicit retrieval/LLM/tool records and limited Responses
+usage mapping. This development checkout also has a locally validated, bounded
+[MAMR source import and bounded D1 gate explanation](docs/integrations/MAMR_DIAGNOSTIC_IMPORT.md).
+There is also a local [read-only paired view](docs/integrations/PAIR_EVIDENCE.md)
+with explicitly user-declared controls/quality, not an independently verified experiment.
+Proven causal impact chains, D2/D3 and checkout-free runtime
+**are not implemented**. The roadmap does
+not require shipping two waste alerts before comparison; optional repeat/budget
+signals need their own evidence. No private chain-of-thought collection,
+automatic repair, generic Agent runtime or cloud service is planned for 1.0.
 
 ## Design principles
 

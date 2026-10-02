@@ -1,12 +1,24 @@
 # Contributing to SledTrace
 
-SledTrace is a local-first debugger for RAG pipelines. Contributions should preserve the current `retrieval` and `llm` span contracts, deterministic diagnostics, and the temporary `raglens` compatibility layer unless a separately documented change explicitly replaces them.
+SledTrace is a local-first debugger for RAG pipelines. Contributions should preserve the current `retrieval`, `llm`, and caller-instrumented synchronous `tool` span contracts, deterministic diagnostics, and the temporary `raglens` compatibility layer unless a separately documented change explicitly replaces them.
 
 ## Before opening an issue
 
 - Search existing issues first.
 - Use the bug template for reproducible failures and the feature template for scoped proposals.
-- Do not describe planned capabilities as implemented. Agent/tool/memory spans, framework adapters, cloud hosting, authentication, and LLM-as-judge are not part of the current product.
+- Do not describe planned capabilities as implemented. Generic Agent runtime, agent/memory/retry span families, framework-wide adapters, cloud hosting, authentication, and LLM-as-judge are not implemented. A caller-recorded `tool` span is already released.
+
+## Scope and evidence
+
+Use [CURRENT_TASK](docs/ai-context/CURRENT_TASK.md) for one active slice and
+[Road to v1.0](docs/product/ROAD_TO_V1_0.md) for the adopted P1–P7 direction.
+D1 failure localization precedes optional repeat/budget signals; two waste rules
+are not a prerequisite for comparison. Fixture coverage, real-model execution,
+internal dogfooding and independent user value are different evidence.
+
+Documentation-only work checks links/claims/scope and diff hygiene; do not rerun
+unchanged product builds. Historical release notes retain their original facts.
+Cross-repository work must follow that repository's own task and instructions.
 
 ## Local setup
 

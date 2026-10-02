@@ -6,7 +6,7 @@ script below owns mechanical status, scope and validation commands.
 
 ```text
 CURRENT_TASK -> one bounded patch -> scope/check -> acceptance review
-             -> DEVLOG/CURRENT_TASK/ROADMAP -> draft PR -> stop
+             -> DEVLOG + CURRENT_TASK status -> stop (commit/PR only on request)
 ```
 
 ## Local commands
@@ -30,6 +30,24 @@ require it; do not use the release profile for an ordinary Dashboard slice.
 
 Implementation skill: `.agents/skills/sledtrace-slice/SKILL.md`.
 Review skill: `.agents/skills/sledtrace-review/SKILL.md`.
+
+## Evidence-driven Agent slices
+
+The [P1–P7 plan](../product/ROAD_TO_V1_0.md) keeps one active slice. For source
+validation use offline branch/boundary tests; for heuristics predeclare held-out
+counterexamples; for fixes preserve outcomes and extra attempts in comparison.
+Do not apply the old E4 sample-count gate to all telemetry or documentation work.
+
+Use MAMR, pinned PydanticAI and existing RAG regressions; do not keep searching
+frameworks. Predeclare each paid experiment's question, variable, acceptance,
+call/cost limits and stop rule. Previous spending limits do not renew themselves.
+After two attempts without new evidence or two slices without a visible result,
+report and narrow; passing unchanged builds repeatedly is not progress.
+
+MAMR is a separate repository: read its AGENTS/task and inspect concurrent work
+before any edit. Its validator changes cannot silently become a SledTrace SDK
+or persisted-data contract. At closeout distinguish planned/local/pushed/merged/
+released; record historical evidence once, link it from the active context.
 
 ## GitHub and Copilot
 

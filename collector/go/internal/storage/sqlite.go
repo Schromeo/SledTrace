@@ -94,6 +94,12 @@ CREATE TABLE IF NOT EXISTS warnings (
     FOREIGN KEY(span_id) REFERENCES spans(id)
 );
 
+CREATE TABLE IF NOT EXISTS mamr_imports (
+    trace_id TEXT PRIMARY KEY,
+    fingerprint TEXT NOT NULL,
+    FOREIGN KEY(trace_id) REFERENCES traces(id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_traces_started_at
 ON traces(started_at);
 

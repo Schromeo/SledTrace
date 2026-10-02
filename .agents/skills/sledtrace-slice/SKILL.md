@@ -25,11 +25,11 @@ do not reinterpret this skill as permission for later roadmap items.
 7. Review the diff once against every acceptance item. Check zero versus
    unknown/missing behavior, compatibility, errors, privacy/security boundaries,
    and claims. Record unresolved material issues instead of looping indefinitely.
-8. Update DEVLOG with exact evidence, CURRENT_TASK with outcome and the next
-   bounded decision card, and ROADMAP progress. Update AI_HANDOFF or DECISIONS
-   only when their owned facts or durable choices changed.
-9. When repository access is available and the user has authorized delivery,
-   create a dedicated branch, commit the slice, push it, and open a draft PR.
+8. Close out as root `AGENTS.md` says: one short DEVLOG entry and CURRENT_TASK
+   status/outcome. Touch ROADMAP, AI_HANDOFF or DECISIONS only when their owned
+   facts changed. Do not write the next slice unless the user asks.
+9. Create a branch, commit, push or open a draft PR only when the user asks for
+   it in the current request; otherwise say the slice is uncommitted.
    Report local validation, commit, push, PR and merge states separately.
 10. Stop. Never automatically begin the next slice. Never merge, version, tag,
     release, publish, use a paid model/API, or contact external users without the

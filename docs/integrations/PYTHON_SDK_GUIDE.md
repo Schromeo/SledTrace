@@ -9,16 +9,27 @@ Current scope only:
 - local-first tracing
 - `trace(...)`
 - retrieval spans
-- LLM spans
+- LLM spans, including explicit status/error and caller-supplied usage
+- caller-instrumented synchronous tool spans and explicit task results
+- opt-in completed non-streaming OpenAI Responses mapping
 - local collector flushes
 
 Out of scope for this guide:
 
 - LangChain integration
 - LlamaIndex integration
-- OpenAI or Anthropic integration guides
-- agent, tool, or memory spans
+- automatic OpenAI/Anthropic interception or framework-wide adapters
+- generic Agent runtime, agent/memory/retry spans
 - cloud sync, auth, or hosted features
+
+For the released tool/result and Responses helper examples, see the
+[SDK README](../../sdk/python/README.md). The RAG examples below remain valid.
+[Planned P1–P7](../product/ROAD_TO_V1_0.md) do not add Python APIs merely by being
+documented: this SDK has no MAMR import, source-diagnosis or paired-comparison
+API. The local Collector/Dashboard candidate separately supports bounded MAMR
+import and P4 explanation; see the [import guide](MAMR_DIAGNOSTIC_IMPORT.md).
+The local Dashboard also has a [read-only paired view](PAIR_EVIDENCE.md) using
+session-only user declarations; the released Python API is unchanged.
 
 ## Installation
 

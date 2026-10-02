@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchTraceDetail } from "../api/client";
 import ChunkCard from "../components/ChunkCard";
 import JsonViewer from "../components/JsonViewer";
 import SpanTimeline from "../components/SpanTimeline";
+import { MamrEvidence, MamrReceipt } from "../components/MamrEvidence";
+import MamrExplanation from "../components/MamrExplanation";
+import { mamrBundle, usageSourceLabel } from "../utils/mamr";
 import {
   formatDurationMs,
   getDurationMs,
@@ -47,6 +50,7 @@ export default function TraceDetailPage({ traceId }: Props) {
   const [selectedSpanId, setSelectedSpanId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const receiptPanel = useRef<HTMLDivElement>(null);
 
   async function loadDetail() {
     try {
@@ -114,6 +118,7 @@ export default function TraceDetailPage({ traceId }: Props) {
   const query = getString(detail.trace.input, "query");
   const finalResult = taskDisplay(detail.trace.output);
   const hasTool = detail.spans.some((span) => span.type === "tool");
+  const isMamr = mamrBundle(detail.trace.metadata) !== null;
   const warningCount = detail.warnings.length;
   const warningCountClass = warningCount > 0 ? "summary-value-danger" : "";
 
@@ -130,6 +135,13 @@ export default function TraceDetailPage({ traceId }: Props) {
           {detail.trace.status}
         </div>
       </div>
+
+      <MamrExplanation metadata={detail.trace.metadata} spans={detail.spans} onInspect={spanId => {
+        setSelectedSpanId(spanId);
+        receiptPanel.current?.scrollIntoView({ block: "start" });
+        receiptPanel.current?.focus({ preventScroll: true });
+      }} />
+      <MamrEvidence metadata={detail.trace.metadata} />
 
       {hasTool && (
         <div className="task-context" aria-label="Task context">
@@ -148,17 +160,17 @@ export default function TraceDetailPage({ traceId }: Props) {
 
       <div className="summary-grid">
         <div className="summary-card">
-          <div className="summary-label">Query</div>
+          <div className="summary-label">{isMamr ? "Task text" : "Query"}</div>
           <div className="summary-value summary-value-query">
-            {query || "No query recorded"}
+            {isMamr ? "Omitted by source export" : query || "No query recorded"}
           </div>
         </div>
 
         <div className="summary-card summary-card-answer">
-          <div className="summary-label">{finalResult.label}</div>
+          <div className="summary-label">{isMamr ? "Quality evaluation" : finalResult.label}</div>
           <div className="summary-value summary-value-answer">
             <div className="inline-resizable-answer">
-              {finalResult.text || "No result recorded"}
+              {isMamr ? "Not evaluated" : finalResult.text || "No result recorded"}
             </div>
             {finalResult.accepted !== null ? (
               <div className="task-acceptance">
@@ -191,7 +203,7 @@ export default function TraceDetailPage({ traceId }: Props) {
 
       <div className="detail-grid">
         <div className="timeline-panel">
-          <h3>{hasTool ? "Execution steps" : "Pipeline timeline"}</h3>
+          <h3>{isMamr ? "Source attempts" : hasTool ? "Execution steps" : "Pipeline timeline"}</h3>
           <SpanTimeline
             spans={detail.spans}
             selectedSpanId={selectedSpanId}
@@ -199,7 +211,9 @@ export default function TraceDetailPage({ traceId }: Props) {
           />
 
           <h3>Warnings</h3>
-          <p className="warning-help">{warningGuidanceForSpans(detail.spans)}</p>
+          <p className="warning-help">{isMamr
+            ? "RAG checks do not evaluate this meeting. The source-backed gate explanation is above; no efficiency rule or semantic quality assessment has run."
+            : warningGuidanceForSpans(detail.spans)}</p>
           {detail.warnings.length === 0 ? (
             <div className="empty-card compact">
               {NO_WARNINGS_MESSAGE}
@@ -260,7 +274,7 @@ export default function TraceDetailPage({ traceId }: Props) {
           )}
         </div>
 
-        <div className="span-detail-panel">
+        <div className="span-detail-panel" ref={receiptPanel} tabIndex={-1} aria-label="Selected span receipt">
           {selectedSpan ? (
             <SelectedSpanView span={selectedSpan} />
           ) : (
@@ -366,7 +380,7 @@ function UsageCallRow({
       </div>
 
       <UsageMetric label="Input" field={call.inputTokens} />
-      <UsageMetric label="Output" field={call.outputTokens} />
+      <UsageMetric label={call.outputTokenBasis === "visible_output" ? "Visible output" : "Output"} field={call.outputTokens} />
       <UsageTotalMetric total={call.total} />
 
       <div className="usage-metric">
@@ -380,7 +394,7 @@ function UsageCallRow({
       <div className="usage-metric">
         <span>Usage source</span>
         <strong className={call.provenance === "unknown" ? "usage-unknown" : ""}>
-          {call.provenance === "openai_responses" ? "OpenAI Responses" : "Unknown"}
+          {usageSourceLabel(call.provenance)}
         </strong>
         <small>{call.provenance === "openai_responses" ? "provider response" : "not provider-verified"}</small>
       </div>
@@ -457,6 +471,8 @@ function SelectedSpanView({ span }: { span: Span }) {
           <div className="span-duration">{formatDuration(span)}</div>
         </div>
       </div>
+
+      <MamrReceipt metadata={span.metadata} />
 
       {span.type === "retrieval" && (
         <section className="section">
